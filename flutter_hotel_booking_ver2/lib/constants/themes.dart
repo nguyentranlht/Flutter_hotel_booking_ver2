@@ -90,7 +90,7 @@ class AppTheme {
       case ColorType.darkSkyBlue:
         return isLightMode ? const Color(0xFF458CEA) : const Color(0xFF458CEA);
       case ColorType.bilobaFlower:
-        return isLightMode ? const Color(0xFFff5f5f) : const Color(0xFFff5f5f);
+        return isLightMode ? const Color(0xFFFFA71A) : const Color(0xFFFFA71A);
     }
   }
 
