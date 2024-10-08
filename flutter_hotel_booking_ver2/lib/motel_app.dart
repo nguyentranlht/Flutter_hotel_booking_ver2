@@ -33,6 +33,7 @@ class _MotelAppState extends State<MotelApp> {
             return GetMaterialApp(
               localizationsDelegates: AppLocalizations.localizationsDelegates,
               supportedLocales: const [
+                Locale('vi'), // VietNam
                 Locale('en'), // English
                 Locale('fr'), // French
                 Locale('ja'), // Japanises

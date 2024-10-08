@@ -431,12 +431,13 @@ class _SettingsScreenState extends State<SettingsScreen> with Helper {
   _getLanguageUI() {
     final List<Widget> languageArray = [];
     final list = [
+      const Locale('vi'), // VietNam
       const Locale('en'), // English
       const Locale('fr'), // French
       const Locale('ja'), // Japanises
       const Locale('ar'), // Arebic
     ];
-    List<String> languageTexts = ["English", "French", "Japanese", "Arabic"];
+    List<String> languageTexts = ["Viet Nam","English", "French", "Japanese", "Arabic"];
 
     for (var i = 0; i < list.length; i++) {
       final element = list[i];
