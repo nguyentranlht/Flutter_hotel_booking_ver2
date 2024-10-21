@@ -41,7 +41,7 @@ class _MotelAppState extends State<MotelApp> {
               ],
               navigatorKey: navigatorKey,
               locale: locController.locale,
-              title: 'Motel',
+              title: 'Hotel',
               debugShowCheckedModeBanner: false,
               theme: theme,
               routes: _buildRoutes(),
