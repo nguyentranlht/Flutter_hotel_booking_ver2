@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_hotel_booking_ver2/futures/authentication_bloc/authentication_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:flutter_hotel_booking_ver2/constants/helper.dart';
@@ -81,7 +83,9 @@ class _SettingsScreenState extends State<SettingsScreen> with Helper {
                       } else if (index == 4) {
                         _getLanguageUI();
                       } else if (index == 10) {
-                        _gotoSplashScreen();
+                        context
+                                    .read<AuthenticationBloc>()
+                                    .add(SignOutRequired());
                       }
                     },
                     child: Column(

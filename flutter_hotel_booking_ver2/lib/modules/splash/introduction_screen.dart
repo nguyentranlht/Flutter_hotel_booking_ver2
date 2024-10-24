@@ -1,15 +1,23 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hotel_booking_ver2/constants/localfiles.dart';
 import 'package:flutter_hotel_booking_ver2/constants/themes.dart';
+import 'package:flutter_hotel_booking_ver2/futures/authentication_bloc/authentication_bloc.dart';
 import 'package:flutter_hotel_booking_ver2/language/app_localizations.dart';
 import 'package:flutter_hotel_booking_ver2/modules/splash/components/page_pop_view.dart';
 import 'package:flutter_hotel_booking_ver2/routes/route_names.dart';
 import 'package:flutter_hotel_booking_ver2/widgets/common_button.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:user_repository/src/firebase_user_repo.dart';
+import 'package:user_repository/user_repository.dart';
+
+import '../../futures/authentication_bloc/authentication_bloc.dart';
+import '../login/login_screen.dart';
 
 class IntroductionScreen extends StatefulWidget {
-  const IntroductionScreen({Key? key}) : super(key: key);
+  final UserRepository userRepository;
+  const IntroductionScreen(this.userRepository, {Key? key}) : super(key: key);
 
   @override
   State<IntroductionScreen> createState() => _IntroductionScreenState();
@@ -103,6 +111,7 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
             buttonText: Loc.alized.login,
             onTap: () {
               NavigationServices(context).gotoLoginScreen();
+              
             },
           ),
           CommonButton(

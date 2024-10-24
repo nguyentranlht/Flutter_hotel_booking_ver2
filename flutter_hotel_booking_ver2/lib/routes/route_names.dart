@@ -19,6 +19,7 @@ import 'package:flutter_hotel_booking_ver2/modules/profile/how_do_screen.dart';
 import 'package:flutter_hotel_booking_ver2/modules/profile/invite_screen.dart';
 import 'package:flutter_hotel_booking_ver2/modules/profile/settings_screen.dart';
 import 'package:flutter_hotel_booking_ver2/routes/routes.dart';
+import 'package:user_repository/user_repository.dart';
 
 class NavigationServices {
   NavigationServices(this.context);

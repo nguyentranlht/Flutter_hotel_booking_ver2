@@ -3,9 +3,9 @@ import '../entities/entities.dart';
 
 class MyUser extends Equatable {
   final String userId;
-  final String email;
-  final String firstname;
-  final String lastname;
+  late final String email;
+  late final String firstname;
+  late final String lastname;
   String? picture;
   final String phonenumber;
   final DateTime birthday;  // Chuyển đổi sang DateTime

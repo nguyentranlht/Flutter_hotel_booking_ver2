@@ -1,0 +1,90 @@
+import 'dart:async';
+import 'dart:developer';
+
+import 'package:bloc/bloc.dart';
+import 'package:equatable/equatable.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:meta/meta.dart';
+import 'package:user_repository/user_repository.dart';
+
+part 'authentication_event.dart';
+part 'authentication_state.dart';
+
+class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> {
+  final UserRepository userRepository;
+  late final StreamSubscription<User?> _userSubscription;
+
+  AuthenticationBloc({required this.userRepository})
+      : super(const AuthenticationStateUnknown()) {
+    // Lắng nghe thay đổi trạng thái người dùng từ Firebase
+    _userSubscription = userRepository.user.listen((authUser) {
+      add(AuthenticationUserChanged(authUser));
+    });
+
+    // Xử lý khi trạng thái người dùng thay đổi
+    on<AuthenticationUserChanged>((event, emit) {
+      if (event.user != null) {
+        emit(AuthenticationStateAuthenticated(event.user!));
+      } else {
+        emit(const AuthenticationStateUnauthenticated());
+      }
+    });
+
+    // Xử lý sự kiện đăng nhập với Google
+    on<SignInWithGoogleRequested>((event, emit) async {
+      emit(SignInProcess());
+      try {
+        await userRepository.signInGoogle();
+        emit(SignInSuccess());
+      } catch (e) {
+        emit(SignInFailure(e.toString()));
+      }
+    });
+
+    // Xử lý sự kiện đăng nhập với Facebook
+    on<SignInWithFacebookRequested>((event, emit) async {
+      emit(SignInProcess());
+      try {
+        await userRepository.signInFacebook();
+        emit(SignInSuccess());
+      } catch (e) {
+        emit(SignInFailure(e.toString()));
+      }
+    });
+
+    // Xử lý sự kiện đăng nhập với email và password
+    on<SignInRequired>((event, emit) async {
+      emit(SignInProcess());
+      try {
+        await userRepository.signIn(event.email, event.password);
+        emit(SignInSuccess());
+      } catch (e) {
+        emit(SignInFailure(e.toString()));
+      }
+    });
+
+    // Xử lý sự kiện đăng ký người dùng mới
+    on<SignUpRequired>((event, emit) async {
+      emit(SignUpProcess());
+      try {
+        MyUser user = await userRepository.signUp(event.user, event.password);
+        await userRepository.setUserData(user);
+        emit(SignUpSuccess());
+      } catch (e) {
+        emit(SignUpFailure(e.toString()));
+      }
+    });
+
+    // Xử lý sự kiện đăng xuất
+    on<SignOutRequired>((event, emit) async {
+      await userRepository.logOut();
+      emit(const AuthenticationStateUnauthenticated());
+    });
+  }
+
+  @override
+  Future<void> close() {
+    _userSubscription.cancel();
+    return super.close();
+  }
+}

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hotel_booking_ver2/language/app_localizations.dart';
 import 'package:flutter_hotel_booking_ver2/modules/login/facebook_twitter_button_view.dart';
 import 'package:flutter_hotel_booking_ver2/routes/route_names.dart';
@@ -7,6 +8,8 @@ import 'package:flutter_hotel_booking_ver2/widgets/common_appbar_view.dart';
 import 'package:flutter_hotel_booking_ver2/widgets/common_button.dart';
 import 'package:flutter_hotel_booking_ver2/widgets/common_text_field_view.dart';
 import 'package:flutter_hotel_booking_ver2/widgets/remove_focuse.dart';
+
+import '../../futures/authentication_bloc/authentication_bloc.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -85,7 +88,13 @@ class _LoginScreenState extends State<LoginScreen> {
                       buttonText: Loc.alized.login,
                       onTap: () {
                         if (_allValidation()) {
-                          NavigationServices(context).gotoTabScreen();
+                          // Phát sự kiện đăng nhập khi form hợp lệ
+                          context.read<AuthenticationBloc>().add(
+                            SignInRequired(
+                              _emailController.text.trim(),
+                              _passwordController.text.trim(),
+                            ),
+                          );
                         }
                       },
                     ),
