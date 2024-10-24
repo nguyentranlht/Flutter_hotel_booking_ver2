@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_hotel_booking_ver2/widgets/common_button.dart';
+
+import '../../futures/authentication_bloc/authentication_bloc.dart';
 
 class FacebookTwitterButtonView extends StatelessWidget {
   const FacebookTwitterButtonView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return _fTButtonUI();
+    return _fTButtonUI(context);
   }
 
-  Widget _fTButtonUI() {
+  Widget _fTButtonUI(BuildContext context) {
     return Row(
       children: <Widget>[
         const SizedBox(
@@ -21,6 +24,9 @@ class FacebookTwitterButtonView extends StatelessWidget {
             padding: EdgeInsets.zero,
             backgroundColor: const Color(0xff3c5799),
             buttonTextWidget: _buttonTextUI(),
+            onTap: () {
+                context.read<AuthenticationBloc>().add(SignInWithFacebookRequested());
+              },
           ),
         ),
         const SizedBox(
@@ -29,8 +35,11 @@ class FacebookTwitterButtonView extends StatelessWidget {
         Expanded(
           child: CommonButton(
             padding: EdgeInsets.zero,
-            backgroundColor: const Color(0xff05a9f0),
+            backgroundColor: Colors.blueGrey,
             buttonTextWidget: _buttonTextUI(isFacebook: false),
+            onTap: () {
+                context.read<AuthenticationBloc>().add(SignInWithGoogleRequested());
+              },
           ),
         ),
         const SizedBox(
@@ -45,13 +54,13 @@ class FacebookTwitterButtonView extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
-        Icon(isFacebook ? FontAwesomeIcons.facebookF : FontAwesomeIcons.twitter,
+        Icon(isFacebook ? FontAwesomeIcons.facebookF : FontAwesomeIcons.google,
             size: 20, color: Colors.white),
         const SizedBox(
           width: 4,
         ),
         Text(
-          isFacebook ? "Facebook" : "Twitter",
+          isFacebook ? "Facebook" : "Google",
           style: const TextStyle(
               fontWeight: FontWeight.w500, fontSize: 16, color: Colors.white),
         ),
