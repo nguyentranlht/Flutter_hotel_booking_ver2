@@ -8,8 +8,10 @@ import 'package:flutter_hotel_booking_ver2/widgets/common_appbar_view.dart';
 import 'package:flutter_hotel_booking_ver2/widgets/common_button.dart';
 import 'package:flutter_hotel_booking_ver2/widgets/common_text_field_view.dart';
 import 'package:flutter_hotel_booking_ver2/widgets/remove_focuse.dart';
-
+import 'package:flutter_hotel_booking_ver2/widgets/dialog_widget.dart';
 import '../../futures/authentication_bloc/authentication_bloc.dart';
+
+import '../../routes/routes.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -27,82 +29,94 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: RemoveFocuse(
-        onClick: () {
-          FocusScope.of(context).requestFocus(FocusNode());
+      body: BlocListener<AuthenticationBloc, AuthenticationState>(
+        listener: (context, state) {
+          if (state is SignInSuccess) {
+            // Điều hướng đến màn hình chính khi đăng nhập thành công
+            Navigator.pushNamed(context, RoutesName.home);
+          } else if (state is SignInFailure) {
+            // Hiển thị thông báo lỗi khi đăng nhập thất bại
+            ErrorDialog.show(context, "Login failed. Please try again.");
+          }
         },
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            CommonAppbarView(
-              iconData: Icons.arrow_back,
-              titleText: Loc.alized.login,
-              onBackClick: () {
-                Navigator.pop(context);
-              },
-            ),
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: <Widget>[
-                    const Padding(
-                      padding: EdgeInsets.only(top: 32),
-                      child: FacebookTwitterButtonView(),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Text(
-                        Loc.alized.log_with_mail,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          color: Theme.of(context).disabledColor,
+        child: RemoveFocuse(
+          onClick: () {
+            FocusScope.of(context).requestFocus(FocusNode());
+          },
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              CommonAppbarView(
+                iconData: Icons.arrow_back,
+                titleText: Loc.alized.login,
+                onBackClick: () {
+                  Navigator.pop(context);
+                },
+              ),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: <Widget>[
+                      const Padding(
+                        padding: EdgeInsets.only(top: 32),
+                        child: FacebookTwitterButtonView(),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Text(
+                          Loc.alized.log_with_mail,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: Theme.of(context).disabledColor,
+                          ),
                         ),
                       ),
-                    ),
-                    CommonTextFieldView(
-                      controller: _emailController,
-                      errorText: _errorEmail,
-                      titleText: Loc.alized.your_mail,
-                      padding: const EdgeInsets.only(
-                          left: 24, right: 24, bottom: 16),
-                      hintText: Loc.alized.enter_your_email,
-                      keyboardType: TextInputType.emailAddress,
-                      onChanged: (String txt) {},
-                    ),
-                    CommonTextFieldView(
-                      titleText: Loc.alized.password,
-                      padding: const EdgeInsets.only(left: 24, right: 24),
-                      hintText: Loc.alized.enter_password,
-                      isObscureText: true,
-                      onChanged: (String txt) {},
-                      errorText: _errorPassword,
-                      controller: _passwordController,
-                    ),
-                    _forgotYourPasswordUI(),
-                    CommonButton(
-                      padding: const EdgeInsets.only(
-                          left: 24, right: 24, bottom: 16),
-                      buttonText: Loc.alized.login,
-                      onTap: () {
-                        if (_allValidation()) {
-                          // Phát sự kiện đăng nhập khi form hợp lệ
-                          context.read<AuthenticationBloc>().add(
-                            SignInRequired(
-                              _emailController.text.trim(),
-                              _passwordController.text.trim(),
-                            ),
-                          );
-                        }
-                      },
-                    ),
-                  ],
+                      CommonTextFieldView(
+                        controller: _emailController,
+                        errorText: _errorEmail,
+                        titleText: Loc.alized.your_mail,
+                        padding: const EdgeInsets.only(
+                            left: 24, right: 24, bottom: 16),
+                        hintText: Loc.alized.enter_your_email,
+                        keyboardType: TextInputType.emailAddress,
+                        onChanged: (String txt) {},
+                      ),
+                      CommonTextFieldView(
+                        titleText: Loc.alized.password,
+                        padding: const EdgeInsets.only(left: 24, right: 24),
+                        hintText: Loc.alized.enter_password,
+                        isObscureText: true,
+                        onChanged: (String txt) {},
+                        errorText: _errorPassword,
+                        controller: _passwordController,
+                      ),
+                      _forgotYourPasswordUI(),
+                      CommonButton(
+                        padding: const EdgeInsets.only(
+                            left: 24, right: 24, bottom: 16),
+                        buttonText: Loc.alized.login,
+                        onTap: () {
+                          if (_allValidation()) {
+                            LoadingDialog.show(context); // Hiển thị loading ngay khi bắt đầu
+                            // Phát sự kiện đăng nhập khi form hợp lệ
+                            context.read<AuthenticationBloc>().add(
+                              SignInRequired(
+                                _emailController.text.trim(),
+                                _passwordController.text.trim(),
+                              ),
+                            );
+                          }
+                        },
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            )
-          ],
+              )
+            ],
+          ),
         ),
       ),
     );

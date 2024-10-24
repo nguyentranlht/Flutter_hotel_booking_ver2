@@ -13,6 +13,8 @@ import 'package:flutter_hotel_booking_ver2/widgets/remove_focuse.dart';
 import 'package:user_repository/user_repository.dart';
 
 import '../../futures/authentication_bloc/authentication_bloc.dart';
+import '../../routes/routes.dart';
+import '../../widgets/dialog_widget.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -38,15 +40,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
         listener: (context, state) {
           if (state is SignInProcess) {
             // Hiển thị loading khi đang xử lý đăng ký
-            showLoadingDialog(context);
+            LoadingDialog.show(context);
           } else if (state is SignInFailure) {
             // Hiển thị thông báo lỗi nếu đăng ký thất bại
             Navigator.of(context).pop(); // Đóng loading dialog
-            showErrorDialog(context, state.error);
+            ErrorDialog.show(context, state.error);
           } else if (state is SignInSuccess) {
             // Điều hướng đến TabScreen nếu đăng ký thành công
             Navigator.of(context).pop(); // Đóng loading dialog
-            NavigationServices(context).gotoTabScreen();
+            Navigator.pushNamed(context, RoutesName.home);
           }
         },
         child: RemoveFocuse(
@@ -249,38 +251,5 @@ class _SignUpScreenState extends State<SignUpScreen> {
     }
     setState(() {});
     return isValid;
-  }
-
-  void showLoadingDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      barrierDismissible:
-          false, // Ngăn người dùng tắt dialog bằng cách nhấn ra ngoài
-      builder: (context) {
-        return const Center(
-          child: CircularProgressIndicator(), // Hiển thị một loading indicator
-        );
-      },
-    );
-  }
-
-  void showErrorDialog(BuildContext context, String message) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Error'), // Tiêu đề của dialog
-          content: Text(message), // Nội dung là thông báo lỗi
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Đóng hộp thoại khi nhấn nút
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        );
-      },
-    );
   }
 }
