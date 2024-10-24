@@ -14,6 +14,7 @@ import 'package:flutter_hotel_booking_ver2/widgets/common_appbar_view.dart';
 import 'package:flutter_hotel_booking_ver2/widgets/common_card.dart';
 import 'package:flutter_hotel_booking_ver2/widgets/remove_focuse.dart';
 import '../../models/setting_list_data.dart';
+import '../../routes/routes.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({Key? key}) : super(key: key);
@@ -32,114 +33,124 @@ class _SettingsScreenState extends State<SettingsScreen> with Helper {
     List<SettingsListData> settingsList = SettingsListData.settingsList;
 
     return Scaffold(
-      body: RemoveFocuse(
-        onClick: () {
-          FocusScope.of(context).requestFocus(FocusNode());
+      body: BlocListener<AuthenticationBloc, AuthenticationState>(
+        listener: (context, state) {
+          if (state is AuthenticationStateUnauthenticated) {
+            // Khi trạng thái không đăng nhập được phát ra, điều hướng về màn hình đăng nhập
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              RoutesName.login,  // Điều hướng về màn hình đăng nhập
+              (route) => false,  // Xoá tất cả các route trước đó
+            );
+          }
         },
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            CommonAppbarView(
-              iconData: Icons.arrow_back,
-              onBackClick: () {
-                Navigator.pop(context);
-              },
-              titleText: Loc.alized.setting_text,
-            ),
-            Expanded(
-              child: ListView.builder(
-                padding: const EdgeInsets.only(top: 16),
-                itemCount: settingsList.length,
-                itemBuilder: (context, index) {
-                  return InkWell(
-                    onTap: () {
-                      if (index == 1) {
-                        // MyApp.restartApp(context);
-                      } else if (index == 6) {
-                        NavigationServices(context)
-                            .gotoCurrencyScreen()
-                            .then((value) {
-                          if (value is String && value != "") {
-                            setState(() {
-                              currency = value;
-                            });
-                          }
-                        });
-                      } else if (index == 5) {
-                        NavigationServices(context)
-                            .gotoCountryScreen()
-                            .then((value) {
-                          if (value is String && value != "") {
-                            setState(() {
-                              country = value;
-                            });
-                          }
-                        });
-                      } else if (index == 2) {
-                        _getFontPopUI();
-                      } else if (index == 3) {
-                        _getColorPopUI();
-                      } else if (index == 4) {
-                        _getLanguageUI();
-                      } else if (index == 10) {
-                        context
-                                    .read<AuthenticationBloc>()
-                                    .add(SignOutRequired());
-                      }
-                    },
-                    child: Column(
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8, right: 16),
-                          child: Row(
-                            children: <Widget>[
-                              Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(16.0),
-                                  child: Text(
-                                    settingsList[index].titleTxt,
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 16),
+        child: RemoveFocuse(
+          onClick: () {
+            FocusScope.of(context).requestFocus(FocusNode());
+          },
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              CommonAppbarView(
+                iconData: Icons.arrow_back,
+                onBackClick: () {
+                  Navigator.pop(context);
+                },
+                titleText: Loc.alized.setting_text,
+              ),
+              Expanded(
+                child: ListView.builder(
+                  padding: const EdgeInsets.only(top: 16),
+                  itemCount: settingsList.length,
+                  itemBuilder: (context, index) {
+                    return InkWell(
+                      onTap: () {
+                        if (index == 1) {
+                          // MyApp.restartApp(context);
+                        } else if (index == 6) {
+                          NavigationServices(context)
+                              .gotoCurrencyScreen()
+                              .then((value) {
+                            if (value is String && value != "") {
+                              setState(() {
+                                currency = value;
+                              });
+                            }
+                          });
+                        } else if (index == 5) {
+                          NavigationServices(context)
+                              .gotoCountryScreen()
+                              .then((value) {
+                            if (value is String && value != "") {
+                              setState(() {
+                                country = value;
+                              });
+                            }
+                          });
+                        } else if (index == 2) {
+                          _getFontPopUI();
+                        } else if (index == 3) {
+                          _getColorPopUI();
+                        } else if (index == 4) {
+                          _getLanguageUI();
+                        } else if (index == 10) {
+                          // Gửi sự kiện đăng xuất khi nhấn vào mục đăng xuất
+                          _gotoSplashScreen();
+                        }
+                      },
+                      child: Column(
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.only(left: 8, right: 16),
+                            child: Row(
+                              children: <Widget>[
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: Text(
+                                      settingsList[index].titleTxt,
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 16),
+                                    ),
                                   ),
                                 ),
-                              ),
-                              index == 5
-                                  ? Padding(
-                                      padding: const EdgeInsets.all(16),
-                                      child: getTextUi(country))
-                                  : index == 6
-                                      ? Padding(
-                                          padding: const EdgeInsets.all(16),
-                                          child: getTextUi(currency),
-                                          //   child:
-                                        )
-                                      : index == 1
-                                          ? _themeUI()
-                                          : Padding(
-                                              padding: const EdgeInsets.all(16),
-                                              child: Icon(
-                                                  settingsList[index].iconData,
-                                                  color: AppTheme
-                                                      .secondaryTextColor),
-                                            )
-                            ],
+                                index == 5
+                                    ? Padding(
+                                        padding: const EdgeInsets.all(16),
+                                        child: getTextUi(country))
+                                    : index == 6
+                                        ? Padding(
+                                            padding: const EdgeInsets.all(16),
+                                            child: getTextUi(currency),
+                                          )
+                                        : index == 1
+                                            ? _themeUI()
+                                            : Padding(
+                                                padding: const EdgeInsets.all(16),
+                                                child: Icon(
+                                                    settingsList[index].iconData,
+                                                    color: AppTheme
+                                                        .secondaryTextColor),
+                                              )
+                              ],
+                            ),
                           ),
-                        ),
-                        const Padding(
-                          padding: EdgeInsets.only(left: 16, right: 16),
-                          child: Divider(
-                            height: 1,
-                          ),
-                        )
-                      ],
-                    ),
-                  );
-                },
-              ),
-            )
-          ],
+                          const Padding(
+                            padding: EdgeInsets.only(left: 16, right: 16),
+                            child: Divider(
+                              height: 1,
+                            ),
+                          )
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -522,7 +533,7 @@ class _SettingsScreenState extends State<SettingsScreen> with Helper {
     );
     if (isOk) {
       // ignore: use_build_context_synchronously
-      NavigationServices(context).gotoSplashScreen();
+      context.read<AuthenticationBloc>().add(SignOutRequired());
     }
   }
 }

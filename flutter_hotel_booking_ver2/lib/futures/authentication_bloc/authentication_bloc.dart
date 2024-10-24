@@ -1,12 +1,8 @@
 import 'dart:async';
-import 'dart:developer';
-
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:meta/meta.dart';
 import 'package:user_repository/user_repository.dart';
-
 part 'authentication_event.dart';
 part 'authentication_state.dart';
 
@@ -77,8 +73,12 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
 
     // Xử lý sự kiện đăng xuất
     on<SignOutRequired>((event, emit) async {
-      await userRepository.logOut();
-      emit(const AuthenticationStateUnauthenticated());
+      try {
+        await userRepository.logOut();  // Thực hiện đăng xuất
+        emit(const AuthenticationStateUnauthenticated());  // Phát trạng thái không đăng nhập
+      } catch (e) {
+        emit(const AuthenticationStateUnauthenticated());  // Dù có lỗi cũng phát trạng thái không đăng nhập
+      }
     });
   }
 
