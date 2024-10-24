@@ -24,14 +24,14 @@ class MyUser extends Equatable {
 
   /// Empty user which represents an unauthenticated user.
   static final empty = MyUser(
-      userId: '',
+      userId: '', // Hoặc để trống nếu không cần tại thời điểm này
       email: '',
       firstname: '',
       lastname: '',
-      picture: null,
-      phonenumber: '',
-      birthday: DateTime(1970, 1, 1),  // Giá trị mặc định cho empty DateTime
-      role: '');
+      picture: null, // Nếu không có ảnh
+      phonenumber: '', // Nếu chưa có số điện thoại
+      birthday: DateTime.now(), // Nếu không có ngày sinh cụ thể
+      role: 'user',);
 
   /// Modify MyUser parameters
   MyUser copyWith({

@@ -32,20 +32,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _fnameController = TextEditingController();
   String _errorLName = '';
   final TextEditingController _lnameController = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: BlocListener<AuthenticationBloc, AuthenticationState>(
         listener: (context, state) {
-          if (state is SignInProcess) {
+          if (state is SignUpProcess) {
             // Hiển thị loading khi đang xử lý đăng ký
             LoadingDialog.show(context);
-          } else if (state is SignInFailure) {
+          } else if (state is SignUpFailure) {
             // Hiển thị thông báo lỗi nếu đăng ký thất bại
             Navigator.of(context).pop(); // Đóng loading dialog
             ErrorDialog.show(context, state.error);
-          } else if (state is SignInSuccess) {
+          } else if (state is SignUpSuccess) {
             // Điều hướng đến TabScreen nếu đăng ký thành công
             Navigator.of(context).pop(); // Đóng loading dialog
             Navigator.pushNamed(context, RoutesName.home);
@@ -125,13 +124,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             left: 24, right: 24, bottom: 8),
                         buttonText: Loc.alized.sign_up,
                         onTap: () {
-                          if (_formKey.currentState!.validate()) {}
                           if (_allValidation()) {
-                            MyUser myUser = MyUser.empty;
-                            myUser.email = _emailController.text.trim();
-                            myUser.firstname = _fnameController.text.trim();
-                            myUser.lastname = _lnameController.text.trim();
-
+                            final myUser = MyUser(
+                              userId: '', // Hoặc để trống nếu không cần tại thời điểm này
+                              email: _emailController.text.trim(),
+                              firstname: _fnameController.text.trim(),
+                              lastname: _lnameController.text.trim(),
+                              picture: null, // Nếu không có ảnh
+                              phonenumber: '', // Nếu chưa có số điện thoại
+                              birthday: DateTime.now(), // Nếu không có ngày sinh cụ thể
+                              role: 'user', // Gán quyền mặc định
+                            );
                             setState(() {
                               context
                                   .read<AuthenticationBloc>()

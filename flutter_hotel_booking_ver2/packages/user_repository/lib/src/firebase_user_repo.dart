@@ -66,28 +66,6 @@ class FirebaseUserRepository implements UserRepository {
     }
   }
 
-  Future<int?> getAmountFromPayment(String userId, String paymentId) async {
-    try {
-      DocumentSnapshot paymentDoc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(userId)
-          .collection('PaymentRoom')
-          .doc(paymentId)
-          .get();
-
-      if (paymentDoc.exists) {
-        int? PerNight = paymentDoc.get('PerNight');
-        return PerNight;
-      } else {
-        print("Không tìm thấy thông tin về gia tien trong PaymentRoom.");
-        return null;
-      }
-    } catch (e) {
-      print('Lỗi khi lấy thông tin gia tien từ PaymentRoom: $e');
-      rethrow;
-    }
-  }
-
   @override
   Future<void> signInGoogle() async {
     try {
