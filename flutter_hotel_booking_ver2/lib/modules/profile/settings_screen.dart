@@ -39,7 +39,7 @@ class _SettingsScreenState extends State<SettingsScreen> with Helper {
             // Khi trạng thái không đăng nhập được phát ra, điều hướng về màn hình đăng nhập
             Navigator.pushNamedAndRemoveUntil(
               context,
-              RoutesName.login,  // Điều hướng về màn hình đăng nhập
+              RoutesName.introductionScreen,  // Điều hướng về màn hình đăng nhập
               (route) => false,  // Xoá tất cả các route trước đó
             );
           }

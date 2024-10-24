@@ -24,7 +24,8 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) => _loadAppLocalizations());
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => _loadAppLocalizations());
     super.initState();
   }
 
@@ -43,7 +44,6 @@ class _SplashScreenState extends State<SplashScreen> {
         if (state is AuthenticationStateAuthenticated) {
           // Nếu người dùng đã đăng nhập, hiển thị màn hình chính
           return BottomTabScreen();
-          
         } else {
           // Nếu người dùng chưa đăng nhập, hiển thị SplashScreen
           return Scaffold(
@@ -141,13 +141,6 @@ class _SplashScreenState extends State<SplashScreen> {
                         padding: EdgeInsets.only(
                           bottom: 24.0 + MediaQuery.of(context).padding.bottom,
                           top: 16,
-                        ),
-                        child: Text(
-                          Loc.alized.already_have_account,
-                          textAlign: TextAlign.left,
-                          style: TextStyles(context)
-                              .getDescriptionStyle()
-                              .copyWith(color: AppTheme.whiteColor),
                         ),
                       ),
                     ),
