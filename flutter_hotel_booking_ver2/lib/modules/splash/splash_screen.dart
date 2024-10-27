@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:flutter_hotel_booking_ver2/constants/localfiles.dart';
 import 'package:flutter_hotel_booking_ver2/constants/text_styles.dart';
-import 'package:flutter_hotel_booking_ver2/constants/themes.dart';
 import 'package:flutter_hotel_booking_ver2/language/app_localizations.dart';
 import 'package:flutter_hotel_booking_ver2/logic/controllers/theme_provider.dart';
 import 'package:flutter_hotel_booking_ver2/routes/route_names.dart';

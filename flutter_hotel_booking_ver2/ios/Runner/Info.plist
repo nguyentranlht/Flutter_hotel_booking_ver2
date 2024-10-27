@@ -2,6 +2,23 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<!-- URL Scheme cần thiết cho Google Sign-In -->
+	<key>CFBundleURLTypes</key>
+	<array>
+	<dict>
+		<key>CFBundleTypeRole</key>
+		<string>Editor</string>
+		<key>CFBundleURLSchemes</key>
+		<array>
+		<!-- Thay YOUR_REVERSED_CLIENT_ID bằng client ID từ GoogleService-Info.plist -->
+		<string>com.googleusercontent.apps.118280658959-ssgeklvrgddgfaqgslcl2qc7c8001bm8</string>
+		</array>
+	</dict>
+	</array>
+
+	<!-- Cấu hình Google Sign-In -->
+	<key>GIDClientID</key>
+	<string>118280658959-ssgeklvrgddgfaqgslcl2qc7c8001bm8.apps.googleusercontent.com</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
