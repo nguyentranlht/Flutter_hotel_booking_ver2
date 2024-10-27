@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hotel_booking_ver2/constants/text_styles.dart';
 import 'package:flutter_hotel_booking_ver2/constants/themes.dart';
 import 'package:flutter_hotel_booking_ver2/language/app_localizations.dart';
-import 'package:flutter_hotel_booking_ver2/modules/login/facebook_twitter_button_view.dart';
+import 'package:flutter_hotel_booking_ver2/modules/login/facebook_google_button_view.dart';
 import 'package:flutter_hotel_booking_ver2/routes/route_names.dart';
 import 'package:flutter_hotel_booking_ver2/utils/validator.dart';
 import 'package:flutter_hotel_booking_ver2/widgets/common_appbar_view.dart';
@@ -65,7 +65,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     children: <Widget>[
                       const Padding(
                         padding: EdgeInsets.only(top: 32),
-                        child: FacebookTwitterButtonView(),
+                        child: FacebookGoogleButtonView(),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(16.0),

@@ -5,8 +5,8 @@ import 'package:flutter_hotel_booking_ver2/widgets/common_button.dart';
 
 import '../../futures/authentication_bloc/authentication_bloc.dart';
 
-class FacebookTwitterButtonView extends StatelessWidget {
-  const FacebookTwitterButtonView({Key? key}) : super(key: key);
+class FacebookGoogleButtonView extends StatelessWidget {
+  const FacebookGoogleButtonView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
