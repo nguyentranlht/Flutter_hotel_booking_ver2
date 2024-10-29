@@ -48,7 +48,7 @@ class Localfiles {
   static const String popular_2 = '${baseImageUrl}popular_2.jpg';
   static const String popular_3 = '${baseImageUrl}popular_3.jpg';
   static const String popular_4 = '${baseImageUrl}popular_4.jpg';
-  static const String popular_5 = '${baseImageUrl}popular_5.jpg';
+  static const String popular_5 = '${baseImageUrl}popular_5.jpeg';
   static const String popular_6 = '${baseImageUrl}popular_6.jpg';
   static const String room_1 = '${baseImageUrl}room_1.jpg';
   static const String room_2 = '${baseImageUrl}room_2.jpg';

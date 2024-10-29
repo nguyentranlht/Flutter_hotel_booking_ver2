@@ -110,27 +110,27 @@ class HotelListData {
   static List<HotelListData> popularList = [
     HotelListData(
       imagePath: Localfiles.popular_1,
-      titleTxt: 'Paris',
+      titleTxt: 'Quận 1',
     ),
     HotelListData(
       imagePath: Localfiles.popular_2,
-      titleTxt: 'Spain',
+      titleTxt: 'Quận 7',
     ),
     HotelListData(
       imagePath: Localfiles.popular_3,
-      titleTxt: 'Vernazza',
+      titleTxt: 'Thủ Đức',
     ),
     HotelListData(
       imagePath: Localfiles.popular_4,
-      titleTxt: 'London',
+      titleTxt: 'Quận 10',
     ),
     HotelListData(
       imagePath: Localfiles.popular_5,
-      titleTxt: 'Venice',
+      titleTxt: 'Quận Bình Thạnh',
     ),
     HotelListData(
       imagePath: Localfiles.popular_6,
-      titleTxt: 'Diamond Head',
+      titleTxt: 'Quận 5',
     ),
   ];
 
