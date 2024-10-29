@@ -33,11 +33,9 @@ class _LoginScreenState extends State<LoginScreen> {
         listener: (context, state) {
           if (state is SignInSuccess) {
             // Điều hướng đến TabScreen nếu đăng ký thành công
-            Navigator.of(context).pop(); // Đóng loading dialog
             Navigator.pushNamed(context, RoutesName.home);
           } else if (state is SignInFailure) {
             // Hiển thị thông báo lỗi nếu đăng ký thất bại
-            Navigator.of(context).pop(); // Đóng loading dialog
             ErrorDialog.show(context, state.error);
           }
         },
@@ -102,14 +100,13 @@ class _LoginScreenState extends State<LoginScreen> {
                         buttonText: Loc.alized.login,
                         onTap: () {
                           if (_allValidation()) {
-                            LoadingDialog.show(context); // Hiển thị loading ngay khi bắt đầu
                             // Phát sự kiện đăng nhập khi form hợp lệ
                             context.read<AuthenticationBloc>().add(
-                              SignInRequired(
-                                _emailController.text.trim(),
-                                _passwordController.text.trim(),
-                              ),
-                            );
+                                  SignInRequired(
+                                    _emailController.text.trim(),
+                                    _passwordController.text.trim(),
+                                  ),
+                                );
                           }
                         },
                       ),

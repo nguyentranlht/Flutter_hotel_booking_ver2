@@ -16,6 +16,13 @@
 	</dict>
 	</array>
 
+	<!-- Cấu hình Payment Stripe -->
+	<key>NSCameraUsageDescription</key>
+	<string>Scan your card to add it automatically</string>
+	<key>NSCameraUsageDescription
+	&lt;string&gt;To scan cards&lt;/string&gt;</key>
+	<string>To scan cards</string>
+
 	<!-- Cấu hình Google Sign-In -->
 	<key>GIDClientID</key>
 	<string>118280658959-ssgeklvrgddgfaqgslcl2qc7c8001bm8.apps.googleusercontent.com</string>

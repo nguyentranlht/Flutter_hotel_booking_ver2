@@ -20,7 +20,7 @@ class _RoomBookingScreenState extends State<RoomBookingScreen>
   @override
   void initState() {
     animationController = AnimationController(
-        duration: const Duration(milliseconds: 2000), vsync: this);
+        duration: const Duration(milliseconds: 0), vsync: this);
     super.initState();
   }
 

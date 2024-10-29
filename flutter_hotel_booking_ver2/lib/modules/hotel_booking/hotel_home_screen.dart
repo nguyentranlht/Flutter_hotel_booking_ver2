@@ -38,7 +38,7 @@ class _HotelHomeScreenState extends State<HotelHomeScreen>
   @override
   void initState() {
     animationController = AnimationController(
-        duration: const Duration(milliseconds: 1000), vsync: this);
+        duration: const Duration(milliseconds: 0), vsync: this);
     _animationController = AnimationController(
         duration: const Duration(milliseconds: 0), vsync: this);
     scrollController.addListener(() {
@@ -57,7 +57,7 @@ class _HotelHomeScreenState extends State<HotelHomeScreen>
   }
 
   Future<bool> getData() async {
-    await Future.delayed(const Duration(milliseconds: 200));
+    await Future.delayed(const Duration(milliseconds: 0));
     return true;
   }
 
