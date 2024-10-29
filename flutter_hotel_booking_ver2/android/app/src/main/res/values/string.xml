@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">GoG</string>
+    <string name="facebook_app_id">857025586590946</string>
+    <string name="fb_login_protocol_scheme">fb857025586590946</string>
+    <string name="facebook_client_token">63650b004e84bafcd00c4d7ed31ef791</string>
+</resources>

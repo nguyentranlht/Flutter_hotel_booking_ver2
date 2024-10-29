@@ -12,6 +12,7 @@
 		<array>
 		<!-- Thay YOUR_REVERSED_CLIENT_ID bằng client ID từ GoogleService-Info.plist -->
 		<string>com.googleusercontent.apps.118280658959-ssgeklvrgddgfaqgslcl2qc7c8001bm8</string>
+		<string>fb857025586590946</string> <!-- Thay YOUR_APP_ID bằng App ID của bạn -->
 		</array>
 	</dict>
 	</array>
@@ -26,6 +27,19 @@
 	<!-- Cấu hình Google Sign-In -->
 	<key>GIDClientID</key>
 	<string>118280658959-ssgeklvrgddgfaqgslcl2qc7c8001bm8.apps.googleusercontent.com</string>
+	<key>FacebookAppID</key>
+		<string>857025586590946</string>
+		<key>FacebookClientToken</key>
+		<string>63650b004e84bafcd00c4d7ed31ef791</string>
+		<key>FacebookDisplayName</key>
+		<string>GoG</string>
+		<key>LSApplicationQueriesSchemes</key>
+		<array>
+			<string>fbapi</string>
+			<string>fb-messenger-share-api</string>
+			<string>fbauth2</string>
+			<string>fbshareextension</string>
+		</array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>

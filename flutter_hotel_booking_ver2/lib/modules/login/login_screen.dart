@@ -31,12 +31,11 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       body: BlocListener<AuthenticationBloc, AuthenticationState>(
         listener: (context, state) {
-          if (state is SignInSuccess) {
-            // Điều hướng đến TabScreen nếu đăng ký thành công
-            Navigator.pushNamed(context, RoutesName.home);
-          } else if (state is SignInFailure) {
-            // Hiển thị thông báo lỗi nếu đăng ký thất bại
+          if (state is SignInFailure) {
+            Navigator.of(context).pop(); // Đóng dialog tải nếu có lỗi
             ErrorDialog.show(context, state.error);
+          } else if (state is AuthenticationStateAuthenticated) {
+            Navigator.pushNamed(context, RoutesName.home); // Điều hướng đến trang chủ
           }
         },
         child: RemoveFocuse(
