@@ -32,7 +32,6 @@ class _LoginScreenState extends State<LoginScreen> {
       body: BlocListener<AuthenticationBloc, AuthenticationState>(
         listener: (context, state) {
           if (state is SignInFailure) {
-            Navigator.of(context).pop(); // Đóng dialog tải nếu có lỗi
             ErrorDialog.show(context, state.error);
           } else if (state is AuthenticationStateAuthenticated) {
             Navigator.pushNamed(context, RoutesName.home); // Điều hướng đến trang chủ
