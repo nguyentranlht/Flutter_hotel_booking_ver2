@@ -312,6 +312,7 @@ class _RoomeBookViewState extends State<RoomeBookView> {
                         child: GestureDetector(
                           onTap: () {
                             // Điều hướng về trang chủ
+                            Navigator.pop(context);
                           },
                           child: Container(
                             width: 100,
@@ -322,7 +323,7 @@ class _RoomeBookViewState extends State<RoomeBookView> {
                             ),
                             child: const Center(
                               child: Text(
-                                "Trang chủ",
+                                "Đóng",
                                 style: TextStyle(color: Colors.white),
                               ),
                             ),
