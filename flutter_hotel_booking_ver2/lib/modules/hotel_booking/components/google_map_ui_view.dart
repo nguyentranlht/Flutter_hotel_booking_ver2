@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hotel_booking_ver2/models/hotel_list_data.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter_hotel_booking_ver2/constants/themes.dart';
 import 'package:flutter_hotel_booking_ver2/logic/controllers/google_map_pin_controller.dart';
-import 'package:flutter_hotel_booking_ver2/models/hotel_list_data.dart';
+import 'package:hotel_repository/hotel_repository.dart';
 
 class GoogleMapUIView extends StatefulWidget {
-  final List<HotelListData> hotelList;
+  final List<Hotel> hotelList; // Thay đổi kiểu thành List<Hotel>
   const GoogleMapUIView({Key? key, required this.hotelList}) : super(key: key);
 
   @override
@@ -20,7 +21,8 @@ class _GoogleMapUIViewState extends State<GoogleMapUIView> {
   @override
   void initState() {
     _googleMapPinController = Get.find<GoogleMapPinController>();
-    _googleMapPinController.updateHotelList(widget.hotelList);
+    _googleMapPinController.updateHotelList(
+        widget.hotelList.cast<HotelListData>()); // Cập nhật danh sách khách sạn
     super.initState();
   }
 
@@ -115,7 +117,7 @@ class _GoogleMapUIViewState extends State<GoogleMapUIView> {
                                       padding: const EdgeInsets.only(
                                           left: 8, right: 8, top: 4, bottom: 4),
                                       child: Text(
-                                        "\$${item.perNight}",
+                                        "\$${item.perNight}", // Cập nhật giá nếu có
                                         style: TextStyle(
                                             color: item.isSelected
                                                 ? AppTheme.backgroundColor

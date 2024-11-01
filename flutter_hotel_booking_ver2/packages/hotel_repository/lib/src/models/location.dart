@@ -25,4 +25,12 @@ class Location {
       y: entity.y,
     );
   }
+
+  // Thêm phương thức fromMap để chuyển đổi từ Map<String, dynamic>
+  static Location fromMap(Map<String, dynamic> data) {
+    return Location(
+      x: data['x'] ?? '',
+      y: data['y'] ?? '',
+    );
+  }
 }

@@ -1,29 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:get/get.dart';
 import 'package:flutter_hotel_booking_ver2/constants/helper.dart';
-import 'package:flutter_hotel_booking_ver2/constants/text_styles.dart';
 import 'package:flutter_hotel_booking_ver2/constants/themes.dart';
-import 'package:flutter_hotel_booking_ver2/language/app_localizations.dart';
-import 'package:flutter_hotel_booking_ver2/models/hotel_list_data.dart';
 import 'package:flutter_hotel_booking_ver2/widgets/common_card.dart';
 import 'package:flutter_hotel_booking_ver2/widgets/list_cell_animation_view.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:hotel_repository/hotel_repository.dart';
 
 class HotelListView extends StatelessWidget {
   final bool isShowDate;
   final VoidCallback callback;
-  final HotelListData hotelData;
+  final Hotel hotelData; // Thay đổi thành Hotel
   final AnimationController animationController;
   final Animation<double> animation;
 
-  const HotelListView(
-      {Key? key,
-      required this.hotelData,
-      required this.animationController,
-      required this.animation,
-      required this.callback,
-      this.isShowDate = false})
-      : super(key: key);
+  const HotelListView({
+    Key? key,
+    required this.hotelData,
+    required this.animationController,
+    required this.animation,
+    required this.callback,
+    this.isShowDate = false,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -41,19 +38,8 @@ class HotelListView extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          '${Helper.getDateText(hotelData.date!)}, ',
-                          style: TextStyles(context)
-                              .getRegularStyle()
-                              .copyWith(fontSize: 14),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 2.0),
-                          child: Text(
-                            Helper.getRoomText(hotelData.roomData!),
-                            style: TextStyles(context)
-                                .getRegularStyle()
-                                .copyWith(fontSize: 14),
-                          ),
+                          'Ngày check-in', // hoặc thông tin ngày từ Hotel nếu có
+                          style: TextStyle(fontSize: 14),
                         ),
                       ],
                     ),
@@ -70,10 +56,15 @@ class HotelListView extends StatelessWidget {
                       children: <Widget>[
                         AspectRatio(
                           aspectRatio: 2,
-                          child: Image.asset(
-                            hotelData.imagePath,
-                            fit: BoxFit.cover,
-                          ),
+                          child: hotelData.imagePath != null
+                              ? Image.network(
+                                  hotelData.imagePath!,
+                                  fit: BoxFit.cover,
+                                )
+                              : Image.asset(
+                                  'assets/images/placeholder.png',
+                                  fit: BoxFit.cover,
+                                ),
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -88,11 +79,11 @@ class HotelListView extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
                                     Text(
-                                      hotelData.titleTxt,
+                                      hotelData.hotelName,
                                       textAlign: TextAlign.left,
-                                      style: TextStyles(context)
-                                          .getBoldStyle()
-                                          .copyWith(fontSize: 22),
+                                      style: TextStyle(
+                                          fontSize: 22,
+                                          fontWeight: FontWeight.bold),
                                     ),
                                     Row(
                                       crossAxisAlignment:
@@ -101,9 +92,8 @@ class HotelListView extends StatelessWidget {
                                           MainAxisAlignment.start,
                                       children: <Widget>[
                                         Text(
-                                          hotelData.subTxt,
-                                          style: TextStyles(context)
-                                              .getDescriptionStyle(),
+                                          hotelData.hotelAddress,
+                                          style: TextStyle(fontSize: 14),
                                         ),
                                         const SizedBox(
                                           width: 4,
@@ -113,18 +103,11 @@ class HotelListView extends StatelessWidget {
                                           size: 12,
                                           color: Theme.of(context).primaryColor,
                                         ),
-                                        Text(
-                                          hotelData.dist.toStringAsFixed(1),
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyles(context)
-                                              .getDescriptionStyle(),
-                                        ),
                                         Expanded(
                                           child: Text(
-                                            Loc.alized.km_to_city,
+                                            "${hotelData.location.x}, ${hotelData.location.y}",
                                             overflow: TextOverflow.ellipsis,
-                                            style: TextStyles(context)
-                                                .getDescriptionStyle(),
+                                            style: TextStyle(fontSize: 14),
                                           ),
                                         ),
                                       ],
@@ -135,14 +118,12 @@ class HotelListView extends StatelessWidget {
                                         children: <Widget>[
                                           Helper.ratingStar(),
                                           Text(
-                                            " ${hotelData.reviews}",
-                                            style: TextStyles(context)
-                                                .getDescriptionStyle(),
+                                            " ${hotelData.starRating}",
+                                            style: TextStyle(fontSize: 14),
                                           ),
                                           Text(
-                                            Loc.alized.reviews,
-                                            style: TextStyles(context)
-                                                .getDescriptionStyle(),
+                                            " reviews",
+                                            style: TextStyle(fontSize: 14),
                                           ),
                                         ],
                                       ),
@@ -161,17 +142,15 @@ class HotelListView extends StatelessWidget {
                                   Text(
                                     "\$${hotelData.perNight}",
                                     textAlign: TextAlign.left,
-                                    style: TextStyles(context)
-                                        .getBoldStyle()
-                                        .copyWith(fontSize: 22),
+                                    style: TextStyle(
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.bold),
                                   ),
                                   Padding(
-                                    padding: EdgeInsets.only(
-                                        top: Get.find<Loc>().isRTL ? 2.0 : 0.0),
+                                    padding: const EdgeInsets.only(top: 2.0),
                                     child: Text(
-                                      Loc.alized.per_night,
-                                      style: TextStyles(context)
-                                          .getDescriptionStyle(),
+                                      "per night",
+                                      style: TextStyle(fontSize: 14),
                                     ),
                                   ),
                                 ],

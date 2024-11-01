@@ -28,7 +28,7 @@ class _TimeDateViewState extends State<TimeDateView> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           _getDateRoomUi(Loc.alized.choose_date,
-              "${DateFormat("dd, MMM", languageCode).format(startDate)} - ${DateFormat("dd, MMM", languageCode).format(endDate)}",
+              "${DateFormat("dd, MM", languageCode).format(startDate)} - ${DateFormat("dd, MMM", languageCode).format(endDate)}",
               () {
             _showDemoDialog(context);
           }),

@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hotel_booking_ver2/widgets/app_constant.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:user_repository/user_repository.dart';
 import 'package:flutter_hotel_booking_ver2/firebase_options.dart';
@@ -23,9 +24,11 @@ void main() async {
   await Get.putAsync<ThemeController>(() => ThemeController.init(),
       permanent: true);
 
-  await SystemChrome.setPreferredOrientations(
-          [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown])
-      .then((_) => runApp(MotelApp(FirebaseUserRepository())));
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown
+  ]).then((_) => runApp(ProviderScope(
+      child: MotelApp(FirebaseUserRepository())))); // Thêm ProviderScope ở đây
 }
 
 class AppBinding extends Bindings {
