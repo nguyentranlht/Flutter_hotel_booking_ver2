@@ -224,7 +224,7 @@ class _HomeExploreScreenState extends State<HomeExploreScreen>
   }
 
   Widget getDealListView(int index) {
-    var hotelList = HotelListData.hotelList.take(2);
+    var hotelList = HotelListData.hotelList;
     List<Widget> list = [];
     for (var f in hotelList) {
       var animation = Tween(begin: 0.0, end: 1.0).animate(
