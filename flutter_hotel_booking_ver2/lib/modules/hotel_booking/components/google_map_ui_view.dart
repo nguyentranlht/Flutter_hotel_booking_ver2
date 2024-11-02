@@ -42,7 +42,7 @@ class _GoogleMapUIViewState extends State<GoogleMapUIView> {
               Container(),
               GoogleMap(
                 initialCameraPosition: const CameraPosition(
-                  target: LatLng(51.507896, -0.128006),
+                  target: LatLng(10.769444, 106.681944),
                   zoom: 13,
                 ),
                 mapType: MapType.normal,

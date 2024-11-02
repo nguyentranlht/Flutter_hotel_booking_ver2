@@ -51,7 +51,7 @@ class HotelListData {
       roomData: RoomData(1, 2),
       isSelected: true,
       date: DateText(1, 5),
-      location: const LatLng(51.516898, -0.143377),
+      location: const LatLng(10.8390529, 106.7824432),
     ),
     HotelListData(
       imagePath: Localfiles.hotel_2,
