@@ -29,7 +29,7 @@ class _HomeExploreSliderViewState extends State<HomeExploreSliderView> {
   @override
   void initState() {
     pageViewModelData.add(PageViewData(
-      titleText: Loc.alized.cape_town,
+      titleText: Loc.alized.find_best_deals,
       subText: Loc.alized.five_star,
       assetsImage: Localfiles.explore_2,
     ));

@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hotel_booking_ver2/models/hotel_list_data.dart';
 import 'package:flutter_hotel_booking_ver2/modules/hotel_booking/components/google_map_ui_view.dart';
-import 'package:flutter_hotel_booking_ver2/modules/hotel_booking/map_hotel_view.dart';
 import 'package:flutter_hotel_booking_ver2/modules/hotel_booking/components/time_date_view.dart';
-import 'package:flutter_hotel_booking_ver2/routes/route_names.dart';
+
+import 'package:hotel_repository/hotel_repository.dart';
 
 class MapAndListView extends StatelessWidget {
-  final List<HotelListData> hotelList;
+  final List<Hotel> hotelList; // Thay đổi kiểu thành List<Hotel>
   final Widget searchBarUI;
 
-  const MapAndListView(
-      {Key? key, required this.hotelList, required this.searchBarUI})
-      : super(key: key);
+  const MapAndListView({
+    Key? key,
+    required this.hotelList,
+    required this.searchBarUI,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +27,7 @@ class MapAndListView extends StatelessWidget {
                 child: Stack(
                   children: <Widget>[
                     GoogleMapUIView(
-                      hotelList: hotelList,
+                      hotelList: hotelList, // Truyền hotelList kiểu List<Hotel>
                     ),
                     IgnorePointer(
                       child: Container(
@@ -56,28 +57,27 @@ class MapAndListView extends StatelessWidget {
                       left: 0,
                       child: SizedBox(
                         height: 156,
-                        // color: Colors.green,
                         child: ListView.builder(
                           itemCount: hotelList.length,
                           padding: const EdgeInsets.only(
                               top: 8, bottom: 8, right: 16),
                           scrollDirection: Axis.horizontal,
                           itemBuilder: (context, index) {
-                            return MapHotelListView(
-                              callback: () {
-                                NavigationServices(context)
-                                    .gotoRoomBookingScreen(
-                                        hotelList[index].titleTxt);
-                              },
-                              hotelData: hotelList[index],
-                            );
+                            // return MapHotelListView(
+                            //   callback: () {
+                            //     NavigationServices(context)
+                            //         .gotoRoomBookingScreen(hotelList[index]
+                            //             .hotelName); // Sử dụng Hotel thay vì HotelListData
+                            //   },
+                            //   hotelData: hotelList[index], // Truyền Hotel vào
+                            // );
                           },
                         ),
                       ),
                     ),
                   ],
                 ),
-              )
+              ),
             ],
           );
         },

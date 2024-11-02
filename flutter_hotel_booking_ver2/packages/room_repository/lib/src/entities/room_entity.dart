@@ -48,4 +48,33 @@ class RoomEntity {
       roomStatus: doc["roomStatus"],
     );
   }
+
+  // Define the fromFirestore method here
+  factory RoomEntity.fromFirestore(DocumentSnapshot doc) {
+    final data = doc.data() as Map<String, dynamic>;
+    return RoomEntity(
+      roomId: data['roomId'] ?? '',
+      roomName: data['roomName'] ?? '',
+      hotelId: data['hotelId'] ?? '',
+      imagePath: data['imagePath'],
+      roomType: data['roomType'] ?? '',
+      pricePerNight: (data['pricePerNight'] ?? 0.0).toDouble(),
+      capacity: data['capacity'] ?? 0,
+      roomStatus: data['roomStatus'] ?? false,
+    );
+  }
+
+  // Optional: a method to convert RoomEntity back to Firestore format
+  Map<String, dynamic> toFirestore() {
+    return {
+      'roomId': roomId,
+      'roomName': roomName,
+      'hotelId': hotelId,
+      'imagePath': imagePath,
+      'roomType': roomType,
+      'pricePerNight': pricePerNight,
+      'capacity': capacity,
+      'roomStatus': roomStatus,
+    };
+  }
 }

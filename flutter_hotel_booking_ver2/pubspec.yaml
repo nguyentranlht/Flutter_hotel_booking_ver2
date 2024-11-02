@@ -55,6 +55,13 @@ dependencies:
   firebase_auth: ^5.3.1
   firebase_storage: ^12.3.4
   cloud_firestore: ^5.4.4
+  flutter_riverpod: ^2.6.1
+
+  hotel_repository:
+    path: packages/hotel_repository
+  room_repository:
+    path: packages/room_repository
+      
 dev_dependencies:
   flutter_test:
     sdk: flutter

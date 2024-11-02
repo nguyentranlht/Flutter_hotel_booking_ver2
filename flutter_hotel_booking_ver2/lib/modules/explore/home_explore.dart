@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hotel_booking_ver2/provider/hotel_provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:flutter_hotel_booking_ver2/constants/text_styles.dart';
@@ -224,31 +226,44 @@ class _HomeExploreScreenState extends State<HomeExploreScreen>
   }
 
   Widget getDealListView(int index) {
-    var hotelList = HotelListData.hotelList;
-    List<Widget> list = [];
-    for (var f in hotelList) {
-      var animation = Tween(begin: 0.0, end: 1.0).animate(
-        CurvedAnimation(
-          parent: widget.animationController,
-          curve: const Interval(0, 1.0, curve: Curves.fastOutSlowIn),
-        ),
-      );
-      list.add(
-        HotelListViewPage(
-          callback: () {
-            NavigationServices(context).gotoHotelDetailes(f);
+    return Consumer(
+      builder: (context, ref, _) {
+        final hotelListAsync = ref.watch(hotelProvider);
+
+        return hotelListAsync.when(
+          data: (hotelList) {
+            final selectedHotels = hotelList.take(2).toList();
+            List<Widget> list = [];
+
+            for (var hotel in selectedHotels) {
+              var animation = Tween(begin: 0.0, end: 1.0).animate(
+                CurvedAnimation(
+                  parent: widget.animationController,
+                  curve: const Interval(0, 1.0, curve: Curves.fastOutSlowIn),
+                ),
+              );
+              list.add(
+                HotelListViewPage(
+                  callback: () {
+                    //NavigationServices(context).gotoHotelDetailes(hotel);
+                  },
+                  hotelData: hotel,
+                  animation: animation,
+                  animationController: widget.animationController,
+                ),
+              );
+            }
+            return Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Column(
+                children: list,
+              ),
+            );
           },
-          hotelData: f,
-          animation: animation,
-          animationController: widget.animationController,
-        ),
-      );
-    }
-    return Padding(
-      padding: const EdgeInsets.only(top: 8),
-      child: Column(
-        children: list,
-      ),
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (error, stack) => Center(child: Text('Error: $error')),
+        );
+      },
     );
   }
 

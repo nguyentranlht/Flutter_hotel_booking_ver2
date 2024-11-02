@@ -1,6 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:hotel_repository/src/models/location.dart';
-import '../entities/entities.dart';
 
 class Hotel extends Equatable {
   final String hotelId;
@@ -9,7 +9,8 @@ class Hotel extends Equatable {
   final double starRating;
   final Location location;
   final String hotelAddress;
-  final String descrition;
+  final String description; // Sửa lại từ 'descrition'
+  final String perNight;
 
   Hotel({
     required this.hotelId,
@@ -18,46 +19,23 @@ class Hotel extends Equatable {
     required this.starRating,
     required this.location,
     required this.hotelAddress,
-    required this.descrition,
+    required this.description, // Sửa lại từ 'descrition'
+    required this.perNight,
   });
 
-  static final empty = Hotel(
-    hotelId: '',
-    hotelName: '',
-    imagePath: '',
-    starRating: 0.0,
-    location: Location.empty,
-    hotelAddress: '',
-    descrition: '',
-  );
-
-  /// Convenience getter to determine whether the current user is empty.
-  bool get isEmpty => this == Hotel.empty;
-
-  /// Convenience getter to determine whether the current user is not empty.
-  bool get isNotEmpty => this != Hotel.empty;
-
-  HotelEntity toEntity() {
-    return HotelEntity(
-      hotelId: hotelId,
-      hotelName: hotelName,
-      imagePath: imagePath,
-      starRating: starRating,
-      location: location,
-      hotelAddress: hotelAddress,
-      descrition: descrition,
-    );
-  }
-
-  static Hotel fromEntity(HotelEntity entity) {
+  // Định nghĩa phương thức fromFirestore
+  factory Hotel.fromFirestore(DocumentSnapshot<Map<String, dynamic>> doc) {
+    final data = doc.data()!;
     return Hotel(
-      hotelId: entity.hotelId,
-      hotelName: entity.hotelName,
-      imagePath: entity.imagePath,
-      starRating: entity.starRating,
-      location: entity.location,
-      hotelAddress: entity.hotelAddress,
-      descrition: entity.descrition,
+      hotelId: data['hotelId'] ?? '',
+      hotelName: data['hotelName'] ?? '',
+      imagePath: data['imagePath'],
+      starRating: (data['starRating'] ?? 0.0).toDouble(),
+      location:
+          Location.fromMap(data['location']), // Sử dụng fromMap của Location
+      hotelAddress: data['hotelAddress'] ?? '',
+      description: data['description'] ?? '', // Sửa lại từ 'descrition'
+      perNight: data['perNight'] ?? '',
     );
   }
 
@@ -69,19 +47,7 @@ class Hotel extends Equatable {
         starRating,
         location,
         hotelAddress,
-        descrition,
+        description,
+        perNight,
       ];
-
-  @override
-  String toString() {
-    return '''Hotel: {
-      hotelId: $hotelId,
-      hotelName: $hotelName,
-      imagePath: $imagePath,
-      starRating: $starRating,
-      location: $location,
-      hotelAddress: $hotelAddress,
-      descrition: $descrition,
-    }''';
-  }
 }

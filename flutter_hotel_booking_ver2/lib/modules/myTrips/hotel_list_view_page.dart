@@ -1,29 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:get/get.dart';
 import 'package:flutter_hotel_booking_ver2/constants/helper.dart';
 import 'package:flutter_hotel_booking_ver2/constants/text_styles.dart';
 import 'package:flutter_hotel_booking_ver2/constants/themes.dart';
 import 'package:flutter_hotel_booking_ver2/language/app_localizations.dart';
-import 'package:flutter_hotel_booking_ver2/models/hotel_list_data.dart';
 import 'package:flutter_hotel_booking_ver2/widgets/common_card.dart';
 import 'package:flutter_hotel_booking_ver2/widgets/list_cell_animation_view.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:hotel_repository/hotel_repository.dart';
 
 class HotelListViewPage extends StatelessWidget {
   final bool isShowDate;
   final VoidCallback callback;
-  final HotelListData hotelData;
+  final Hotel hotelData; // Thay đổi kiểu thành Hotel
   final AnimationController animationController;
   final Animation<double> animation;
 
-  const HotelListViewPage(
-      {Key? key,
-      required this.hotelData,
-      required this.animationController,
-      required this.animation,
-      required this.callback,
-      this.isShowDate = false})
-      : super(key: key);
+  const HotelListViewPage({
+    Key? key,
+    required this.hotelData,
+    required this.animationController,
+    required this.animation,
+    required this.callback,
+    this.isShowDate = false,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +36,6 @@ class HotelListViewPage extends StatelessWidget {
         child: CommonCard(
           color: AppTheme.backgroundColor,
           child: ClipRRect(
-            //   borderRadius: BorderRadius.all(Radius.circular(0.0)),
             child: AspectRatio(
               aspectRatio: 2.7,
               child: Stack(
@@ -44,10 +44,15 @@ class HotelListViewPage extends StatelessWidget {
                     children: <Widget>[
                       AspectRatio(
                         aspectRatio: 0.90,
-                        child: Image.asset(
-                          hotelData.imagePath,
-                          fit: BoxFit.cover,
-                        ),
+                        child: hotelData.imagePath != null
+                            ? Image.network(
+                                hotelData.imagePath!,
+                                fit: BoxFit.cover,
+                              )
+                            : Image.asset(
+                                'assets/images/placeholder.png',
+                                fit: BoxFit.cover,
+                              ),
                       ),
                       Expanded(
                         child: Container(
@@ -60,7 +65,7 @@ class HotelListViewPage extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               Text(
-                                hotelData.titleTxt,
+                                hotelData.hotelName,
                                 maxLines: 2,
                                 textAlign: TextAlign.left,
                                 style:
@@ -70,7 +75,7 @@ class HotelListViewPage extends StatelessWidget {
                                 overflow: TextOverflow.ellipsis,
                               ),
                               Text(
-                                hotelData.subTxt,
+                                hotelData.hotelAddress,
                                 style: TextStyles(context)
                                     .getDescriptionStyle()
                                     .copyWith(
@@ -97,15 +102,6 @@ class HotelListViewPage extends StatelessWidget {
                                                 size: 12,
                                                 color: Theme.of(context)
                                                     .primaryColor,
-                                              ),
-                                              Text(
-                                                " ${hotelData.dist.toStringAsFixed(1)} ",
-                                                overflow: TextOverflow.ellipsis,
-                                                style: TextStyles(context)
-                                                    .getDescriptionStyle()
-                                                    .copyWith(
-                                                      fontSize: 14,
-                                                    ),
                                               ),
                                               Expanded(
                                                 child: Text(
