@@ -62,6 +62,8 @@ class MapHotelListView extends StatelessWidget {
                                   .copyWith(
                                     fontSize: 14,
                                   ),
+                                  overflow: TextOverflow.ellipsis, // Thêm dấu ... nếu quá dài
+                                  maxLines: 1, // Số dòng tối đa (ở đây là 1 dòng)
                             ),
                             const Expanded(
                               child: SizedBox(),
@@ -83,17 +85,8 @@ class MapHotelListView extends StatelessWidget {
                                           size: 12,
                                           color: Theme.of(context).primaryColor,
                                         ),
-                                        // Text(
-                                        //   " ${hotelData.dist.toStringAsFixed(1)}",
-                                        //   overflow: TextOverflow.ellipsis,
-                                        //   style: TextStyles(context)
-                                        //       .getDescriptionStyle()
-                                        //       .copyWith(
-                                        //         fontSize: 14,
-                                        //       ),
-                                        // ),
                                         Text(
-                                          Loc.alized.km_to_city,
+                                          " ${hotelData.dist.toStringAsFixed(1)}",
                                           overflow: TextOverflow.ellipsis,
                                           style: TextStyles(context)
                                               .getDescriptionStyle()
@@ -101,11 +94,21 @@ class MapHotelListView extends StatelessWidget {
                                                 fontSize: 14,
                                               ),
                                         ),
+                                        // Text(
+                                        //   Loc.alized.km_to_city,
+                                        //   overflow: TextOverflow.ellipsis,
+                                        //   style: TextStyles(context)
+                                        //       .getDescriptionStyle()
+                                        //       .copyWith(
+                                        //         fontSize: 14,
+                                        //       ),
+                                        //     maxLines: 1
+                                        // ),
                                       ],
                                     ),
                                     Padding(
                                       padding: const EdgeInsets.only(top: 4),
-                                      child: Helper.ratingStar(),
+                                      child: Helper.ratingStar(rating:hotelData.starRating),
                                     ),
                                   ],
                                 ),

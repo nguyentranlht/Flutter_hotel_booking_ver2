@@ -558,7 +558,9 @@ class _HotelDetailesState extends State<HotelDetailes>
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    widget.hotelData.hotelAddress,
+                    widget.hotelData.hotelAddress.length > 20
+                        ? widget.hotelData.hotelAddress.substring(0, 20) + '...'
+                        : widget.hotelData.hotelAddress,
                     style: TextStyles(context).getRegularStyle().copyWith(
                           fontSize: 14,
                           color: isInList
