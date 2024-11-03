@@ -33,7 +33,7 @@ class MapHotelListView extends StatelessWidget {
                   children: <Widget>[
                     AspectRatio(
                       aspectRatio: 0.90,
-                      child: Image.asset(
+                      child: Image.network(
                         hotelData.imagePath!,
                         fit: BoxFit.cover,
                       ),

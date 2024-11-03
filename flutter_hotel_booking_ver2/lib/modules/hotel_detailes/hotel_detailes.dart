@@ -26,6 +26,8 @@ class HotelDetailes extends StatefulWidget {
 
 class _HotelDetailesState extends State<HotelDetailes>
     with TickerProviderStateMixin {
+  DateTime startDate = DateTime.now();
+  DateTime endDate = DateTime.now().add(const Duration(days: 1));
   ScrollController scrollController = ScrollController(initialScrollOffset: 0);
   var hoteltext1 =
       "Featuring a fitness center, Grand Royale Park Hote is located in Sweden, 4.7 km frome National Museum...";
@@ -187,7 +189,7 @@ class _HotelDetailesState extends State<HotelDetailes>
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(top: 34, right: 10),
+                      padding: const EdgeInsets.only(top: 34, right: 0),
                       child: CommonCard(
                         color: AppTheme.primaryColor,
                         radius: 36,
@@ -209,8 +211,11 @@ class _HotelDetailesState extends State<HotelDetailes>
                   child: CommonButton(
                     buttonText: Loc.alized.book_now,
                     onTap: () {
-                      NavigationServices(context)
-                          .gotoRoomBookingScreen(widget.hotelData.hotelName);
+                      NavigationServices(context).gotoRoomBookingScreen(
+                          widget.hotelData.hotelName,
+                          widget.hotelData.hotelId,
+                          startDate.toString(),
+                          endDate.toString());
                     },
                   ),
                 ),
@@ -350,7 +355,7 @@ class _HotelDetailesState extends State<HotelDetailes>
       child: AnimatedBuilder(
         animation: _animationController,
         builder: (BuildContext context, Widget? child) {
-          var opecity = 1.0 -
+          var opacity = 1.0 -
               (_animationController.value >= ((imageHieght / 1.2) / imageHieght)
                   ? 1.0
                   : _animationController.value);
@@ -369,9 +374,25 @@ class _HotelDetailesState extends State<HotelDetailes>
                         top: 0,
                         child: SizedBox(
                           width: MediaQuery.of(context).size.width,
-                          child: Image.asset(
-                            hotelData.imagePath!,
+                          child: Image.network(
+                            hotelData.imagePath.toString(),
                             fit: BoxFit.cover,
+                            loadingBuilder: (context, child, loadingProgress) {
+                              if (loadingProgress == null) return child;
+                              return Center(
+                                child: CircularProgressIndicator(
+                                  value: loadingProgress.expectedTotalBytes !=
+                                          null
+                                      ? loadingProgress.cumulativeBytesLoaded /
+                                          loadingProgress.expectedTotalBytes!
+                                      : null,
+                                ),
+                              );
+                            },
+                            errorBuilder: (context, error, stackTrace) {
+                              return Center(
+                                  child: Text('Failed to load image'));
+                            },
                           ),
                         ),
                       ),
@@ -383,7 +404,7 @@ class _HotelDetailesState extends State<HotelDetailes>
                   left: 0,
                   right: 0,
                   child: Opacity(
-                    opacity: opecity,
+                    opacity: opacity,
                     child: Column(
                       children: <Widget>[
                         Container(
@@ -416,9 +437,13 @@ class _HotelDetailesState extends State<HotelDetailes>
                                       child: CommonButton(
                                           buttonText: Loc.alized.book_now,
                                           onTap: () {
+                                            // Navigation logic here
                                             NavigationServices(context)
                                                 .gotoRoomBookingScreen(
-                                                    widget.hotelData.hotelName);
+                                                    hotelData.hotelName,
+                                                    hotelData.hotelId,
+                                                    startDate.toString(),
+                                                    endDate.toString());
                                           }),
                                     ),
                                   ],
@@ -582,18 +607,18 @@ class _HotelDetailesState extends State<HotelDetailes>
                       child: Row(
                         children: <Widget>[
                           Helper.ratingStar(),
-                          // Text(
-                          //   " ${widget.hotelData.reviews}",
-                          //   style:
-                          //       TextStyles(context).getRegularStyle().copyWith(
-                          //             fontSize: 14,
-                          //             color: isInList
-                          //                 ? Theme.of(context)
-                          //                     .disabledColor
-                          //                     .withOpacity(0.5)
-                          //                 : Colors.white,
-                          //           ),
-                          // ),
+                          Text(
+                            " ${widget.hotelData.starRating}",
+                            style:
+                                TextStyles(context).getRegularStyle().copyWith(
+                                      fontSize: 14,
+                                      color: isInList
+                                          ? Theme.of(context)
+                                              .disabledColor
+                                              .withOpacity(0.5)
+                                          : Colors.white,
+                                    ),
+                          ),
                           Text(
                             Loc.alized.reviews,
                             style:

@@ -1,4 +1,4 @@
-import '../entities/entities.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Room {
   final String roomId;
@@ -9,6 +9,7 @@ class Room {
   final double pricePerNight;
   final int capacity;
   final bool roomStatus;
+  final int maxPeople;
 
   Room({
     required this.roomId,
@@ -19,57 +20,21 @@ class Room {
     required this.pricePerNight,
     required this.capacity,
     required this.roomStatus,
+    required this.maxPeople,
   });
-
-  static var empty = Room(
-    roomId: '',
-    roomName: '',
-    hotelId: '',
-    imagePath: '',
-    roomType: '',
-    pricePerNight: 0.0,
-    capacity: 0,
-    roomStatus: false,
-  );
-
-  RoomEntity toEntity() {
-    return RoomEntity(
-      roomId: roomId,
-      roomName: roomName,
-      hotelId: hotelId,
-      imagePath: imagePath,
-      roomType: roomType,
-      pricePerNight: pricePerNight,
-      capacity: capacity,
-      roomStatus: roomStatus,
-    );
-  }
-
-  static Room fromEntity(RoomEntity entity) {
+  // Phương thức fromFirestore để chuyển đổi dữ liệu từ Firebase thành Room
+  factory Room.fromFirestore(DocumentSnapshot<Map<String, dynamic>> doc) {
+    final data = doc.data()!;
     return Room(
-      roomId: entity.roomId,
-      roomName: entity.roomName,
-      hotelId: entity.hotelId,
-      imagePath: entity.imagePath,
-      roomType: entity.roomType,
-      pricePerNight: entity.pricePerNight,
-      capacity: entity.capacity,
-      roomStatus: entity.roomStatus,
+      roomId: doc.id,
+      roomName: data['roomName'] ?? '',
+      hotelId: data['hotelId'] ?? '',
+      imagePath: data['imagePath'],
+      roomType: data['roomType'] ?? '',
+      pricePerNight: (data['pricePerNight'] ?? 0.0).toDouble(),
+      capacity: data['capacity'] ?? 0,
+      roomStatus: data['roomStatus'] ?? false,
+      maxPeople: data['maxPeople'] ?? 0,
     );
-  }
-
-  // peopleSleeps: $peopleSleeps,
-  @override
-  String toString() {
-    return '''
-    roomId: $roomId,
-    roomName: $roomName,
-    hotelId: $hotelId,
-    imagePath: $imagePath,
-    roomType: $roomType,
-    pricePerNight: $pricePerNight,
-    capacity: $capacity,
-    roomStatus: $roomStatus,
-    ''';
   }
 }

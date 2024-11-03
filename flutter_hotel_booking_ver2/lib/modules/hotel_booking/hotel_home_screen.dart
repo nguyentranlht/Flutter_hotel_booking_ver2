@@ -132,7 +132,10 @@ class _HotelHomeScreenState extends State<HotelHomeScreen>
                                           callback: () {
                                             NavigationServices(context)
                                                 .gotoRoomBookingScreen(
-                                                    hotelList[index].hotelName);
+                                                    hotelList[index].hotelName,
+                                                    hotelList[index].hotelId,
+                                                    startDate.toString(),
+                                                    endDate.toString());
                                           },
                                           hotelData: hotelList[index],
                                           animation: animation,

@@ -15,6 +15,8 @@ class UpcomingListView extends StatefulWidget {
 }
 
 class _UpcomingListViewState extends State<UpcomingListView> {
+  DateTime startDate = DateTime.now();
+  DateTime endDate = DateTime.now().add(const Duration(days: 1));
   @override
   void initState() {
     widget.animationController.forward();
@@ -46,8 +48,11 @@ class _UpcomingListViewState extends State<UpcomingListView> {
 
                 return HotelListView(
                   callback: () {
-                    NavigationServices(context)
-                        .gotoRoomBookingScreen(hotelList[index].hotelName);
+                    NavigationServices(context).gotoRoomBookingScreen(
+                        hotelList[index].hotelName,
+                        hotelList[index].hotelId,
+                        startDate.toString(),
+                        endDate.toString());
                   },
                   hotelData: hotelList[index],
                   animation: animation,
