@@ -2,14 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter_hotel_booking_ver2/models/hotel_list_data.dart';
+import 'package:hotel_repository/hotel_repository.dart';
 
 class GoogleMapPinController extends GetxController {
   LatLngBounds? _visibleRegion;
   Size? _visibleScreenSize;
   GoogleMapController? _mapController;
-  List<HotelListData> _hotelList = [];
+  List<Hotel> _hotelList = [];
 
-  List<HotelListData> get hotelList => _hotelList;
+  List<Hotel> get hotelList => _hotelList;
 
   void updateGoogleMapController(GoogleMapController mapController) async {
     _mapController = mapController;
@@ -22,7 +23,7 @@ class GoogleMapPinController extends GetxController {
     update();
   }
 
-  void updateHotelList(List<HotelListData> list) {
+  void updateHotelList(List<Hotel> list) {
     _hotelList = list;
     update();
   }

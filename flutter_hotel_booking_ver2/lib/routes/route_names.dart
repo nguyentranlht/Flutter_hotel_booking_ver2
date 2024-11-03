@@ -19,6 +19,7 @@ import 'package:flutter_hotel_booking_ver2/modules/profile/how_do_screen.dart';
 import 'package:flutter_hotel_booking_ver2/modules/profile/invite_screen.dart';
 import 'package:flutter_hotel_booking_ver2/modules/profile/settings_screen.dart';
 import 'package:flutter_hotel_booking_ver2/routes/routes.dart';
+import 'package:hotel_repository/hotel_repository.dart';
 
 class NavigationServices {
   NavigationServices(this.context);
@@ -60,7 +61,7 @@ class NavigationServices {
     return await _pushMaterialPageRoute(const ForgotPasswordScreen());
   }
 
-  Future<dynamic> gotoHotelDetailes(HotelListData hotelData) async {
+  Future<dynamic> gotoHotelDetailes(Hotel hotelData) async {
     return await _pushMaterialPageRoute(HotelDetailes(
       hotelData: hotelData,
     ));

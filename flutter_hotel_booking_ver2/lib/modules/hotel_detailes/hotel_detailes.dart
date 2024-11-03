@@ -11,12 +11,13 @@ import 'package:flutter_hotel_booking_ver2/modules/hotel_detailes/review_data_vi
 import 'package:flutter_hotel_booking_ver2/routes/route_names.dart';
 import 'package:flutter_hotel_booking_ver2/widgets/common_button.dart';
 import 'package:flutter_hotel_booking_ver2/widgets/common_card.dart';
+import 'package:hotel_repository/hotel_repository.dart';
 import '../../models/hotel_list_data.dart';
 import 'hotel_roome_list.dart';
 import 'rating_view.dart';
 
 class HotelDetailes extends StatefulWidget {
-  final HotelListData hotelData;
+  final Hotel hotelData;
 
   const HotelDetailes({Key? key, required this.hotelData}) : super(key: key);
   @override
@@ -209,7 +210,7 @@ class _HotelDetailesState extends State<HotelDetailes>
                     buttonText: Loc.alized.book_now,
                     onTap: () {
                       NavigationServices(context)
-                          .gotoRoomBookingScreen(widget.hotelData.titleTxt);
+                          .gotoRoomBookingScreen(widget.hotelData.hotelName);
                     },
                   ),
                 ),
@@ -341,7 +342,7 @@ class _HotelDetailesState extends State<HotelDetailes>
     );
   }
 
-  Widget _backgraoundImageUI(HotelListData hotelData) {
+  Widget _backgraoundImageUI(Hotel hotelData) {
     return Positioned(
       top: 0,
       left: 0,
@@ -369,7 +370,7 @@ class _HotelDetailesState extends State<HotelDetailes>
                         child: SizedBox(
                           width: MediaQuery.of(context).size.width,
                           child: Image.asset(
-                            hotelData.imagePath,
+                            hotelData.imagePath!,
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -417,7 +418,7 @@ class _HotelDetailesState extends State<HotelDetailes>
                                           onTap: () {
                                             NavigationServices(context)
                                                 .gotoRoomBookingScreen(
-                                                    widget.hotelData.titleTxt);
+                                                    widget.hotelData.hotelName);
                                           }),
                                     ),
                                   ],
@@ -520,7 +521,7 @@ class _HotelDetailesState extends State<HotelDetailes>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(
-                widget.hotelData.titleTxt,
+                widget.hotelData.hotelName,
                 textAlign: TextAlign.left,
                 style: TextStyles(context).getBoldStyle().copyWith(
                       fontSize: 22,
@@ -532,7 +533,7 @@ class _HotelDetailesState extends State<HotelDetailes>
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    widget.hotelData.subTxt,
+                    widget.hotelData.hotelAddress,
                     style: TextStyles(context).getRegularStyle().copyWith(
                           fontSize: 14,
                           color: isInList
@@ -581,18 +582,18 @@ class _HotelDetailesState extends State<HotelDetailes>
                       child: Row(
                         children: <Widget>[
                           Helper.ratingStar(),
-                          Text(
-                            " ${widget.hotelData.reviews}",
-                            style:
-                                TextStyles(context).getRegularStyle().copyWith(
-                                      fontSize: 14,
-                                      color: isInList
-                                          ? Theme.of(context)
-                                              .disabledColor
-                                              .withOpacity(0.5)
-                                          : Colors.white,
-                                    ),
-                          ),
+                          // Text(
+                          //   " ${widget.hotelData.reviews}",
+                          //   style:
+                          //       TextStyles(context).getRegularStyle().copyWith(
+                          //             fontSize: 14,
+                          //             color: isInList
+                          //                 ? Theme.of(context)
+                          //                     .disabledColor
+                          //                     .withOpacity(0.5)
+                          //                 : Colors.white,
+                          //           ),
+                          // ),
                           Text(
                             Loc.alized.reviews,
                             style:

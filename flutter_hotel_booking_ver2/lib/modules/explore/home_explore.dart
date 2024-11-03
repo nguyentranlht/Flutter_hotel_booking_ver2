@@ -232,7 +232,7 @@ class _HomeExploreScreenState extends State<HomeExploreScreen>
 
         return hotelListAsync.when(
           data: (hotelList) {
-            final selectedHotels = hotelList.take(2).toList();
+            final selectedHotels = hotelList.toList();
             List<Widget> list = [];
 
             for (var hotel in selectedHotels) {
@@ -245,7 +245,7 @@ class _HomeExploreScreenState extends State<HomeExploreScreen>
               list.add(
                 HotelListViewPage(
                   callback: () {
-                    //NavigationServices(context).gotoHotelDetailes(hotel);
+                    NavigationServices(context).gotoHotelDetailes(hotel);
                   },
                   hotelData: hotel,
                   animation: animation,

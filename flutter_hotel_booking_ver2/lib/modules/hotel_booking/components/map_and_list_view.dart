@@ -4,6 +4,9 @@ import 'package:flutter_hotel_booking_ver2/modules/hotel_booking/components/time
 
 import 'package:hotel_repository/hotel_repository.dart';
 
+import '../../../routes/route_names.dart';
+import '../map_hotel_view.dart';
+
 class MapAndListView extends StatelessWidget {
   final List<Hotel> hotelList; // Thay đổi kiểu thành List<Hotel>
   final Widget searchBarUI;
@@ -63,14 +66,14 @@ class MapAndListView extends StatelessWidget {
                               top: 8, bottom: 8, right: 16),
                           scrollDirection: Axis.horizontal,
                           itemBuilder: (context, index) {
-                            // return MapHotelListView(
-                            //   callback: () {
-                            //     NavigationServices(context)
-                            //         .gotoRoomBookingScreen(hotelList[index]
-                            //             .hotelName); // Sử dụng Hotel thay vì HotelListData
-                            //   },
-                            //   hotelData: hotelList[index], // Truyền Hotel vào
-                            // );
+                            return MapHotelListView(
+                              callback: () {
+                                NavigationServices(context)
+                                    .gotoRoomBookingScreen(hotelList[index]
+                                        .hotelName); // Sử dụng Hotel thay vì HotelListData
+                              },
+                              hotelData: hotelList[index], // Truyền Hotel vào
+                            );
                           },
                         ),
                       ),

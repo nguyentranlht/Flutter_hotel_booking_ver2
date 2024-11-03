@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hotel_repository/src/models/location.dart';
 
 class Hotel extends Equatable {
@@ -7,35 +9,43 @@ class Hotel extends Equatable {
   final String hotelName;
   String? imagePath;
   final double starRating;
-  final Location location;
+  final LatLng location;
+  final double dist;
   final String hotelAddress;
   final String description; // Sửa lại từ 'descrition'
   final String perNight;
+  Offset? screenMapPin;
+  bool isSelected;
 
   Hotel({
     required this.hotelId,
     required this.hotelName,
     this.imagePath,
+    required this.dist,
     required this.starRating,
     required this.location,
     required this.hotelAddress,
     required this.description, // Sửa lại từ 'descrition'
     required this.perNight,
+    required this.isSelected,
   });
 
   // Định nghĩa phương thức fromFirestore
   factory Hotel.fromFirestore(DocumentSnapshot<Map<String, dynamic>> doc) {
-    final data = doc.data()!;
+    final data = doc.data() as Map<String, dynamic>;
+    GeoPoint geoPoint = data['location'] ?? GeoPoint(0, 0); // Lấy GeoPoint từ Firestore
+    LatLng location = LatLng(geoPoint.latitude, geoPoint.longitude); // Chuyển đổi GeoPoint thành LatLng
     return Hotel(
       hotelId: data['hotelId'] ?? '',
       hotelName: data['hotelName'] ?? '',
       imagePath: data['imagePath'],
+      dist: data['dist'],
       starRating: (data['starRating'] ?? 0.0).toDouble(),
-      location:
-          Location.fromMap(data['location']), // Sử dụng fromMap của Location
+      location: location, // Sử dụng fromMap của Location
       hotelAddress: data['hotelAddress'] ?? '',
       description: data['description'] ?? '', // Sửa lại từ 'descrition'
       perNight: data['perNight'] ?? '',
+      isSelected: data['isSelected'],
     );
   }
 
@@ -44,10 +54,12 @@ class Hotel extends Equatable {
         hotelId,
         hotelName,
         imagePath,
+        dist,
         starRating,
         location,
         hotelAddress,
         description,
         perNight,
+        isSelected
       ];
 }

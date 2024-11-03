@@ -62,7 +62,7 @@ class HotelListView extends StatelessWidget {
                                   fit: BoxFit.cover,
                                 )
                               : Image.asset(
-                                  'assets/images/placeholder.png',
+                                  'assets/images/hotel_1.jpg',
                                   fit: BoxFit.cover,
                                 ),
                         ),
@@ -105,7 +105,7 @@ class HotelListView extends StatelessWidget {
                                         ),
                                         Expanded(
                                           child: Text(
-                                            "${hotelData.location.x}, ${hotelData.location.y}",
+                                            "${hotelData.location.latitude}, ${hotelData.location.longitude}",
                                             overflow: TextOverflow.ellipsis,
                                             style: TextStyle(fontSize: 14),
                                           ),

@@ -6,10 +6,11 @@ import 'package:flutter_hotel_booking_ver2/constants/themes.dart';
 import 'package:flutter_hotel_booking_ver2/language/app_localizations.dart';
 import 'package:flutter_hotel_booking_ver2/models/hotel_list_data.dart';
 import 'package:flutter_hotel_booking_ver2/widgets/common_card.dart';
+import 'package:hotel_repository/hotel_repository.dart';
 
 class MapHotelListView extends StatelessWidget {
   final VoidCallback callback;
-  final HotelListData hotelData;
+  final Hotel hotelData;
 
   const MapHotelListView(
       {Key? key, required this.hotelData, required this.callback})
@@ -33,7 +34,7 @@ class MapHotelListView extends StatelessWidget {
                     AspectRatio(
                       aspectRatio: 0.90,
                       child: Image.asset(
-                        hotelData.imagePath,
+                        hotelData.imagePath!,
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -45,7 +46,7 @@ class MapHotelListView extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Text(
-                              hotelData.titleTxt,
+                              hotelData.hotelName,
                               maxLines: 2,
                               textAlign: TextAlign.left,
                               style:
@@ -55,7 +56,7 @@ class MapHotelListView extends StatelessWidget {
                               overflow: TextOverflow.ellipsis,
                             ),
                             Text(
-                              hotelData.subTxt,
+                              hotelData.hotelAddress,
                               style: TextStyles(context)
                                   .getDescriptionStyle()
                                   .copyWith(
@@ -82,15 +83,15 @@ class MapHotelListView extends StatelessWidget {
                                           size: 12,
                                           color: Theme.of(context).primaryColor,
                                         ),
-                                        Text(
-                                          " ${hotelData.dist.toStringAsFixed(1)}",
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyles(context)
-                                              .getDescriptionStyle()
-                                              .copyWith(
-                                                fontSize: 14,
-                                              ),
-                                        ),
+                                        // Text(
+                                        //   " ${hotelData.dist.toStringAsFixed(1)}",
+                                        //   overflow: TextOverflow.ellipsis,
+                                        //   style: TextStyles(context)
+                                        //       .getDescriptionStyle()
+                                        //       .copyWith(
+                                        //         fontSize: 14,
+                                        //       ),
+                                        // ),
                                         Text(
                                           Loc.alized.km_to_city,
                                           overflow: TextOverflow.ellipsis,

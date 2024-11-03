@@ -22,7 +22,7 @@ class _GoogleMapUIViewState extends State<GoogleMapUIView> {
   void initState() {
     _googleMapPinController = Get.find<GoogleMapPinController>();
     _googleMapPinController.updateHotelList(
-        widget.hotelList.cast<HotelListData>()); // Cập nhật danh sách khách sạn
+        widget.hotelList.cast<Hotel>()); // Cập nhật danh sách khách sạn
     super.initState();
   }
 
