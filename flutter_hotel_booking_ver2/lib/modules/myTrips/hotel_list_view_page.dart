@@ -7,7 +7,6 @@ import 'package:flutter_hotel_booking_ver2/widgets/common_card.dart';
 import 'package:flutter_hotel_booking_ver2/widgets/list_cell_animation_view.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:hotel_repository/hotel_repository.dart';
 
 class HotelListViewPage extends StatelessWidget {
@@ -93,30 +92,6 @@ class HotelListViewPage extends StatelessWidget {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: <Widget>[
-                                          Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: <Widget>[
-                                              Icon(
-                                                FontAwesomeIcons.locationDot,
-                                                size: 12,
-                                                color: Theme.of(context)
-                                                    .primaryColor,
-                                              ),
-                                              Expanded(
-                                                child: Text(
-                                                  Loc.alized.km_to_city,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  style: TextStyles(context)
-                                                      .getDescriptionStyle()
-                                                      .copyWith(
-                                                        fontSize: 14,
-                                                      ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
                                           Helper.ratingStar(),
                                         ],
                                       ),

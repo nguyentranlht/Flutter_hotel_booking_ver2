@@ -189,7 +189,7 @@ class _HotelDetailesState extends State<HotelDetailes>
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(top: 34, right: 0),
+                      padding: const EdgeInsets.only(top: 34, right: 10),
                       child: CommonCard(
                         color: AppTheme.primaryColor,
                         radius: 36,
@@ -557,18 +557,6 @@ class _HotelDetailesState extends State<HotelDetailes>
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  Text(
-                    widget.hotelData.hotelAddress,
-                    style: TextStyles(context).getRegularStyle().copyWith(
-                          fontSize: 14,
-                          color: isInList
-                              ? Theme.of(context).disabledColor.withOpacity(0.5)
-                              : Colors.white,
-                        ),
-                  ),
-                  const SizedBox(
-                    width: 4,
-                  ),
                   Icon(
                     FontAwesomeIcons.locationDot,
                     size: 12,
