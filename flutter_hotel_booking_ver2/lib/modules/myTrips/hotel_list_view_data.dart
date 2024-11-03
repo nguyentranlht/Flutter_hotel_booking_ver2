@@ -8,11 +8,12 @@ import 'package:flutter_hotel_booking_ver2/language/app_localizations.dart';
 import 'package:flutter_hotel_booking_ver2/models/hotel_list_data.dart';
 import 'package:flutter_hotel_booking_ver2/widgets/common_card.dart';
 import 'package:flutter_hotel_booking_ver2/widgets/list_cell_animation_view.dart';
+import 'package:hotel_repository/hotel_repository.dart';
 
 class HotelListViewData extends StatelessWidget {
   final bool isShowDate;
   final VoidCallback callback;
-  final HotelListData hotelData;
+  final Hotel hotelData;
   final AnimationController animationController;
   final Animation<double> animation;
 
@@ -51,10 +52,22 @@ class HotelListViewData extends StatelessWidget {
                     borderRadius: const BorderRadius.all(Radius.circular(16.0)),
                     child: AspectRatio(
                       aspectRatio: 1.0,
-                      child: Image.asset(
-                        hotelData.imagePath,
-                        fit: BoxFit.cover,
-                      ),
+                      child: hotelData.imagePath != null
+                          ? Image.network(
+                              hotelData.imagePath!, // Load image from URL
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                // If image fails to load, show a placeholder
+                                return Image.asset(
+                                  'assets/images/placeholder.png',
+                                  fit: BoxFit.cover,
+                                );
+                              },
+                            )
+                          : Image.asset(
+                              'assets/images/placeholder.png', // Local placeholder image
+                              fit: BoxFit.cover,
+                            ),
                     ),
                   ),
                 ),
@@ -82,7 +95,7 @@ class HotelListViewData extends StatelessWidget {
               isShowDate ? CrossAxisAlignment.end : CrossAxisAlignment.start,
           children: <Widget>[
             Text(
-              hotelData.titleTxt,
+              hotelData.hotelName,
               maxLines: 2,
               textAlign: isShowDate ? TextAlign.right : TextAlign.left,
               style: TextStyles(context).getBoldStyle().copyWith(
@@ -90,30 +103,30 @@ class HotelListViewData extends StatelessWidget {
                   ),
               overflow: TextOverflow.ellipsis,
             ),
-            Text(
-              hotelData.subTxt,
-              style: TextStyles(context).getDescriptionStyle().copyWith(
-                    fontSize: 14,
-                  ),
-            ),
-            Text(
-              Helper.getDateText(hotelData.date!),
-              maxLines: 2,
-              textAlign: isShowDate ? TextAlign.right : TextAlign.left,
-              style: TextStyles(context).getRegularStyle().copyWith(
-                    fontSize: 12,
-                  ),
-              overflow: TextOverflow.ellipsis,
-            ),
-            Text(
-              Helper.getRoomText(hotelData.roomData!),
-              maxLines: 2,
-              textAlign: isShowDate ? TextAlign.right : TextAlign.left,
-              style: TextStyles(context).getRegularStyle().copyWith(
-                    fontSize: 12,
-                  ),
-              overflow: TextOverflow.ellipsis,
-            ),
+            // Text(
+            //   hotelData.subTxt,
+            //   style: TextStyles(context).getDescriptionStyle().copyWith(
+            //         fontSize: 14,
+            //       ),
+            // ),
+            // Text(
+            //   Helper.getDateText(hotelData.date!),
+            //   maxLines: 2,
+            //   textAlign: isShowDate ? TextAlign.right : TextAlign.left,
+            //   style: TextStyles(context).getRegularStyle().copyWith(
+            //         fontSize: 12,
+            //       ),
+            //   overflow: TextOverflow.ellipsis,
+            // ),
+            // Text(
+            //   Helper.getRoomText(hotelData.roomData!),
+            //   maxLines: 2,
+            //   textAlign: isShowDate ? TextAlign.right : TextAlign.left,
+            //   style: TextStyles(context).getRegularStyle().copyWith(
+            //         fontSize: 12,
+            //       ),
+            //   overflow: TextOverflow.ellipsis,
+            // ),
             Expanded(
               child: FittedBox(
                 child: SizedBox(
@@ -124,37 +137,37 @@ class HotelListViewData extends StatelessWidget {
                         ? CrossAxisAlignment.end
                         : CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        mainAxisAlignment: isShowDate
-                            ? MainAxisAlignment.end
-                            : MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          Icon(
-                            FontAwesomeIcons.locationDot,
-                            size: 12,
-                            color: Theme.of(context).primaryColor,
-                          ),
-                          Text(
-                            " ${hotelData.dist.toStringAsFixed(1)}",
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyles(context)
-                                .getDescriptionStyle()
-                                .copyWith(
-                                  fontSize: 14,
-                                ),
-                          ),
-                          Text(
-                            Loc.alized.km_to_city,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyles(context)
-                                .getDescriptionStyle()
-                                .copyWith(
-                                  fontSize: 14,
-                                ),
-                          ),
-                        ],
-                      ),
+                      // Row(
+                      //   mainAxisAlignment: isShowDate
+                      //       ? MainAxisAlignment.end
+                      //       : MainAxisAlignment.start,
+                      //   crossAxisAlignment: CrossAxisAlignment.center,
+                      //   children: <Widget>[
+                      //     Icon(
+                      //       FontAwesomeIcons.locationDot,
+                      //       size: 12,
+                      //       color: Theme.of(context).primaryColor,
+                      //     ),
+                      //     Text(
+                      //       " ${hotelData.dist.toStringAsFixed(1)}",
+                      //       overflow: TextOverflow.ellipsis,
+                      //       style: TextStyles(context)
+                      //           .getDescriptionStyle()
+                      //           .copyWith(
+                      //             fontSize: 14,
+                      //           ),
+                      //     ),
+                      //     Text(
+                      //       Loc.alized.km_to_city,
+                      //       overflow: TextOverflow.ellipsis,
+                      //       style: TextStyles(context)
+                      //           .getDescriptionStyle()
+                      //           .copyWith(
+                      //             fontSize: 14,
+                      //           ),
+                      //     ),
+                      //   ],
+                      // ),
                       Helper.ratingStar(),
                       Row(
                         mainAxisAlignment: isShowDate

@@ -245,7 +245,7 @@ class _HomeExploreScreenState extends State<HomeExploreScreen>
               list.add(
                 HotelListViewPage(
                   callback: () {
-                    //NavigationServices(context).gotoHotelDetailes(hotel);
+                    // NavigationServices(context).gotoHotelDetailes(hotel);
                   },
                   hotelData: hotel,
                   animation: animation,

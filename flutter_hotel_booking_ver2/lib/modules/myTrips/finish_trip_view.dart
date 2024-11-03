@@ -1,52 +1,62 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hotel_booking_ver2/modules/myTrips/hotel_list_view_data.dart';
+import 'package:flutter_hotel_booking_ver2/provider/hotel_provider.dart';
 import 'package:flutter_hotel_booking_ver2/routes/route_names.dart';
-import '../../models/hotel_list_data.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class FinishTripView extends StatefulWidget {
+class FinishTripView extends ConsumerWidget {
   final AnimationController animationController;
 
   const FinishTripView({Key? key, required this.animationController})
       : super(key: key);
 
   @override
-  State<FinishTripView> createState() => _FinishTripViewState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final hotelListAsyncValue =
+        ref.watch(hotelProvider); // Ensure `hotelProvider` fetches hotel list
 
-class _FinishTripViewState extends State<FinishTripView> {
-  var hotelList = HotelListData.hotelList;
+    DateTime startDate = DateTime.now();
+    DateTime endDate = DateTime.now().add(const Duration(days: 1));
 
-  @override
-  void initState() {
-    widget.animationController.forward();
-    super.initState();
-  }
+    return hotelListAsyncValue.when(
+      data: (hotelList) {
+        return ListView.builder(
+          itemCount: hotelList.length,
+          padding: const EdgeInsets.only(top: 8, bottom: 16),
+          scrollDirection: Axis.vertical,
+          itemBuilder: (context, index) {
+            var count = hotelList.length > 10 ? 10 : hotelList.length;
+            var animation = Tween(begin: 0.0, end: 1.0).animate(
+              CurvedAnimation(
+                parent: animationController,
+                curve: Interval((1 / count) * index, 1.0,
+                    curve: Curves.fastOutSlowIn),
+              ),
+            );
+            animationController.forward();
 
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: hotelList.length,
-      padding: const EdgeInsets.only(top: 8, bottom: 16),
-      scrollDirection: Axis.vertical,
-      itemBuilder: (context, index) {
-        var count = hotelList.length > 10 ? 10 : hotelList.length;
-        var animation = Tween(begin: 0.0, end: 1.0).animate(CurvedAnimation(
-            parent: widget.animationController,
-            curve: Interval((1 / count) * index, 1.0,
-                curve: Curves.fastOutSlowIn)));
-        widget.animationController.forward();
-        //Finished hotel data list and UI View
-        return HotelListViewData(
-          callback: () {
-            NavigationServices(context)
-                .gotoRoomBookingScreen(hotelList[index].titleTxt);
+            // Get individual hotel information
+            final hotelData = hotelList[index];
+
+            return HotelListViewData(
+              callback: () {
+                NavigationServices(context).gotoRoomBookingScreen(
+                  hotelData.hotelName,
+                  hotelData.hotelId,
+                  startDate.toString(),
+                  endDate.toString(),
+                );
+              },
+              hotelData: hotelData,
+              animation: animation,
+              animationController: animationController,
+              isShowDate: (index % 2) != 0,
+            );
           },
-          hotelData: hotelList[index],
-          animation: animation,
-          animationController: widget.animationController,
-          isShowDate: (index % 2) != 0,
         );
       },
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (error, stackTrace) => Center(child: Text('Error loading hotels')),
     );
   }
 }

@@ -85,19 +85,19 @@ class HotelListView extends StatelessWidget {
                                           fontSize: 22,
                                           fontWeight: FontWeight.bold),
                                     ),
+                                    Text(
+                                      hotelData.hotelAddress,
+                                      style: TextStyle(fontSize: 14),
+                                    ),
+                                    const SizedBox(
+                                      width: 4,
+                                    ),
                                     Row(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.center,
                                       mainAxisAlignment:
                                           MainAxisAlignment.start,
                                       children: <Widget>[
-                                        Text(
-                                          hotelData.hotelAddress,
-                                          style: TextStyle(fontSize: 14),
-                                        ),
-                                        const SizedBox(
-                                          width: 4,
-                                        ),
                                         Icon(
                                           FontAwesomeIcons.locationDot,
                                           size: 12,

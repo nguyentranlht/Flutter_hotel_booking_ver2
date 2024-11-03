@@ -78,9 +78,13 @@ class NavigationServices {
     return await _pushMaterialPageRoute(const FiltersScreen());
   }
 
-  Future<dynamic> gotoRoomBookingScreen(String hotelname) async {
-    return await _pushMaterialPageRoute(
-        RoomBookingScreen(hotelName: hotelname));
+  Future<dynamic> gotoRoomBookingScreen(String hotelname, String hotelId,
+      String startDate, String endDate) async {
+    return await _pushMaterialPageRoute(RoomBookingScreen(
+        hotelName: hotelname,
+        hotelId: hotelId,
+        startDate: startDate,
+        endDate: endDate));
   }
 
   Future<dynamic> gotoReviewsListScreen() async {

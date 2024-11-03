@@ -25,6 +25,8 @@ class HotelDetailes extends StatefulWidget {
 
 class _HotelDetailesState extends State<HotelDetailes>
     with TickerProviderStateMixin {
+  DateTime startDate = DateTime.now();
+  DateTime endDate = DateTime.now().add(const Duration(days: 1));
   ScrollController scrollController = ScrollController(initialScrollOffset: 0);
   var hoteltext1 =
       "Featuring a fitness center, Grand Royale Park Hote is located in Sweden, 4.7 km frome National Museum...";
@@ -208,8 +210,11 @@ class _HotelDetailesState extends State<HotelDetailes>
                   child: CommonButton(
                     buttonText: Loc.alized.book_now,
                     onTap: () {
-                      NavigationServices(context)
-                          .gotoRoomBookingScreen(widget.hotelData.titleTxt);
+                      // NavigationServices(context).gotoRoomBookingScreen(
+                      //     widget.hotelData.titleTxt,
+                      //     widget.hotelData.hoy
+                      //     startDate.toString(),
+                      //     endDate.toString());
                     },
                   ),
                 ),
@@ -415,9 +420,11 @@ class _HotelDetailesState extends State<HotelDetailes>
                                       child: CommonButton(
                                           buttonText: Loc.alized.book_now,
                                           onTap: () {
-                                            NavigationServices(context)
-                                                .gotoRoomBookingScreen(
-                                                    widget.hotelData.titleTxt);
+                                            // NavigationServices(context)
+                                            //     .gotoRoomBookingScreen(
+                                            //         widget.hotelData.titleTxt,
+                                            //         startDate.toString(),
+                                            //         endDate.toString());
                                           }),
                                     ),
                                   ],

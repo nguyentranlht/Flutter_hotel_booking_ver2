@@ -15,6 +15,8 @@ class FavoritesListView extends StatefulWidget {
 }
 
 class _FavoritesListViewState extends State<FavoritesListView> {
+  DateTime startDate = DateTime.now();
+  DateTime endDate = DateTime.now().add(const Duration(days: 1));
   @override
   void initState() {
     widget.animationController.forward();
@@ -46,8 +48,11 @@ class _FavoritesListViewState extends State<FavoritesListView> {
 
                 return HotelListViewPage(
                   callback: () {
-                    NavigationServices(context)
-                        .gotoRoomBookingScreen(hotelList[index].hotelName);
+                    NavigationServices(context).gotoRoomBookingScreen(
+                        hotelList[index].hotelName,
+                        hotelList[index].hotelId,
+                        startDate.toString(),
+                        endDate.toString());
                   },
                   hotelData: hotelList[index],
                   animation: animation,
