@@ -189,7 +189,7 @@ class _HotelDetailesState extends State<HotelDetailes>
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(top: 34, right: 0),
+                      padding: const EdgeInsets.only(top: 34, right: 10),
                       child: CommonCard(
                         color: AppTheme.primaryColor,
                         radius: 36,
