@@ -11,12 +11,13 @@ import 'package:flutter_hotel_booking_ver2/modules/hotel_detailes/review_data_vi
 import 'package:flutter_hotel_booking_ver2/routes/route_names.dart';
 import 'package:flutter_hotel_booking_ver2/widgets/common_button.dart';
 import 'package:flutter_hotel_booking_ver2/widgets/common_card.dart';
+import 'package:hotel_repository/hotel_repository.dart';
 import '../../models/hotel_list_data.dart';
 import 'hotel_roome_list.dart';
 import 'rating_view.dart';
 
 class HotelDetailes extends StatefulWidget {
-  final HotelListData hotelData;
+  final Hotel hotelData;
 
   const HotelDetailes({Key? key, required this.hotelData}) : super(key: key);
   @override
@@ -346,7 +347,7 @@ class _HotelDetailesState extends State<HotelDetailes>
     );
   }
 
-  Widget _backgraoundImageUI(HotelListData hotelData) {
+  Widget _backgraoundImageUI(Hotel hotelData) {
     return Positioned(
       top: 0,
       left: 0,
@@ -354,7 +355,7 @@ class _HotelDetailesState extends State<HotelDetailes>
       child: AnimatedBuilder(
         animation: _animationController,
         builder: (BuildContext context, Widget? child) {
-          var opecity = 1.0 -
+          var opacity = 1.0 -
               (_animationController.value >= ((imageHieght / 1.2) / imageHieght)
                   ? 1.0
                   : _animationController.value);
@@ -373,9 +374,25 @@ class _HotelDetailesState extends State<HotelDetailes>
                         top: 0,
                         child: SizedBox(
                           width: MediaQuery.of(context).size.width,
-                          child: Image.asset(
-                            hotelData.imagePath,
+                          child: Image.network(
+                            hotelData.imagePath.toString(),
                             fit: BoxFit.cover,
+                            loadingBuilder: (context, child, loadingProgress) {
+                              if (loadingProgress == null) return child;
+                              return Center(
+                                child: CircularProgressIndicator(
+                                  value: loadingProgress.expectedTotalBytes !=
+                                          null
+                                      ? loadingProgress.cumulativeBytesLoaded /
+                                          loadingProgress.expectedTotalBytes!
+                                      : null,
+                                ),
+                              );
+                            },
+                            errorBuilder: (context, error, stackTrace) {
+                              return Center(
+                                  child: Text('Failed to load image'));
+                            },
                           ),
                         ),
                       ),
@@ -387,7 +404,7 @@ class _HotelDetailesState extends State<HotelDetailes>
                   left: 0,
                   right: 0,
                   child: Opacity(
-                    opacity: opecity,
+                    opacity: opacity,
                     child: Column(
                       children: <Widget>[
                         Container(
@@ -420,11 +437,13 @@ class _HotelDetailesState extends State<HotelDetailes>
                                       child: CommonButton(
                                           buttonText: Loc.alized.book_now,
                                           onTap: () {
-                                            // NavigationServices(context)
-                                            //     .gotoRoomBookingScreen(
-                                            //         widget.hotelData.titleTxt,
-                                            //         startDate.toString(),
-                                            //         endDate.toString());
+                                            // Navigation logic here
+                                            NavigationServices(context)
+                                                .gotoRoomBookingScreen(
+                                                    hotelData.hotelName,
+                                                    hotelData.hotelId,
+                                                    startDate.toString(),
+                                                    endDate.toString());
                                           }),
                                     ),
                                   ],
@@ -527,7 +546,7 @@ class _HotelDetailesState extends State<HotelDetailes>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(
-                widget.hotelData.titleTxt,
+                widget.hotelData.hotelName,
                 textAlign: TextAlign.left,
                 style: TextStyles(context).getBoldStyle().copyWith(
                       fontSize: 22,
@@ -539,7 +558,7 @@ class _HotelDetailesState extends State<HotelDetailes>
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    widget.hotelData.subTxt,
+                    widget.hotelData.description,
                     style: TextStyles(context).getRegularStyle().copyWith(
                           fontSize: 14,
                           color: isInList
@@ -589,7 +608,7 @@ class _HotelDetailesState extends State<HotelDetailes>
                         children: <Widget>[
                           Helper.ratingStar(),
                           Text(
-                            " ${widget.hotelData.reviews}",
+                            " ${widget.hotelData.starRating}",
                             style:
                                 TextStyles(context).getRegularStyle().copyWith(
                                       fontSize: 14,

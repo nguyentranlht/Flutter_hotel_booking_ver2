@@ -3,10 +3,10 @@ import 'package:flutter_hotel_booking_ver2/constants/text_styles.dart';
 import 'package:flutter_hotel_booking_ver2/constants/themes.dart';
 import 'package:flutter_hotel_booking_ver2/language/app_localizations.dart';
 import 'package:flutter_hotel_booking_ver2/widgets/common_card.dart';
-import '../../models/hotel_list_data.dart';
+import 'package:hotel_repository/hotel_repository.dart';
 
 class RatingView extends StatelessWidget {
-  final HotelListData hotelData;
+  final Hotel hotelData;
 
   const RatingView({Key? key, required this.hotelData}) : super(key: key);
 
@@ -24,7 +24,7 @@ class RatingView extends StatelessWidget {
                 SizedBox(
                   width: 60,
                   child: Text(
-                    (hotelData.rating * 2).toStringAsFixed(1),
+                    (hotelData.starRating * 2).toStringAsFixed(1),
                     textAlign: TextAlign.left,
                     style: TextStyles(context).getBoldStyle().copyWith(
                           fontSize: 38,

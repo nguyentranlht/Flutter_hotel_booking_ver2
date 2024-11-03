@@ -11,6 +11,7 @@ class Hotel extends Equatable {
   final String hotelAddress;
   final String description; // Sửa lại từ 'descrition'
   final String perNight;
+  final double dist;
 
   Hotel({
     required this.hotelId,
@@ -21,6 +22,7 @@ class Hotel extends Equatable {
     required this.hotelAddress,
     required this.description, // Sửa lại từ 'descrition'
     required this.perNight,
+    required this.dist,
   });
 
   // Định nghĩa phương thức fromFirestore
@@ -36,6 +38,7 @@ class Hotel extends Equatable {
       hotelAddress: data['hotelAddress'] ?? '',
       description: data['description'] ?? '', // Sửa lại từ 'descrition'
       perNight: data['perNight'] ?? '',
+      dist: data['dist'] ?? '',
     );
   }
 
@@ -49,5 +52,6 @@ class Hotel extends Equatable {
         hotelAddress,
         description,
         perNight,
+        dist,
       ];
 }
