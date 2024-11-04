@@ -6,7 +6,7 @@ class Room {
   final String hotelId;
   String? imagePath;
   final String roomType;
-  final double pricePerNight;
+  final String pricePerNight;
   final int capacity;
   final bool roomStatus;
   final int maxPeople;
@@ -31,7 +31,7 @@ class Room {
       hotelId: data['hotelId'] ?? '',
       imagePath: data['imagePath'],
       roomType: data['roomType'] ?? '',
-      pricePerNight: (data['pricePerNight'] ?? 0.0).toDouble(),
+      pricePerNight: data['pricePerNight'] ?? '',
       capacity: data['capacity'] ?? 0,
       roomStatus: data['roomStatus'] ?? false,
       maxPeople: data['maxPeople'] ?? 0,

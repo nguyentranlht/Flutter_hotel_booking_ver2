@@ -84,12 +84,14 @@ class NavigationServices {
   Future<dynamic> gotoRoomBookingScreen(
     String hotelname,
     String hotelId,
+    String hotelAddress,
     String startDate,
     String endDate,
   ) async {
     return await _pushMaterialPageRoute(RoomBookingScreen(
         hotelName: hotelname,
         hotelId: hotelId,
+        hotelAddress: hotelAddress,
         startDate: startDate,
         endDate: endDate));
   }
@@ -97,16 +99,20 @@ class NavigationServices {
   Future<dynamic> gotoRoomConfirmationScreen(
     String hotelname,
     String hotelId,
+    String hotelAddress,
+    String perNight,
     String startDate,
     String endDate,
     Room roomData,
   ) async {
     return await _pushMaterialPageRoute(BookingConfirmationScreen(
-      roomData: roomData,
       hotelName: hotelname,
       hotelId: hotelId,
+      hotelAddress: hotelAddress,
+      perNight: perNight,
       startDate: startDate,
       endDate: endDate,
+      roomData: roomData,
     ));
   }
 

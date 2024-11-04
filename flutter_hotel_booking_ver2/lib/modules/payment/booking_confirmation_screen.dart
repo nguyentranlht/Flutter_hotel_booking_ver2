@@ -15,6 +15,8 @@ class BookingConfirmationScreen extends ConsumerWidget {
   final Room roomData;
   final String hotelName;
   final String hotelId;
+  final String hotelAddress;
+  final String perNight;
   final String startDate;
   final String endDate;
 
@@ -23,6 +25,8 @@ class BookingConfirmationScreen extends ConsumerWidget {
     required this.roomData,
     required this.hotelName,
     required this.hotelId,
+    required this.hotelAddress,
+    required this.perNight,
     required this.startDate,
     required this.endDate,
   }) : super(key: key);
@@ -87,6 +91,13 @@ class BookingConfirmationScreen extends ConsumerWidget {
                               hotelName, // Hotel name
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
+                            Text(
+                              hotelAddress,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.normal,
                                 fontSize: 16,
                               ),
                             ),
@@ -170,7 +181,7 @@ class BookingConfirmationScreen extends ConsumerWidget {
               children: [
                 const Text("Tiền phòng"),
                 Text(
-                  "${roomData.pricePerNight}₫",
+                  "${perNight}₫",
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ],

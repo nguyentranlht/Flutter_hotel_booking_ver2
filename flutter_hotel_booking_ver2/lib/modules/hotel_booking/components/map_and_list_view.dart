@@ -74,6 +74,7 @@ class MapAndListView extends StatelessWidget {
                                     .gotoRoomBookingScreen(
                                   hotelList[index].hotelName,
                                   hotelList[index].hotelId,
+                                  hotelList[index].hotelAddress,
                                   startDate.toString(),
                                   endDate.toString(),
                                 ); // Sử dụng Hotel thay vì HotelListData

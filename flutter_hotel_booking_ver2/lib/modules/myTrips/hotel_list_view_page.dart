@@ -5,7 +5,6 @@ import 'package:flutter_hotel_booking_ver2/constants/themes.dart';
 import 'package:flutter_hotel_booking_ver2/language/app_localizations.dart';
 import 'package:flutter_hotel_booking_ver2/widgets/common_card.dart';
 import 'package:flutter_hotel_booking_ver2/widgets/list_cell_animation_view.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:hotel_repository/hotel_repository.dart';
 

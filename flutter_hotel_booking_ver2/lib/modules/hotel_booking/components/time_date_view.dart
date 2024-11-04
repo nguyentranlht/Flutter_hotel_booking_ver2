@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hotel_booking_ver2/constants/helper.dart';
 import 'package:flutter_hotel_booking_ver2/constants/text_styles.dart';
+import 'package:flutter_hotel_booking_ver2/constants/themes.dart';
 import 'package:flutter_hotel_booking_ver2/language/app_localizations.dart';
 import 'package:flutter_hotel_booking_ver2/models/room_data.dart';
 import 'package:flutter_hotel_booking_ver2/modules/hotel_booking/components/calendar_pop_up_view.dart';
@@ -30,32 +31,44 @@ class TimeDateView extends StatefulWidget {
 class _TimeDateViewState extends State<TimeDateView> {
   RoomData _roomData = RoomData(1, 2);
   final String languageCode = Get.find<Loc>().locale.languageCode;
-
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 16, bottom: 16, right: 16),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          _getDateRoomUi(
-            Loc.alized.choose_date,
-            "${DateFormat("dd, MM", languageCode).format(widget.startDate)} - ${DateFormat("dd, MMM", languageCode).format(widget.endDate)}",
-            () {
-              _showDemoDialog(context);
-            },
+    return Container(
+      color: AppTheme.scaffoldBackgroundColor,
+      child: Column(
+        children: [
+          Padding(
+            padding:
+                const EdgeInsets.only(left: 20, bottom: 20, right: 20, top: 0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                _getDateRoomUi(
+                  Loc.alized.choose_date,
+                  "${DateFormat("dd, MM", languageCode).format(widget.startDate)} - ${DateFormat("dd, MMM", languageCode).format(widget.endDate)}",
+                  () {
+                    _showDemoDialog(context);
+                  },
+                ),
+                Container(
+                  width: 1,
+                  height: 42,
+                  color: Colors.grey.withOpacity(0.8),
+                ),
+                _getDateRoomUi(
+                  Loc.alized.number_room,
+                  Helper.getRoomText(_roomData),
+                  () {
+                    _showPopUp();
+                  },
+                ),
+              ],
+            ),
           ),
+          // Bottom line
           Container(
-            width: 1,
-            height: 42,
-            color: Colors.grey.withOpacity(0.8),
-          ),
-          _getDateRoomUi(
-            Loc.alized.number_room,
-            Helper.getRoomText(_roomData),
-            () {
-              _showPopUp();
-            },
+            height: 1.5, // Thickness of the line
+            color: Colors.grey.withOpacity(0.8), // Color of the line
           ),
         ],
       ),

@@ -214,6 +214,7 @@ class _HotelDetailesState extends State<HotelDetailes>
                       NavigationServices(context).gotoRoomBookingScreen(
                           widget.hotelData.hotelName,
                           widget.hotelData.hotelId,
+                          widget.hotelData.hotelAddress,
                           startDate.toString(),
                           endDate.toString());
                     },
@@ -442,6 +443,7 @@ class _HotelDetailesState extends State<HotelDetailes>
                                                 .gotoRoomBookingScreen(
                                                     hotelData.hotelName,
                                                     hotelData.hotelId,
+                                                    hotelData.hotelAddress,
                                                     startDate.toString(),
                                                     endDate.toString());
                                           }),

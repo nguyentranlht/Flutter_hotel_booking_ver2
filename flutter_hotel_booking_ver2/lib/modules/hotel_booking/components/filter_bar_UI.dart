@@ -19,11 +19,7 @@ class FilterBarUI extends StatelessWidget {
             child: Row(
               children: <Widget>[
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    "530",
-                    style: TextStyles(context).getRegularStyle(),
-                  ),
+                  padding: const EdgeInsets.all(7.0),
                 ),
                 Expanded(
                   child: Padding(
@@ -64,14 +60,6 @@ class FilterBarUI extends StatelessWidget {
               ],
             ),
           ),
-          const Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: Divider(
-              height: 1,
-            ),
-          )
         ],
       ),
     );

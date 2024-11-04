@@ -34,8 +34,8 @@ class _HotelHomeScreenState extends State<HotelHomeScreen>
   DateTime endDate = DateTime.now().add(const Duration(days: 1));
   bool _isShowMap = false;
 
-  final searchBarHieght = 158.0;
-  final filterBarHieght = 52.0;
+  final searchBarHieght = 130.0;
+  final filterBarHieght = 100.0;
 
   @override
   void initState() {
@@ -131,18 +131,19 @@ class _HotelHomeScreenState extends State<HotelHomeScreen>
                                         animationController.forward();
                                         return HotelListView(
                                           callback: () {
-                                            NavigationServices(context)
+                                            NavigationServices(
+                                                    context)
                                                 .gotoRoomBookingScreen(
                                                     hotelList[index].hotelName,
                                                     hotelList[index].hotelId,
+                                                    hotelList[index]
+                                                        .hotelAddress,
                                                     startDate
                                                         .toString()
                                                         .substring(0, 10),
                                                     endDate
                                                         .toString()
                                                         .substring(0, 10));
-                                            print(
-                                                "startDate: $startDate, endDate: $endDate");
                                           },
                                           hotelData: hotelList[index],
                                           animation: animation,
@@ -169,27 +170,25 @@ class _HotelHomeScreenState extends State<HotelHomeScreen>
                                               child: Column(
                                                 children: <Widget>[
                                                   _getSearchBarUI(),
-                                                  TimeDateView(
-                                                    startDate: startDate,
-                                                    endDate: endDate,
-                                                    onStartDateChanged:
-                                                        (newStartDate) {
-                                                      setState(() {
-                                                        startDate =
-                                                            newStartDate;
-                                                      });
-                                                    },
-                                                    onEndDateChanged:
-                                                        (newEndDate) {
-                                                      setState(() {
-                                                        endDate = newEndDate;
-                                                      });
-                                                    },
-                                                  ),
+                                                  const FilterBarUI(),
                                                 ],
                                               ),
                                             ),
-                                            const FilterBarUI(),
+                                            TimeDateView(
+                                              startDate: startDate,
+                                              endDate: endDate,
+                                              onStartDateChanged:
+                                                  (newStartDate) {
+                                                setState(() {
+                                                  startDate = newStartDate;
+                                                });
+                                              },
+                                              onEndDateChanged: (newEndDate) {
+                                                setState(() {
+                                                  endDate = newEndDate;
+                                                });
+                                              },
+                                            ),
                                           ],
                                         ),
                                       );
