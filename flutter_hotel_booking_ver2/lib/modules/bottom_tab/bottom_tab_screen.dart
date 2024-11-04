@@ -76,9 +76,9 @@ class _BottomTabScreenState extends State<BottomTabScreen>
           });
         } else if (tabType == BottomBarType.trips) {
           setState(() {
-            _indexView = MyTripsScreen(
-              animationController: _animationController,
-            );
+            // _indexView = MyTripsScreen(
+            //   animationController: _animationController,
+            // );
           });
         } else if (tabType == BottomBarType.profile) {
           setState(() {

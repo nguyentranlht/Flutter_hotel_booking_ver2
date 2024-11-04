@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_hotel_booking_ver2/routes/route_names.dart';
 import 'package:flutter_hotel_booking_ver2/widgets/app_constant.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
@@ -14,12 +15,20 @@ class RoomeBookView extends ConsumerWidget {
   final Room roomData;
   final AnimationController animationController;
   final Animation<double> animation;
+  final String hotelName;
+  final String hotelId;
+  final String startDate;
+  final String endDate;
 
   const RoomeBookView({
     Key? key,
     required this.roomData,
     required this.animationController,
     required this.animation,
+    required this.hotelName,
+    required this.hotelId,
+    required this.startDate,
+    required this.endDate,
   }) : super(key: key);
 
   @override
@@ -96,9 +105,17 @@ class RoomeBookView extends ConsumerWidget {
                             height: 38,
                             child: ElevatedButton(
                               onPressed: () {
-                                String perNight =
-                                    (roomData.pricePerNight * 100).toString();
-                                makePayment(context, perNight);
+                                // String perNight =
+                                //     (roomData.pricePerNight * 100).toString();
+                                // makePayment(context, perNight);
+                                NavigationServices(context)
+                                    .gotoRoomConfirmationScreen(
+                                  hotelName,
+                                  hotelId,
+                                  startDate.toString(),
+                                  endDate.toString(),
+                                  roomData,
+                                );
                               },
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(
@@ -260,7 +277,7 @@ class RoomeBookView extends ConsumerWidget {
                         const SizedBox(width: 16.0),
                         Center(
                           child: Text(
-                            "Nạp tiền thành công",
+                            "Thanh toán thàn công",
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               color: Colors.lightGreen.shade700,

@@ -1,15 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:flutter_hotel_booking_ver2/constants/helper.dart';
 import 'package:flutter_hotel_booking_ver2/constants/text_styles.dart';
 import 'package:flutter_hotel_booking_ver2/language/app_localizations.dart';
 import 'package:flutter_hotel_booking_ver2/models/room_data.dart';
 import 'package:flutter_hotel_booking_ver2/modules/hotel_booking/components/calendar_pop_up_view.dart';
 import 'package:flutter_hotel_booking_ver2/modules/hotel_booking/components/room_pop_up_view.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:intl/intl.dart';
 
 class TimeDateView extends StatefulWidget {
-  const TimeDateView({Key? key}) : super(key: key);
+  final DateTime startDate;
+  final DateTime endDate;
+  final ValueChanged<DateTime> onStartDateChanged;
+  final ValueChanged<DateTime> onEndDateChanged;
+
+  const TimeDateView({
+    Key? key,
+    required this.startDate,
+    required this.endDate,
+    required this.onStartDateChanged,
+    required this.onEndDateChanged,
+  }) : super(key: key);
 
   @override
   State<TimeDateView> createState() => _TimeDateViewState();
@@ -17,9 +29,8 @@ class TimeDateView extends StatefulWidget {
 
 class _TimeDateViewState extends State<TimeDateView> {
   RoomData _roomData = RoomData(1, 2);
-  DateTime startDate = DateTime.now();
-  DateTime endDate = DateTime.now().add(const Duration(days: 5));
   final String languageCode = Get.find<Loc>().locale.languageCode;
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -27,20 +38,25 @@ class _TimeDateViewState extends State<TimeDateView> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          _getDateRoomUi(Loc.alized.choose_date,
-              "${DateFormat("dd, MM", languageCode).format(startDate)} - ${DateFormat("dd, MMM", languageCode).format(endDate)}",
-              () {
-            _showDemoDialog(context);
-          }),
+          _getDateRoomUi(
+            Loc.alized.choose_date,
+            "${DateFormat("dd, MM", languageCode).format(widget.startDate)} - ${DateFormat("dd, MMM", languageCode).format(widget.endDate)}",
+            () {
+              _showDemoDialog(context);
+            },
+          ),
           Container(
             width: 1,
             height: 42,
             color: Colors.grey.withOpacity(0.8),
           ),
-          _getDateRoomUi(Loc.alized.number_room, Helper.getRoomText(_roomData),
-              () {
-            _showPopUp();
-          }),
+          _getDateRoomUi(
+            Loc.alized.number_room,
+            Helper.getRoomText(_roomData),
+            () {
+              _showPopUp();
+            },
+          ),
         ],
       ),
     );
@@ -66,7 +82,6 @@ class _TimeDateViewState extends State<TimeDateView> {
                   children: <Widget>[
                     Text(
                       title,
-                      // "Choose date",
                       style: TextStyles(context)
                           .getDescriptionStyle()
                           .copyWith(fontSize: 16),
@@ -76,7 +91,6 @@ class _TimeDateViewState extends State<TimeDateView> {
                     ),
                     Text(
                       subtitle,
-                      // "${DateFormat("dd, MMM").format(startDate)} - ${DateFormat("dd, MMM").format(endDate)}",
                       style: TextStyles(context).getRegularStyle(),
                     ),
                   ],
@@ -92,19 +106,16 @@ class _TimeDateViewState extends State<TimeDateView> {
   void _showDemoDialog(BuildContext context) {
     showDialog(
       context: context,
-      //custome calendar view
       builder: (BuildContext context) => CalendarPopupView(
         barrierDismissible: true,
         minimumDate: DateTime.now(),
         maximumDate: DateTime(
             DateTime.now().year, DateTime.now().month, DateTime.now().day + 10),
-        initialEndDate: endDate,
-        initialStartDate: startDate,
+        initialEndDate: widget.endDate,
+        initialStartDate: widget.startDate,
         onApplyClick: (DateTime startData, DateTime endData) {
-          setState(() {
-            startDate = startData;
-            endDate = endData;
-          });
+          widget.onStartDateChanged(startData);
+          widget.onEndDateChanged(endData);
         },
         onCancelClick: () {},
       ),

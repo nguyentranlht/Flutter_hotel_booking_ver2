@@ -68,6 +68,10 @@ class _RoomBookingScreenState extends ConsumerState<RoomBookingScreen>
                         animationController.forward();
 
                         return RoomeBookView(
+                          hotelName: widget.hotelName,
+                          hotelId: widget.hotelId,
+                          startDate: widget.startDate,
+                          endDate: widget.endDate,
                           roomData: rooms[index],
                           animation: animation,
                           animationController: animationController,

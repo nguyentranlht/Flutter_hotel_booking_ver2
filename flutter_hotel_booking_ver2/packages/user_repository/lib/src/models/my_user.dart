@@ -8,7 +8,7 @@ class MyUser extends Equatable {
   late final String lastname;
   String? picture;
   final String phonenumber;
-  final DateTime birthday;  // Chuyển đổi sang DateTime
+  final DateTime birthday; // Chuyển đổi sang DateTime
   final String role;
 
   MyUser({
@@ -18,20 +18,21 @@ class MyUser extends Equatable {
     required this.lastname,
     this.picture,
     required this.phonenumber,
-    required this.birthday,  // Chuyển đổi sang DateTime
+    required this.birthday, // Chuyển đổi sang DateTime
     required this.role,
   });
 
   /// Empty user which represents an unauthenticated user.
   static final empty = MyUser(
-      userId: '', // Hoặc để trống nếu không cần tại thời điểm này
-      email: '',
-      firstname: '',
-      lastname: '',
-      picture: null, // Nếu không có ảnh
-      phonenumber: '', // Nếu chưa có số điện thoại
-      birthday: DateTime.now(), // Nếu không có ngày sinh cụ thể
-      role: 'user',);
+    userId: '', // Hoặc để trống nếu không cần tại thời điểm này
+    email: '',
+    firstname: '',
+    lastname: '',
+    picture: null, // Nếu không có ảnh
+    phonenumber: '', // Nếu chưa có số điện thoại
+    birthday: DateTime.now(), // Nếu không có ngày sinh cụ thể
+    role: 'user',
+  );
 
   /// Modify MyUser parameters
   MyUser copyWith({
@@ -41,7 +42,7 @@ class MyUser extends Equatable {
     String? lastname,
     String? picture,
     String? phonenumber,
-    DateTime? birthday,  // Chuyển đổi sang DateTime
+    DateTime? birthday, // Chuyển đổi sang DateTime
     String? role,
   }) {
     return MyUser(
@@ -51,7 +52,7 @@ class MyUser extends Equatable {
       lastname: lastname ?? this.lastname,
       picture: picture ?? this.picture,
       phonenumber: phonenumber ?? this.phonenumber,
-      birthday: birthday ?? this.birthday,  // Chuyển đổi sang DateTime
+      birthday: birthday ?? this.birthday, // Chuyển đổi sang DateTime
       role: role ?? this.role,
     );
   }
@@ -71,7 +72,7 @@ class MyUser extends Equatable {
       lastname: lastname,
       picture: picture,
       phonenumber: phonenumber,
-      birthday: birthday,  // Sử dụng DateTime
+      birthday: birthday, // Sử dụng DateTime
       role: role,
     );
   }
@@ -85,12 +86,20 @@ class MyUser extends Equatable {
       lastname: entity.lastname,
       picture: entity.picture,
       phonenumber: entity.phonenumber,
-      birthday: entity.birthday,  // Sử dụng DateTime từ entity
+      birthday: entity.birthday, // Sử dụng DateTime từ entity
       role: entity.role,
     );
   }
 
   @override
-  List<Object?> get props =>
-      [userId, email, firstname, lastname, picture, phonenumber, birthday, role];
+  List<Object?> get props => [
+        userId,
+        email,
+        firstname,
+        lastname,
+        picture,
+        phonenumber,
+        birthday,
+        role
+      ];
 }

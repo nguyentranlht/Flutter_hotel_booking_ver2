@@ -10,7 +10,7 @@ import '../map_hotel_view.dart';
 class MapAndListView extends StatelessWidget {
   final List<Hotel> hotelList; // Thay đổi kiểu thành List<Hotel>
   final Widget searchBarUI;
-  
+
   const MapAndListView({
     Key? key,
     required this.hotelList,
@@ -19,15 +19,15 @@ class MapAndListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-  DateTime startDate = DateTime.now();
-  DateTime endDate = DateTime.now().add(const Duration(days: 1));
+    DateTime startDate = DateTime.now();
+    DateTime endDate = DateTime.now().add(const Duration(days: 1));
     return Expanded(
       child: StatefulBuilder(
         builder: (context, state) {
           return Column(
             children: <Widget>[
               searchBarUI,
-              const TimeDateView(),
+              // const TimeDateView(),
               Expanded(
                 child: Stack(
                   children: <Widget>[
@@ -71,12 +71,12 @@ class MapAndListView extends StatelessWidget {
                             return MapHotelListView(
                               callback: () {
                                 NavigationServices(context)
-                                    .gotoRoomBookingScreen(hotelList[index]
-                                        .hotelName,
-                                        hotelList[index].hotelId,
-                                        startDate.toString(),
-                                        endDate.toString(),
-                                        ); // Sử dụng Hotel thay vì HotelListData
+                                    .gotoRoomBookingScreen(
+                                  hotelList[index].hotelName,
+                                  hotelList[index].hotelId,
+                                  startDate.toString(),
+                                  endDate.toString(),
+                                ); // Sử dụng Hotel thay vì HotelListData
                               },
                               hotelData: hotelList[index], // Truyền Hotel vào
                             );

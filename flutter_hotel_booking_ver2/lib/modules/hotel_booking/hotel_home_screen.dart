@@ -29,8 +29,9 @@ class _HotelHomeScreenState extends State<HotelHomeScreen>
   ScrollController scrollController = ScrollController();
   int room = 1;
   int ad = 2;
+
   DateTime startDate = DateTime.now();
-  DateTime endDate = DateTime.now().add(const Duration(days: 5));
+  DateTime endDate = DateTime.now().add(const Duration(days: 1));
   bool _isShowMap = false;
 
   final searchBarHieght = 158.0;
@@ -134,8 +135,14 @@ class _HotelHomeScreenState extends State<HotelHomeScreen>
                                                 .gotoRoomBookingScreen(
                                                     hotelList[index].hotelName,
                                                     hotelList[index].hotelId,
-                                                    startDate.toString(),
-                                                    endDate.toString());
+                                                    startDate
+                                                        .toString()
+                                                        .substring(0, 10),
+                                                    endDate
+                                                        .toString()
+                                                        .substring(0, 10));
+                                            print(
+                                                "startDate: $startDate, endDate: $endDate");
                                           },
                                           hotelData: hotelList[index],
                                           animation: animation,
@@ -162,7 +169,23 @@ class _HotelHomeScreenState extends State<HotelHomeScreen>
                                               child: Column(
                                                 children: <Widget>[
                                                   _getSearchBarUI(),
-                                                  const TimeDateView(),
+                                                  TimeDateView(
+                                                    startDate: startDate,
+                                                    endDate: endDate,
+                                                    onStartDateChanged:
+                                                        (newStartDate) {
+                                                      setState(() {
+                                                        startDate =
+                                                            newStartDate;
+                                                      });
+                                                    },
+                                                    onEndDateChanged:
+                                                        (newEndDate) {
+                                                      setState(() {
+                                                        endDate = newEndDate;
+                                                      });
+                                                    },
+                                                  ),
                                                 ],
                                               ),
                                             ),

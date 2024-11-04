@@ -30,7 +30,8 @@ class MyUserEntity extends Equatable {
       'lastname': lastname,
       'picture': picture,
       'phonenumber': phonenumber,
-      'birthday': Timestamp.fromDate(birthday),  // Chuyển DateTime thành Timestamp
+      'birthday':
+          Timestamp.fromDate(birthday), // Chuyển DateTime thành Timestamp
       'role': role,
     };
   }
@@ -43,12 +44,22 @@ class MyUserEntity extends Equatable {
         lastname: doc['lastname'] as String,
         picture: doc['picture'] as String?,
         phonenumber: doc['phonenumber'] as String,
-        birthday: (doc['birthday'] as Timestamp).toDate(),  // Chuyển Timestamp thành DateTime
+        birthday: (doc['birthday'] as Timestamp)
+            .toDate(), // Chuyển Timestamp thành DateTime
         role: doc['role'] as String);
   }
 
   @override
-  List<Object?> get props => [userId, email, firstname, lastname, picture, phonenumber, birthday, role];
+  List<Object?> get props => [
+        userId,
+        email,
+        firstname,
+        lastname,
+        picture,
+        phonenumber,
+        birthday,
+        role
+      ];
 
   @override
   String toString() {
