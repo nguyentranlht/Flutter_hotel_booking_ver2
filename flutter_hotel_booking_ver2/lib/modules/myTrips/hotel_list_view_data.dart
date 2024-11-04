@@ -175,7 +175,7 @@ class HotelListViewData extends StatelessWidget {
                             : MainAxisAlignment.start,
                         children: <Widget>[
                           Text(
-                            "\$${hotelData.perNight}",
+                            "${hotelData.perNight} ₫",
                             textAlign: TextAlign.left,
                             style:
                                 TextStyles(context).getRegularStyle().copyWith(

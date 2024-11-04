@@ -117,7 +117,7 @@ class RoomeBookView extends ConsumerWidget {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
                           Text(
-                            "\$${roomData.pricePerNight}",
+                            "${roomData.pricePerNight} ₫",
                             textAlign: TextAlign.left,
                             style: TextStyle(
                                 fontSize: 22, fontWeight: FontWeight.bold),

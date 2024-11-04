@@ -45,7 +45,7 @@ class _GoogleMapUIViewState extends State<GoogleMapUIView> {
               GoogleMap(
                 initialCameraPosition: const CameraPosition(
                   target: LatLng(10.769444, 106.681944),
-                  zoom: 16,
+                  zoom: 13,
                 ),
                 mapType: MapType.normal,
                 onCameraMove: (CameraPosition position) {
@@ -81,7 +81,7 @@ class _GoogleMapUIViewState extends State<GoogleMapUIView> {
                         left: item.screenMapPin!.dx - 40,
                         child: SizedBox(
                           height: 48,
-                          width: 80,
+                          width: 150,
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: <Widget>[
@@ -117,12 +117,12 @@ class _GoogleMapUIViewState extends State<GoogleMapUIView> {
                                       padding: const EdgeInsets.only(
                                           left: 8, right: 8, top: 4, bottom: 4),
                                       child: Text(
-                                        "\$${item.perNight}", // Cập nhật giá nếu có
+                                        "${item.perNight} ₫", // Cập nhật giá nếu có
                                         style: TextStyle(
                                             color: item.isSelected
                                                 ? AppTheme.backgroundColor
                                                 : AppTheme.primaryColor,
-                                            fontSize: 18,
+                                            fontSize: 15,
                                             fontWeight: FontWeight.w600),
                                       ),
                                     ),

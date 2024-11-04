@@ -140,7 +140,7 @@ class HotelListView extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 children: <Widget>[
                                   Text(
-                                    "\$${hotelData.perNight}",
+                                    "${hotelData.perNight} ₫",
                                     textAlign: TextAlign.left,
                                     style: TextStyle(
                                         fontSize: 22,
