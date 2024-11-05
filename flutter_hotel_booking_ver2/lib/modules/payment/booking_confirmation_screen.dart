@@ -424,7 +424,7 @@ class BookingConfirmationScreen extends ConsumerWidget {
                     Row(
                       children: [
                         const Icon(Icons.check_circle, color: Colors.green),
-                        const SizedBox(width: 16.0),
+                        const SizedBox(width: 5.0),
                         Center(
                           child: Text(
                             "Thanh toán thành công",
