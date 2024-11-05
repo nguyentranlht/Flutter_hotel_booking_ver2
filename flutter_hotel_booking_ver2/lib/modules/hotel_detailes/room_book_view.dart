@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hotel_booking_ver2/constants/text_styles.dart';
+import 'package:flutter_hotel_booking_ver2/language/app_localizations.dart';
 import 'package:flutter_hotel_booking_ver2/routes/route_names.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -145,12 +147,13 @@ class RoomeBookView extends ConsumerWidget {
                             style: TextStyle(
                                 fontSize: 22, fontWeight: FontWeight.bold),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 0),
-                            child: Text(
-                              "/ per night",
-                              style: TextStyle(fontSize: 14),
-                            ),
+                          Text(
+                            Loc.alized.per_night,
+                            style:
+                                TextStyles(context).getRegularStyle().copyWith(
+                                      fontSize: 15,
+                                      color: Theme.of(context).dividerColor,
+                                    ),
                           ),
                         ],
                       ),
