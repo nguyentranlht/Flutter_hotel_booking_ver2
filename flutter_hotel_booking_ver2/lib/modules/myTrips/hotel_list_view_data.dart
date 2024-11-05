@@ -153,7 +153,7 @@ class HotelListViewData extends StatelessWidget {
                             style: TextStyles(context)
                                 .getDescriptionStyle()
                                 .copyWith(
-                                  fontSize: 14,
+                                  fontSize: 10,
                                 ),
                           ),
                           Text(
@@ -162,7 +162,7 @@ class HotelListViewData extends StatelessWidget {
                             style: TextStyles(context)
                                 .getDescriptionStyle()
                                 .copyWith(
-                                  fontSize: 14,
+                                  fontSize: 10,
                                 ),
                           ),
                         ],
@@ -179,7 +179,7 @@ class HotelListViewData extends StatelessWidget {
                             style:
                                 TextStyles(context).getRegularStyle().copyWith(
                                       fontWeight: FontWeight.w600,
-                                      fontSize: 20,
+                                      fontSize: 13,
                                     ),
                           ),
                           Padding(

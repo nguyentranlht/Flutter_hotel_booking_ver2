@@ -6,6 +6,8 @@ import 'package:flutter_hotel_booking_ver2/widgets/list_cell_animation_view.dart
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hotel_repository/hotel_repository.dart';
 
+import '../../language/app_localizations.dart';
+
 class HotelListView extends StatelessWidget {
   final bool isShowDate;
   final VoidCallback callback;
@@ -155,7 +157,7 @@ class HotelListView extends StatelessWidget {
                                   Padding(
                                     padding: const EdgeInsets.only(top: 2.0),
                                     child: Text(
-                                      "per night",
+                                      Loc.alized.per_night,
                                       style: TextStyle(fontSize: 14),
                                     ),
                                   ),
