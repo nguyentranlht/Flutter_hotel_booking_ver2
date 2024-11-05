@@ -51,6 +51,7 @@ class _FavoritesListViewState extends State<FavoritesListView> {
                     NavigationServices(context).gotoRoomBookingScreen(
                         hotelList[index].hotelName,
                         hotelList[index].hotelId,
+                        hotelList[index].hotelAddress,
                         startDate.toString(),
                         endDate.toString());
                   },

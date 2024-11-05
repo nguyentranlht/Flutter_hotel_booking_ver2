@@ -137,37 +137,37 @@ class HotelListViewData extends StatelessWidget {
                         ? CrossAxisAlignment.end
                         : CrossAxisAlignment.start,
                     children: [
-                      // Row(
-                      //   mainAxisAlignment: isShowDate
-                      //       ? MainAxisAlignment.end
-                      //       : MainAxisAlignment.start,
-                      //   crossAxisAlignment: CrossAxisAlignment.center,
-                      //   children: <Widget>[
-                      //     Icon(
-                      //       FontAwesomeIcons.locationDot,
-                      //       size: 12,
-                      //       color: Theme.of(context).primaryColor,
-                      //     ),
-                      //     Text(
-                      //       " ${hotelData.dist.toStringAsFixed(1)}",
-                      //       overflow: TextOverflow.ellipsis,
-                      //       style: TextStyles(context)
-                      //           .getDescriptionStyle()
-                      //           .copyWith(
-                      //             fontSize: 14,
-                      //           ),
-                      //     ),
-                      //     Text(
-                      //       Loc.alized.km_to_city,
-                      //       overflow: TextOverflow.ellipsis,
-                      //       style: TextStyles(context)
-                      //           .getDescriptionStyle()
-                      //           .copyWith(
-                      //             fontSize: 14,
-                      //           ),
-                      //     ),
-                      //   ],
-                      // ),
+                      Row(
+                        mainAxisAlignment: isShowDate
+                            ? MainAxisAlignment.end
+                            : MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Icon(
+                            FontAwesomeIcons.locationDot,
+                            size: 12,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                          Text(
+                            " ${hotelData.dist.toStringAsFixed(1)}",
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyles(context)
+                                .getDescriptionStyle()
+                                .copyWith(
+                                  fontSize: 14,
+                                ),
+                          ),
+                          Text(
+                            Loc.alized.km_to_city,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyles(context)
+                                .getDescriptionStyle()
+                                .copyWith(
+                                  fontSize: 14,
+                                ),
+                          ),
+                        ],
+                      ),
                       Helper.ratingStar(),
                       Row(
                         mainAxisAlignment: isShowDate

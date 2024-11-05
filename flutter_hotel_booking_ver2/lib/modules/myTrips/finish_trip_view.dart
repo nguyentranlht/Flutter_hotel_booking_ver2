@@ -43,6 +43,7 @@ class FinishTripView extends ConsumerWidget {
                 NavigationServices(context).gotoRoomBookingScreen(
                   hotelData.hotelName,
                   hotelData.hotelId,
+                  hotelData.hotelAddress,
                   startDate.toString(),
                   endDate.toString(),
                 );

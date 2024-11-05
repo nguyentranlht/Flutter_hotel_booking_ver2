@@ -29,12 +29,13 @@ class _HotelHomeScreenState extends State<HotelHomeScreen>
   ScrollController scrollController = ScrollController();
   int room = 1;
   int ad = 2;
+
   DateTime startDate = DateTime.now();
-  DateTime endDate = DateTime.now().add(const Duration(days: 5));
+  DateTime endDate = DateTime.now().add(const Duration(days: 1));
   bool _isShowMap = false;
 
-  final searchBarHieght = 158.0;
-  final filterBarHieght = 52.0;
+  final searchBarHieght = 130.0;
+  final filterBarHieght = 100.0;
 
   @override
   void initState() {
@@ -130,12 +131,19 @@ class _HotelHomeScreenState extends State<HotelHomeScreen>
                                         animationController.forward();
                                         return HotelListView(
                                           callback: () {
-                                            NavigationServices(context)
+                                            NavigationServices(
+                                                    context)
                                                 .gotoRoomBookingScreen(
                                                     hotelList[index].hotelName,
                                                     hotelList[index].hotelId,
-                                                    startDate.toString(),
-                                                    endDate.toString());
+                                                    hotelList[index]
+                                                        .hotelAddress,
+                                                    startDate
+                                                        .toString()
+                                                        .substring(0, 10),
+                                                    endDate
+                                                        .toString()
+                                                        .substring(0, 10));
                                           },
                                           hotelData: hotelList[index],
                                           animation: animation,
@@ -162,11 +170,25 @@ class _HotelHomeScreenState extends State<HotelHomeScreen>
                                               child: Column(
                                                 children: <Widget>[
                                                   _getSearchBarUI(),
-                                                  const TimeDateView(),
+                                                  const FilterBarUI(),
                                                 ],
                                               ),
                                             ),
-                                            const FilterBarUI(),
+                                            TimeDateView(
+                                              startDate: startDate,
+                                              endDate: endDate,
+                                              onStartDateChanged:
+                                                  (newStartDate) {
+                                                setState(() {
+                                                  startDate = newStartDate;
+                                                });
+                                              },
+                                              onEndDateChanged: (newEndDate) {
+                                                setState(() {
+                                                  endDate = newEndDate;
+                                                });
+                                              },
+                                            ),
                                           ],
                                         ),
                                       );

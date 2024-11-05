@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class RoomBookingScreen extends ConsumerStatefulWidget {
   final String hotelName;
   final String hotelId;
+  final String hotelAddress;
   final String startDate;
   final String endDate;
 
@@ -14,6 +15,7 @@ class RoomBookingScreen extends ConsumerStatefulWidget {
     Key? key,
     required this.hotelName,
     required this.hotelId,
+    required this.hotelAddress,
     required this.startDate,
     required this.endDate,
   }) : super(key: key);
@@ -68,6 +70,11 @@ class _RoomBookingScreenState extends ConsumerState<RoomBookingScreen>
                         animationController.forward();
 
                         return RoomeBookView(
+                          hotelName: widget.hotelName,
+                          hotelId: widget.hotelId,
+                          hotelAddress: widget.hotelAddress,
+                          startDate: widget.startDate,
+                          endDate: widget.endDate,
                           roomData: rooms[index],
                           animation: animation,
                           animationController: animationController,

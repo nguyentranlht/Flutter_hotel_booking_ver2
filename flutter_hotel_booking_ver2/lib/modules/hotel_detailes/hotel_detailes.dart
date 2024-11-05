@@ -214,6 +214,7 @@ class _HotelDetailesState extends State<HotelDetailes>
                       NavigationServices(context).gotoRoomBookingScreen(
                           widget.hotelData.hotelName,
                           widget.hotelData.hotelId,
+                          widget.hotelData.hotelAddress,
                           startDate.toString(),
                           endDate.toString());
                     },
@@ -442,6 +443,7 @@ class _HotelDetailesState extends State<HotelDetailes>
                                                 .gotoRoomBookingScreen(
                                                     hotelData.hotelName,
                                                     hotelData.hotelId,
+                                                    hotelData.hotelAddress,
                                                     startDate.toString(),
                                                     endDate.toString());
                                           }),
@@ -557,20 +559,6 @@ class _HotelDetailesState extends State<HotelDetailes>
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  Text(
-                    widget.hotelData.hotelAddress.length > 20
-                        ? widget.hotelData.hotelAddress.substring(0, 20) + '...'
-                        : widget.hotelData.hotelAddress,
-                    style: TextStyles(context).getRegularStyle().copyWith(
-                          fontSize: 14,
-                          color: isInList
-                              ? Theme.of(context).disabledColor.withOpacity(0.5)
-                              : Colors.white,
-                        ),
-                  ),
-                  const SizedBox(
-                    width: 4,
-                  ),
                   Icon(
                     FontAwesomeIcons.locationDot,
                     size: 12,
