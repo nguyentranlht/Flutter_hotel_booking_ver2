@@ -85,30 +85,36 @@ class HotelListView extends StatelessWidget {
                                           fontSize: 22,
                                           fontWeight: FontWeight.bold),
                                     ),
-                                    Text(
-                                      hotelData.hotelAddress,
-                                      style: TextStyle(fontSize: 14),
-                                    ),
-                                    const SizedBox(
-                                      width: 4,
-                                    ),
                                     Row(
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.center,
+                                          CrossAxisAlignment.start,
                                       mainAxisAlignment:
                                           MainAxisAlignment.start,
                                       children: <Widget>[
-                                        Icon(
-                                          FontAwesomeIcons.locationDot,
-                                          size: 12,
-                                          color: Theme.of(context).primaryColor,
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              top:
+                                                  3.0), // Giảm khoảng cách từ trên xuống
+                                          child: Icon(
+                                            FontAwesomeIcons.locationDot,
+                                            size: 12,
+                                            color:
+                                                Theme.of(context).primaryColor,
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          width: 4,
                                         ),
                                         Expanded(
                                           child: Text(
-                                            "${hotelData.location.latitude}, ${hotelData.location.longitude}",
-                                            overflow: TextOverflow.ellipsis,
+                                            hotelData.hotelAddress,
                                             style: TextStyle(fontSize: 14),
                                           ),
+                                          // Text(
+                                          //   "${hotelData.location.latitude}, ${hotelData.location.longitude}",
+                                          //   overflow: TextOverflow.ellipsis,
+                                          //   style: TextStyle(fontSize: 14),
+                                          // ),
                                         ),
                                       ],
                                     ),
