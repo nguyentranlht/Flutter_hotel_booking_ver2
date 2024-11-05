@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hotel_booking_ver2/models/hotel_list_data.dart';
 import 'package:flutter_hotel_booking_ver2/modules/bottom_tab/bottom_tab_screen.dart';
 import 'package:flutter_hotel_booking_ver2/modules/hotel_booking/filter_screen/filters_screen.dart';
 import 'package:flutter_hotel_booking_ver2/modules/hotel_booking/hotel_home_screen.dart';

@@ -1,7 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:hotel_repository/src/entities/location_entity.dart';
-import 'package:hotel_repository/src/models/location.dart';
 
 class HotelEntity {
   final String hotelId;

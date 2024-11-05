@@ -4,7 +4,6 @@ import 'package:flutter_hotel_booking_ver2/constants/themes.dart';
 import 'package:flutter_hotel_booking_ver2/language/app_localizations.dart';
 import 'package:flutter_hotel_booking_ver2/widgets/common_card.dart';
 import 'package:hotel_repository/hotel_repository.dart';
-import '../../models/hotel_list_data.dart';
 
 class RatingView extends StatelessWidget {
   final Hotel hotelData;
