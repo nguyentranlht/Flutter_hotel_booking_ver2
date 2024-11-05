@@ -12,6 +12,7 @@ import 'package:flutter_hotel_booking_ver2/routes/route_names.dart';
 import 'package:flutter_hotel_booking_ver2/widgets/common_button.dart';
 import 'package:flutter_hotel_booking_ver2/widgets/common_card.dart';
 import 'package:hotel_repository/hotel_repository.dart';
+import 'package:intl/intl.dart';
 import '../../models/hotel_list_data.dart';
 import 'hotel_roome_list.dart';
 import 'rating_view.dart';
@@ -26,6 +27,7 @@ class HotelDetailes extends StatefulWidget {
 
 class _HotelDetailesState extends State<HotelDetailes>
     with TickerProviderStateMixin {
+  final oCcy = NumberFormat("#,##0", "vi_VN");
   DateTime startDate = DateTime.now();
   DateTime endDate = DateTime.now().add(const Duration(days: 1));
   ScrollController scrollController = ScrollController(initialScrollOffset: 0);
@@ -630,7 +632,7 @@ class _HotelDetailesState extends State<HotelDetailes>
           crossAxisAlignment: CrossAxisAlignment.end,
           children: <Widget>[
             Text(
-              "${widget.hotelData.perNight} ₫",
+              "${(oCcy.format(num.parse(widget.hotelData.perNight)))}₫",
               textAlign: TextAlign.left,
               style: TextStyles(context).getBoldStyle().copyWith(
                     fontSize: 22,

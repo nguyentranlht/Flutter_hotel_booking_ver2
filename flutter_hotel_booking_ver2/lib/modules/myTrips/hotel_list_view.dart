@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hotel_booking_ver2/constants/helper.dart';
+import 'package:flutter_hotel_booking_ver2/constants/text_styles.dart';
 import 'package:flutter_hotel_booking_ver2/constants/themes.dart';
+import 'package:flutter_hotel_booking_ver2/language/app_localizations.dart';
 import 'package:flutter_hotel_booking_ver2/widgets/common_card.dart';
 import 'package:flutter_hotel_booking_ver2/widgets/list_cell_animation_view.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hotel_repository/hotel_repository.dart';
-
-import '../../language/app_localizations.dart';
+import 'package:intl/intl.dart';
 
 class HotelListView extends StatelessWidget {
   final bool isShowDate;
@@ -26,6 +27,7 @@ class HotelListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final oCcy = NumberFormat("#,##0", "vi_VN");
     return ListCellAnimationView(
       animation: animation,
       animationController: animationController,
@@ -148,18 +150,21 @@ class HotelListView extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 children: <Widget>[
                                   Text(
-                                    "${hotelData.perNight} ₫",
+                                    "${(oCcy.format(num.parse(hotelData.perNight)))}₫",
                                     textAlign: TextAlign.left,
                                     style: TextStyle(
                                         fontSize: 22,
                                         fontWeight: FontWeight.bold),
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 2.0),
-                                    child: Text(
-                                      Loc.alized.per_night,
-                                      style: TextStyle(fontSize: 14),
-                                    ),
+                                  Text(
+                                    Loc.alized.per_night,
+                                    style: TextStyles(context)
+                                        .getRegularStyle()
+                                        .copyWith(
+                                          fontSize: 15,
+                                          color:
+                                              Theme.of(context).disabledColor,
+                                        ),
                                   ),
                                 ],
                               ),

@@ -7,6 +7,7 @@ import 'package:flutter_hotel_booking_ver2/widgets/common_card.dart';
 import 'package:flutter_hotel_booking_ver2/widgets/list_cell_animation_view.dart';
 import 'package:get/get.dart';
 import 'package:hotel_repository/hotel_repository.dart';
+import 'package:intl/intl.dart';
 
 class HotelListViewPage extends StatelessWidget {
   final bool isShowDate;
@@ -26,6 +27,7 @@ class HotelListViewPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final oCcy = NumberFormat("#,##0", "vi_VN");
     return ListCellAnimationView(
       animation: animation,
       animationController: animationController,
@@ -106,7 +108,7 @@ class HotelListViewPage extends StatelessWidget {
                                               CrossAxisAlignment.end,
                                           children: <Widget>[
                                             Text(
-                                              "${hotelData.perNight} ₫",
+                                              "${(oCcy.format(num.parse(hotelData.perNight)))}₫",
                                               textAlign: TextAlign.left,
                                               style: TextStyles(context)
                                                   .getBoldStyle()
