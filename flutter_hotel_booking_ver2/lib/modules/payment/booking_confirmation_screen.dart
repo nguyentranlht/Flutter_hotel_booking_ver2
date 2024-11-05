@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_hotel_booking_ver2/provider/room_provider.dart';
 import 'package:flutter_hotel_booking_ver2/provider/user_provider.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:intl/intl.dart';
 import 'package:room_repository/room_repository.dart';
 import 'package:http/http.dart' as http;
 
@@ -35,7 +36,7 @@ class BookingConfirmationScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final FirebaseAuth auth = FirebaseAuth.instance;
     final String userId = auth.currentUser?.uid ?? '';
-
+    final oCcy = NumberFormat("#,##0", "vi_VN");
     // Fetch room data using the hotelId
     final roomsAsync = ref.watch(roomsProvider(hotelId));
     // Fetch user data using the userId
@@ -181,7 +182,7 @@ class BookingConfirmationScreen extends ConsumerWidget {
               children: [
                 const Text("Tiền phòng"),
                 Text(
-                  "${perNight}₫",
+                  "${(oCcy.format(num.parse(perNight)))}₫",
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ],
@@ -217,7 +218,7 @@ class BookingConfirmationScreen extends ConsumerWidget {
               child: ElevatedButton(
                 onPressed: () {
                   // Handle confirmation logic
-                  String perNight = (roomData.pricePerNight * 100).toString();
+
                   makePayment(context, perNight);
                 },
                 style: ElevatedButton.styleFrom(
@@ -238,7 +239,7 @@ class BookingConfirmationScreen extends ConsumerWidget {
 
   String calculateAmount(String amount) {
     // Parse the amount as a double and then cast it to an integer
-    final calculatedAmount = (double.parse(amount) * 100).toInt();
+    final calculatedAmount = (double.parse(amount)).toInt();
     return calculatedAmount.toString();
   }
 

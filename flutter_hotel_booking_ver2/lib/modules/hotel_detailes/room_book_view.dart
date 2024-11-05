@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hotel_booking_ver2/routes/route_names.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:room_repository/room_repository.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -29,7 +30,7 @@ class RoomeBookView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     var pageController = PageController(initialPage: 0);
-
+    final oCcy = NumberFormat("#,##0", "vi_VN");
     List<String> images = roomData.imagePath?.split(" ") ?? [];
 
     return AnimatedBuilder(
@@ -139,7 +140,7 @@ class RoomeBookView extends ConsumerWidget {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
                           Text(
-                            "\$${roomData.pricePerNight}",
+                            "${(oCcy.format(num.parse(roomData.pricePerNight)))}₫",
                             textAlign: TextAlign.left,
                             style: TextStyle(
                                 fontSize: 22, fontWeight: FontWeight.bold),
