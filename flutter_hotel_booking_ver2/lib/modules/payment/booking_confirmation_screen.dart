@@ -281,37 +281,6 @@ class BookingConfirmationScreen extends ConsumerWidget {
     }
   }
 
-  // Future<void> makePayment(BuildContext context, String amount) async {
-  //   try {
-  //     // Step 1: Create a payment intent
-  //     var paymentIntent = await createPaymentIntent(amount, 'VND');
-  //     if (paymentIntent == null) {
-  //       throw Exception("Failed to create payment intent");
-  //     }
-
-  //     // Step 2: Initialize the payment sheet
-  //     await Stripe.instance.initPaymentSheet(
-  //       paymentSheetParameters: SetupPaymentSheetParameters(
-  //         paymentIntentClientSecret: paymentIntent['client_secret'],
-  //         style: ThemeMode.dark,
-  //         merchantDisplayName: 'Your Business Name',
-  //       ),
-  //     );
-
-  //     // Step 3: Display the payment sheet after successful initialization
-  //     await displayPaymentSheet(context, amount);
-  //   } catch (e, s) {
-  //     print('Exception: $e $s');
-  //     // Display an error dialog
-  //     showDialog(
-  //       context: context,
-  //       builder: (_) => AlertDialog(
-  //         content: Text("An error occurred: ${e.toString()}"),
-  //       ),
-  //     );
-  //   }
-  // }
-
 // Trong hàm makePayment
   Future<void> makePayment(
     BuildContext context,
@@ -330,32 +299,6 @@ class BookingConfirmationScreen extends ConsumerWidget {
       if (paymentIntent == null) {
         throw Exception("Không thể tạo Payment Intent");
       }
-
-      // Chuẩn bị bookingData và paymentData
-      Map<String, dynamic> bookingData = {
-        'bookingId': bookingId,
-        'userId': userId,
-        'hotelId': selectedHotelId,
-        'roomId': selectedRoomId,
-        'checkInDate': startDate,
-        'checkOutDate': endDate,
-        'numberOfGuests': numberOfGuests,
-        'bookingStatus': 'pending',
-        'createdAt': DateTime.now(),
-        'updatedAt': DateTime.now(),
-      };
-
-      Map<String, dynamic> paymentData = {
-        'paymentId': paymentIntent['id'],
-        'bookingId': bookingId,
-        'userId': userId,
-        'amount': calculateAmount(amount),
-        'currency': 'VND',
-        'status': 'pending',
-        'createdAt': DateTime.now(),
-        'updatedAt': DateTime.now(),
-      };
-
       // Bước 2: Khởi tạo Payment Sheet
       await Stripe.instance.initPaymentSheet(
         paymentSheetParameters: SetupPaymentSheetParameters(
@@ -366,11 +309,17 @@ class BookingConfirmationScreen extends ConsumerWidget {
       );
 
       // Bước 3: Hiển thị Payment Sheet sau khi khởi tạo thành công
-      await displayPaymentSheet(context, amount);
-
-      // Bước 4: Sau khi thanh toán thành công, lưu bookingData và paymentData
-      await createBookingAndPayment(
-          bookingId, userId, bookingData, paymentData);
+      await displayPaymentSheet(
+        context,
+        amount,
+        bookingId,
+        userId,
+        selectedHotelId,
+        selectedRoomId,
+        startDate,
+        endDate,
+        numberOfGuests,
+      );
     } catch (e, s) {
       print('Lỗi: $e $s');
       showDialog(
@@ -382,9 +331,86 @@ class BookingConfirmationScreen extends ConsumerWidget {
     }
   }
 
-  Future<void> displayPaymentSheet(BuildContext context, String amount) async {
+  Future<void> createBookingAndPayment(
+    String bookingId,
+    String userId,
+    Map<String, dynamic> bookingData,
+    Map<String, dynamic> paymentData,
+  ) async {
+    // Khởi tạo batch trong Firestore để thực hiện cập nhật đồng bộ
+    WriteBatch batch = FirebaseFirestore.instance.batch();
+
+    // Tham chiếu đến tài liệu
+    DocumentReference bookingRef =
+        FirebaseFirestore.instance.collection('Bookings').doc(bookingId);
+    DocumentReference paymentRef =
+        FirebaseFirestore.instance.collection('Payments').doc();
+
+    // Thêm dữ liệu đặt phòng và thanh toán vào batch
+    batch.set(bookingRef, bookingData);
+    batch.set(paymentRef, paymentData);
+
+    // Cập nhật trạng thái thanh toán trong cả hai collection
+    batch.update(bookingRef, {'paymentStatus': 'paid'});
+    batch.update(paymentRef, {'status': 'completed'});
+
+    // Thực hiện commit batch
     try {
-      await Stripe.instance.presentPaymentSheet().then((_) {
+      await batch.commit();
+      print("Đặt phòng và thanh toán đã được ghi thành công");
+    } catch (e) {
+      print("Lỗi khi tạo đặt phòng và thanh toán: $e");
+    }
+  }
+
+  Future<void> displayPaymentSheet(
+    BuildContext context,
+    String amount,
+    String bookingId,
+    String userId,
+    String selectedHotelId,
+    String selectedRoomId,
+    String startDate,
+    String endDate,
+    int numberOfGuests,
+  ) async {
+    try {
+      await Stripe.instance.presentPaymentSheet().then((_) async {
+        // Chuẩn bị dữ liệu bookingData và paymentData cho cập nhật sau khi thanh toán thành công
+        Map<String, dynamic> bookingData = {
+          'bookingId': bookingId,
+          'userId': userId,
+          'hotelId': selectedHotelId,
+          'roomId': selectedRoomId,
+          'checkInDate': startDate,
+          'checkOutDate': endDate,
+          'numberOfGuests': numberOfGuests,
+          'bookingStatus': 'pending',
+          'createdAt': DateTime.now(),
+          'updatedAt': DateTime.now(),
+          'paymentStatus': 'pending',
+        };
+
+        Map<String, dynamic> paymentData = {
+          'paymentId': bookingId, // Hoặc một ID tùy chỉnh
+          'bookingId': bookingId,
+          'userId': userId,
+          'amount': amount,
+          'currency': 'VND',
+          'status': 'pending',
+          'createdAt': DateTime.now(),
+          'updatedAt': DateTime.now(),
+        };
+
+        // Sau khi thanh toán thành công, thực hiện lưu dữ liệu vào Firestore
+        await createBookingAndPayment(
+          bookingId,
+          userId,
+          bookingData,
+          paymentData,
+        );
+
+        // Hiển thị thông báo thanh toán thành công
         showDialog(
           context: context,
           barrierDismissible: false,
@@ -401,7 +427,7 @@ class BookingConfirmationScreen extends ConsumerWidget {
                         const SizedBox(width: 16.0),
                         Center(
                           child: Text(
-                            "Thanh toán thàn công",
+                            "Thanh toán thành công",
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               color: Colors.lightGreen.shade700,
@@ -471,38 +497,6 @@ class BookingConfirmationScreen extends ConsumerWidget {
           content: Text("An unexpected error occurred: $e"),
         ),
       );
-    }
-  }
-
-  Future<void> createBookingAndPayment(
-    String bookingId,
-    String userId,
-    Map<String, dynamic> bookingData,
-    Map<String, dynamic> paymentData,
-  ) async {
-    // Khởi tạo batch trong Firestore để thực hiện cập nhật đồng bộ
-    WriteBatch batch = FirebaseFirestore.instance.batch();
-
-    // Tham chiếu đến tài liệu
-    DocumentReference bookingRef =
-        FirebaseFirestore.instance.collection('Bookings').doc(bookingId);
-    DocumentReference paymentRef =
-        FirebaseFirestore.instance.collection('Payments').doc();
-
-    // Thêm dữ liệu đặt phòng và thanh toán vào batch
-    batch.set(bookingRef, bookingData);
-    batch.set(paymentRef, paymentData);
-
-    // Cập nhật trạng thái thanh toán trong cả hai collection
-    batch.update(bookingRef, {'paymentStatus': 'paid'});
-    batch.update(paymentRef, {'status': 'completed'});
-
-    // Thực hiện commit batch
-    try {
-      await batch.commit();
-      print("Đặt phòng và thanh toán đã được ghi thành công");
-    } catch (e) {
-      print("Lỗi khi tạo đặt phòng và thanh toán: $e");
     }
   }
 }
