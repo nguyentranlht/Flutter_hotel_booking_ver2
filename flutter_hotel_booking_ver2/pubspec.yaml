@@ -61,7 +61,8 @@ dependencies:
     path: packages/hotel_repository
   room_repository:
     path: packages/room_repository
-      
+  booking_repository:
+    path: packages/booking_repository
 dev_dependencies:
   flutter_test:
     sdk: flutter

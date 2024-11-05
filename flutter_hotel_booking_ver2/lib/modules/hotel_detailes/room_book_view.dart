@@ -102,18 +102,16 @@ class RoomeBookView extends ConsumerWidget {
                             height: 38,
                             child: ElevatedButton(
                               onPressed: () {
-                                // Chuyển chuỗi ngày thành đối tượng DateTime
                                 DateTime start = DateTime.parse(startDate);
                                 DateTime end = DateTime.parse(endDate);
 
                                 int differenceInDays =
                                     end.difference(start).inDays;
-                                print("differenceInDays: $differenceInDays");
+
                                 var perNight =
                                     int.parse(roomData.pricePerNight) *
                                         differenceInDays;
 
-                                print("perNight: $perNight");
                                 NavigationServices(context)
                                     .gotoRoomConfirmationScreen(
                                   hotelName,

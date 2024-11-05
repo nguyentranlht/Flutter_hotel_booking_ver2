@@ -1,4 +1,4 @@
-name: user_repository
+name: booking_repository
 description: Dart package which manages the user.
 publish_to: 'none'
 version: 0.1.0
