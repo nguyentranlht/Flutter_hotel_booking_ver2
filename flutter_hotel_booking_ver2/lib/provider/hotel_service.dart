@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hotel_repository/hotel_repository.dart';
+import 'package:room_repository/room_repository.dart';
 
 class HotelService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
