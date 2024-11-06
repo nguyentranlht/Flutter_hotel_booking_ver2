@@ -16,6 +16,8 @@
     "resend_email_link":"パスワードをリセットするためのメールを受信するには、メールアドレスを入力してください",
     "send":"送信",
     "sign_up":"サインアップ",
+    "full_name": "Họ và tên",
+    "enter_full_name": "Nhập họ và tên",
     "first_name":"ファーストネーム",
     "last_name":"苗字",
     "terms_agreed":"بالتسجيل ، فإنك توافق على شروطنا الخاصة بـ",
@@ -83,6 +85,7 @@
     "edit_profile":"プロファイル編集",
     "username_text":"ユーザー名",
     "phone":"電話",
+    "enter_phone":"Nhập số điện thoại",
     "date_of_birth":"生年月日",
     "address_text":"住所",
     "mail_text":"Eメール",
@@ -157,5 +160,7 @@
     "enter_first_name":"名を入力してください",
     "enter_last_name":"名前を入力してください",
     "first_name_cannot_empty":"名を空にすることはできません",
-    "last_name_cannot_empty":"姓を空にすることはできません"
+    "full_name_cannot_empty": "Họ và tên không được để trống",
+    "last_name_cannot_empty":"姓を空にすることはできません",
+    "phone_cannot_empty": "Số điện thoại không được để trống"
  }

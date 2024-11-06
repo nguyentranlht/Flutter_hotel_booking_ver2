@@ -30,8 +30,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _passwordController = TextEditingController();
   String _errorFName = '';
   final TextEditingController _fnameController = TextEditingController();
-  String _errorLName = '';
-  final TextEditingController _lnameController = TextEditingController();
+  String _errorPNum = '';
+  final TextEditingController _pnumController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -84,18 +84,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         errorText: _errorFName,
                         padding: const EdgeInsets.only(
                             bottom: 16, left: 24, right: 24),
-                        titleText: Loc.alized.first_name,
-                        hintText: Loc.alized.enter_first_name,
+                        titleText: Loc.alized.full_name,
+                        hintText: Loc.alized.enter_full_name,
                         keyboardType: TextInputType.name,
                         onChanged: (String txt) {},
                       ),
                       CommonTextFieldView(
-                        controller: _lnameController,
-                        errorText: _errorLName,
+                        controller: _pnumController,
+                        errorText: _errorPNum,
                         padding: const EdgeInsets.only(
                             bottom: 16, left: 24, right: 24),
-                        titleText: Loc.alized.last_name,
-                        hintText: Loc.alized.enter_last_name,
+                        titleText: Loc.alized.phone,
+                        hintText: Loc.alized.enter_phone,
                         keyboardType: TextInputType.name,
                         onChanged: (String txt) {},
                       ),
@@ -128,10 +128,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             final myUser = MyUser(
                               userId: '', // Hoặc để trống nếu không cần tại thời điểm này
                               email: _emailController.text.trim(),
-                              firstname: _fnameController.text.trim(),
-                              lastname: _lnameController.text.trim(),
+                              fullname: _fnameController.text.trim(),
                               picture: null, // Nếu không có ảnh
-                              phonenumber: '', // Nếu chưa có số điện thoại
+                              phonenumber: _pnumController.text.trim(), // Nếu chưa có số điện thoại
                               birthday: DateTime.now(), // Nếu không có ngày sinh cụ thể
                               role: 'user', // Gán quyền mặc định
                             );
@@ -220,17 +219,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
     bool isValid = true;
 
     if (_fnameController.text.trim().isEmpty) {
-      _errorFName = Loc.alized.first_name_cannot_empty;
+      _errorFName = Loc.alized.full_name_cannot_empty;
       isValid = false;
     } else {
       _errorFName = '';
     }
 
-    if (_lnameController.text.trim().isEmpty) {
-      _errorLName = Loc.alized.last_name_cannot_empty;
+    if (_pnumController.text.trim().isEmpty) {
+      _errorPNum = Loc.alized.phone_cannot_empty;
       isValid = false;
     } else {
-      _errorLName = '';
+      _errorPNum = '';
     }
 
     if (_emailController.text.trim().isEmpty) {

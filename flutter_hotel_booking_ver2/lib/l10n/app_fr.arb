@@ -16,6 +16,8 @@
     "resend_email_link":"Entrez votre email pour recevoir un email pour réinitialiser votre mot de passe",
     "send":"Envoyer",
     "sign_up":"S'inscrire",
+    "full_name": "Họ và tên",
+    "enter_full_name": "Nhập họ và tên",
     "first_name":"Prénom",
     "last_name":"Nom de famille",
     "terms_agreed":"En vous inscrivant, vous acceptez nos conditions de",
@@ -83,6 +85,7 @@
     "edit_profile":"Editer le profil",
     "username_text":"Nom d'utilisateur",
     "phone":"Téléphoner",
+    "enter_phone":"Nhập số điện thoại",
     "date_of_birth":"Date de naissance",
     "address_text":"Adresse",
     "mail_text":"E-mail",
@@ -157,5 +160,7 @@
     "enter_first_name":"entrez votre prénom",
     "enter_last_name":"Entrer le nom de famille",
     "first_name_cannot_empty":"Le prénom ne peut pas être vide",
-    "last_name_cannot_empty":"Le nom de famille ne peut pas être vide"
+    "full_name_cannot_empty": "Họ và tên không được để trống",
+    "last_name_cannot_empty":"Le nom de famille ne peut pas être vide",
+    "phone_cannot_empty": "Số điện thoại không được để trống"
 }

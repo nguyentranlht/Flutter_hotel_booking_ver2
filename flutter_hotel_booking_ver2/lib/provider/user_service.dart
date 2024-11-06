@@ -15,8 +15,7 @@ class UserService {
           return MyUser(
             userId: userId,
             email: data['email'],
-            firstname: data['firstname'],
-            lastname: data['lastname'],
+            fullname: data['fullname'],
             picture: data['picture'],
             phonenumber: data['phonenumber'],
             birthday: (data['birthday'] as Timestamp).toDate(),

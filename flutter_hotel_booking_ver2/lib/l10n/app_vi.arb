@@ -16,6 +16,8 @@
     "resend_email_link":"Nhập email của bạn để nhận email đặt lại mật khẩu",
     "send":"Gửi",
     "sign_up":"Đăng ký",
+    "full_name": "Họ và tên",
+    "enter_full_name": "Nhập họ và tên",
     "first_name":"Tên",
     "last_name":"Họ",
     "terms_agreed":"Bằng việc đăng ký, bạn đồng ý với Điều khoản\n Dịch vụ và Chính sách bảo mật của chúng tôi",
@@ -82,7 +84,8 @@
     "view_edit":"Xem và chỉnh sửa hồ sơ",
     "edit_profile":"Chỉnh sửa hồ sơ",
     "username_text":"Tên người dùng",
-    "phone":"Điện thoại",
+    "phone":"Số điện thoại",
+    "enter_phone":"Nhập số điện thoại",
     "date_of_birth":"Ngày sinh",
     "address_text":"Địa chỉ",
     "mail_text":"Email",
@@ -157,5 +160,7 @@
     "enter_first_name":"Nhập tên",
     "enter_last_name":"Nhập họ",
     "first_name_cannot_empty": "Tên không được để trống",
-    "last_name_cannot_empty":"Họ không được để trống"
+    "full_name_cannot_empty": "Họ và tên không được để trống",
+    "last_name_cannot_empty":"Họ không được để trống",
+    "phone_cannot_empty": "Số điện thoại không được để trống"
 }

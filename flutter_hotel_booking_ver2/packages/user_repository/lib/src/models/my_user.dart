@@ -4,8 +4,7 @@ import '../entities/entities.dart';
 class MyUser extends Equatable {
   final String userId;
   late final String email;
-  late final String firstname;
-  late final String lastname;
+  late final String fullname;
   String? picture;
   final String phonenumber;
   final DateTime birthday; // Chuyển đổi sang DateTime
@@ -14,8 +13,7 @@ class MyUser extends Equatable {
   MyUser({
     required this.userId,
     required this.email,
-    required this.firstname,
-    required this.lastname,
+    required this.fullname,
     this.picture,
     required this.phonenumber,
     required this.birthday, // Chuyển đổi sang DateTime
@@ -26,8 +24,7 @@ class MyUser extends Equatable {
   static final empty = MyUser(
     userId: '', // Hoặc để trống nếu không cần tại thời điểm này
     email: '',
-    firstname: '',
-    lastname: '',
+    fullname: '',
     picture: null, // Nếu không có ảnh
     phonenumber: '', // Nếu chưa có số điện thoại
     birthday: DateTime.now(), // Nếu không có ngày sinh cụ thể
@@ -38,8 +35,7 @@ class MyUser extends Equatable {
   MyUser copyWith({
     String? userId,
     String? email,
-    String? firstname,
-    String? lastname,
+    String? fullname,
     String? picture,
     String? phonenumber,
     DateTime? birthday, // Chuyển đổi sang DateTime
@@ -48,8 +44,7 @@ class MyUser extends Equatable {
     return MyUser(
       userId: userId ?? this.userId,
       email: email ?? this.email,
-      firstname: firstname ?? this.firstname,
-      lastname: lastname ?? this.lastname,
+      fullname: fullname ?? this.fullname,
       picture: picture ?? this.picture,
       phonenumber: phonenumber ?? this.phonenumber,
       birthday: birthday ?? this.birthday, // Chuyển đổi sang DateTime
@@ -68,8 +63,7 @@ class MyUser extends Equatable {
     return MyUserEntity(
       userId: userId,
       email: email,
-      firstname: firstname,
-      lastname: lastname,
+      fullname: fullname,
       picture: picture,
       phonenumber: phonenumber,
       birthday: birthday, // Sử dụng DateTime
@@ -82,8 +76,7 @@ class MyUser extends Equatable {
     return MyUser(
       userId: entity.userId,
       email: entity.email,
-      firstname: entity.firstname,
-      lastname: entity.lastname,
+      fullname: entity.fullname,
       picture: entity.picture,
       phonenumber: entity.phonenumber,
       birthday: entity.birthday, // Sử dụng DateTime từ entity
@@ -95,8 +88,7 @@ class MyUser extends Equatable {
   List<Object?> get props => [
         userId,
         email,
-        firstname,
-        lastname,
+        fullname,
         picture,
         phonenumber,
         birthday,

@@ -147,7 +147,7 @@ class BookingConfirmationScreen extends ConsumerWidget {
                   ? Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text("${user.firstname} ${user.lastname}"),
+                        Text("${user.fullname}"),
                         Text(user.phonenumber),
                       ],
                     )

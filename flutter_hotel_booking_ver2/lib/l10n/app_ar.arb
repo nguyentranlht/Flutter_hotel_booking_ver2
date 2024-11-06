@@ -16,6 +16,8 @@
     "resend_email_link":"أدخل بريدك الإلكتروني لتلقي بريد إلكتروني لإعادة تعيين كلمة المرور الخاصة بك",
     "send":"إرسال",
     "sign_up": "اشتراك",
+    "full_name": "Họ và tên",
+    "enter_full_name": "Nhập họ và tên",
     "first_name":"الاسم الأول",
     "last_name":"الكنية",
     "terms_agreed":"サインアップすることにより、あなたは私たちの条件に同意した",
@@ -83,6 +85,7 @@
     "edit_profile":"تعديل الملف الشخصي",
     "username_text":"اسم االمستخدم",
     "phone":"هاتف",
+    "enter_phone":"Nhập số điện thoại",
     "date_of_birth":"تاريخ الولادة",
     "address_text":"عنوان",
     "mail_text":"بريد إلكتروني",
@@ -157,5 +160,7 @@
     "enter_first_name":"أدخل الاسم الأول",
     "enter_last_name":"إدخال اسم آخر",
     "first_name_cannot_empty":"لا يمكن أن يكون الاسم الأول فارغًا",
-    "last_name_cannot_empty":"لا يمكن أن يكون الاسم الأخير فارغًا"
+    "full_name_cannot_empty": "Họ và tên không được để trống",
+    "last_name_cannot_empty":"لا يمكن أن يكون الاسم الأخير فارغًا",
+    "phone_cannot_empty": "Số điện thoại không được để trống"
 }

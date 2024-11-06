@@ -4,8 +4,7 @@ import 'package:equatable/equatable.dart';
 class MyUserEntity extends Equatable {
   final String userId;
   final String email;
-  final String firstname;
-  final String lastname;
+  final String fullname;
   final String? picture;
   final String phonenumber;
   final DateTime birthday;
@@ -14,8 +13,7 @@ class MyUserEntity extends Equatable {
   const MyUserEntity({
     required this.userId,
     required this.email,
-    required this.firstname,
-    required this.lastname,
+    required this.fullname,
     this.picture,
     required this.phonenumber,
     required this.birthday,
@@ -26,8 +24,7 @@ class MyUserEntity extends Equatable {
     return {
       'userId': userId,
       'email': email,
-      'firstname': firstname,
-      'lastname': lastname,
+      'fullname': fullname,
       'picture': picture,
       'phonenumber': phonenumber,
       'birthday':
@@ -40,8 +37,7 @@ class MyUserEntity extends Equatable {
     return MyUserEntity(
         userId: doc['userId'] as String,
         email: doc['email'] as String,
-        firstname: doc['firstname'] as String,
-        lastname: doc['lastname'] as String,
+        fullname: doc['fullname'] as String,
         picture: doc['picture'] as String?,
         phonenumber: doc['phonenumber'] as String,
         birthday: (doc['birthday'] as Timestamp)
@@ -53,8 +49,7 @@ class MyUserEntity extends Equatable {
   List<Object?> get props => [
         userId,
         email,
-        firstname,
-        lastname,
+        fullname,
         picture,
         phonenumber,
         birthday,
@@ -66,8 +61,7 @@ class MyUserEntity extends Equatable {
     return '''MyUserEntity: {
       userId: $userId,
       email: $email,
-      firstname: $firstname,
-      lastname: $lastname,
+      fullname: $fullname,
       picture: $picture,
       phonenumber: $phonenumber,
       birthday: $birthday,
