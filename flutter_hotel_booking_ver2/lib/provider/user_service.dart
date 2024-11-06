@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:user_repository/user_repository.dart';
 
 class UserService {
@@ -15,7 +16,7 @@ class UserService {
           return MyUser(
             userId: userId,
             email: data['email'],
-            fullname: data['fullname'],
+            fullname: data['fullname']?? 'Unknown User',
             picture: data['picture'],
             phonenumber: data['phonenumber'],
             birthday: (data['birthday'] as Timestamp).toDate(),

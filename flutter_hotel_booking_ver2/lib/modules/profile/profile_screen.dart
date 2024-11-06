@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hotel_booking_ver2/constants/localfiles.dart';
 import 'package:flutter_hotel_booking_ver2/constants/text_styles.dart';
@@ -5,18 +6,20 @@ import 'package:flutter_hotel_booking_ver2/constants/themes.dart';
 import 'package:flutter_hotel_booking_ver2/language/app_localizations.dart';
 import 'package:flutter_hotel_booking_ver2/routes/route_names.dart';
 import 'package:flutter_hotel_booking_ver2/widgets/bottom_top_move_animation_view.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/setting_list_data.dart';
+import '../../provider/user_provider.dart';
 
-class ProfileScreen extends StatefulWidget {
+class ProfileScreen extends ConsumerStatefulWidget {
   final AnimationController animationController;
 
   const ProfileScreen({Key? key, required this.animationController})
       : super(key: key);
   @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
+  ConsumerState<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   @override
   void initState() {
     widget.animationController.forward();
@@ -35,7 +38,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         children: <Widget>[
           Padding(
             padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-            child: Container(child: appBar()),
+            child: Container(child: appBar(ref)), // Truyền ref vào appBar
           ),
           Expanded(
             child: ListView.builder(
@@ -45,25 +48,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
               itemBuilder: (context, index) {
                 return InkWell(
                   onTap: () async {
-                    //setting screen view
+                    // setting screen view
                     if (index == 5) {
                       NavigationServices(context).gotoSettingsScreen();
-
-                      //   setState(() {});
                     }
-                    //help center screen view
-
-                    if (index == 3) {
+                    // help center screen view
+                    else if (index == 3) {
                       NavigationServices(context).gotoHeplCenterScreen();
                     }
-                    //Chage password  screen view
-
-                    if (index == 0) {
+                    // change password screen view
+                    else if (index == 0) {
                       NavigationServices(context).gotoChangepasswordScreen();
                     }
-                    //Invite friend  screen view
-
-                    if (index == 1) {
+                    // invite friend screen view
+                    else if (index == 1) {
                       NavigationServices(context).gotoInviteFriend();
                     }
                   },
@@ -88,78 +86,93 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                             Padding(
                               padding: const EdgeInsets.all(16),
-                              child: Icon(userSettingsList[index].iconData,
-                                  color: AppTheme.secondaryTextColor
-                                      .withOpacity(0.7)),
-                            )
+                              child: Icon(
+                                userSettingsList[index].iconData,
+                                color: AppTheme.secondaryTextColor
+                                    .withOpacity(0.7),
+                              ),
+                            ),
                           ],
                         ),
                       ),
                       const Padding(
                         padding: EdgeInsets.only(left: 16, right: 16),
-                        child: Divider(
-                          height: 1,
-                        ),
-                      )
+                        child: Divider(height: 1),
+                      ),
                     ],
                   ),
                 );
               },
             ),
-          )
+          ),
         ],
       ),
     );
   }
 
-  Widget appBar() {
-    return InkWell(
-      onTap: () {
-        NavigationServices(context).gotoEditProfile();
-      },
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.only(left: 24, right: 24),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    Loc.alized.amanda_text,
-                    style: const TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.w700,
+  Widget appBar(WidgetRef ref) {
+    final FirebaseAuth auth = FirebaseAuth.instance;
+    final String userId = auth.currentUser?.uid ?? '';
+    final userAsyncValue = ref.watch(userProvider(userId));
+
+    return userAsyncValue.when(
+      data: (userData) => InkWell(
+        onTap: () {
+          NavigationServices(context).gotoEditProfile();
+        },
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 24, right: 24),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      userData!.fullname,
+                      style: const TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
-                  ),
-                  Text(
-                    Loc.alized.view_edit,
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: Theme.of(context).disabledColor,
+                    Text(
+                      Loc.alized.view_edit,
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Theme.of(context).disabledColor,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-          Padding(
-            padding:
-                const EdgeInsets.only(right: 24, top: 16, bottom: 16, left: 24),
-            child: SizedBox(
-              width: 70,
-              height: 70,
-              child: ClipRRect(
-                borderRadius: const BorderRadius.all(Radius.circular(40.0)),
-                child: Image.asset(Localfiles.userImage),
+            Padding(
+              padding: const EdgeInsets.only(
+                  right: 24, top: 16, bottom: 16, left: 24),
+              child: SizedBox(
+                width: 70,
+                height: 70,
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.all(Radius.circular(40.0)),
+                  child: (userData != null &&
+                          userData.picture != null &&
+                          userData.picture!.isNotEmpty)
+                      ? Image.network(
+                          userData!.picture!,
+                          fit: BoxFit.cover,
+                        )
+                      : Icon(Icons.person, size: 70.0, color: const Color.fromARGB(179, 41, 40, 40)),
+                ),
               ),
             ),
-          )
-        ],
+          ],
+        ),
       ),
+      loading: () => CircularProgressIndicator(),
+      error: (error, stackTrace) => Text('Error loading user data'),
     );
   }
 }
