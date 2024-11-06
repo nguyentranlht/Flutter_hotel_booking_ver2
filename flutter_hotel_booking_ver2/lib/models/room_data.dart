@@ -1,6 +1,5 @@
 class RoomData {
   int numberRoom;
-
   int people;
 
   RoomData(this.numberRoom, this.people);

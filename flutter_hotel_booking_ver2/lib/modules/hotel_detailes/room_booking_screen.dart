@@ -50,9 +50,7 @@ class _RoomBookingScreenState extends ConsumerState<RoomBookingScreen>
           Expanded(
             child: Consumer(
               builder: (context, ref, child) {
-                final roomsAsync =
-                    ref.watch(roomsProvider(widget.hotelId.toString()));
-
+                final roomsAsync = ref.watch(roomsProvider(widget.hotelId));
                 return roomsAsync.when(
                   data: (rooms) {
                     return ListView.builder(

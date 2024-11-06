@@ -7,7 +7,6 @@ import 'package:flutter_hotel_booking_ver2/models/room_data.dart';
 import 'package:flutter_hotel_booking_ver2/modules/hotel_booking/components/calendar_pop_up_view.dart';
 import 'package:flutter_hotel_booking_ver2/modules/hotel_booking/components/room_pop_up_view.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:intl/intl.dart';
 
 class TimeDateView extends StatefulWidget {
