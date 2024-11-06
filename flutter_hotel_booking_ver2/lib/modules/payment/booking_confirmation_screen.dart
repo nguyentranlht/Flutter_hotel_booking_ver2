@@ -1,6 +1,4 @@
 import 'dart:convert';
-
-import 'package:booking_repository/booking_repository.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +21,7 @@ class BookingConfirmationScreen extends ConsumerWidget {
   final String startDate;
   final String endDate;
 
-  const BookingConfirmationScreen({
+  BookingConfirmationScreen({
     Key? key,
     required this.roomData,
     required this.hotelName,
@@ -218,24 +216,36 @@ class BookingConfirmationScreen extends ConsumerWidget {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () {
-                  // Handle confirmation logic
-                  String bookingId = FirebaseFirestore.instance
-                      .collection('Bookings')
-                      .doc()
-                      .id;
-
-                  makePayment(context, perNight, bookingId, userId, hotelId,
-                      roomData.roomId, startDate, endDate, roomData.capacity);
-                },
+                onPressed: ref.watch(isLoadingProvider)
+                    ? null // Khóa nút khi isLoading là true
+                    : () async {
+                        String bookingId = FirebaseFirestore.instance
+                            .collection('Bookings')
+                            .doc()
+                            .id;
+                        await makePayment(
+                          context,
+                          ref, // Truyền thêm ref vào
+                          perNight,
+                          bookingId,
+                          userId,
+                          hotelId,
+                          roomData.roomId,
+                          startDate,
+                          endDate,
+                          roomData.capacity,
+                        );
+                      },
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16.0),
                   backgroundColor: Theme.of(context).primaryColor,
                 ),
-                child: Text(
-                  "Thanh toán",
-                  style: TextStyle(color: Colors.white, fontSize: 20),
-                ),
+                child: ref.watch(isLoadingProvider)
+                    ? const CircularProgressIndicator(color: Colors.white)
+                    : const Text(
+                        "Thanh toán",
+                        style: TextStyle(color: Colors.white, fontSize: 20),
+                      ),
               ),
             ),
           ],
@@ -281,9 +291,12 @@ class BookingConfirmationScreen extends ConsumerWidget {
     }
   }
 
+  final isLoadingProvider = StateProvider<bool>((ref) => false);
+
 // Trong hàm makePayment
   Future<void> makePayment(
     BuildContext context,
+    WidgetRef ref, // Thêm ref để có thể truy cập StateProvider
     String amount,
     String bookingId,
     String userId,
@@ -293,12 +306,16 @@ class BookingConfirmationScreen extends ConsumerWidget {
     String endDate,
     int numberOfGuests,
   ) async {
+    // Cập nhật isLoading thành true
+    ref.read(isLoadingProvider.notifier).state = true;
+
     try {
       // Bước 1: Tạo Payment Intent
       var paymentIntent = await createPaymentIntent(amount, 'VND');
       if (paymentIntent == null) {
         throw Exception("Không thể tạo Payment Intent");
       }
+
       // Bước 2: Khởi tạo Payment Sheet
       await Stripe.instance.initPaymentSheet(
         paymentSheetParameters: SetupPaymentSheetParameters(
@@ -328,6 +345,9 @@ class BookingConfirmationScreen extends ConsumerWidget {
           content: Text("Đã xảy ra lỗi: ${e.toString()}"),
         ),
       );
+    } finally {
+      // Đảm bảo đặt lại isLoading về false sau khi hoàn thành
+      ref.read(isLoadingProvider.notifier).state = false;
     }
   }
 
