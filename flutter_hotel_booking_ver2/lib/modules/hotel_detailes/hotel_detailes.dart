@@ -217,8 +217,8 @@ class _HotelDetailesState extends State<HotelDetailes>
                           widget.hotelData.hotelName,
                           widget.hotelData.hotelId,
                           widget.hotelData.hotelAddress,
-                          startDate.toString(),
-                          endDate.toString());
+                          startDate.toString().substring(0, 10),
+                          endDate.toString().substring(0, 10));
                     },
                   ),
                 ),
@@ -446,8 +446,12 @@ class _HotelDetailesState extends State<HotelDetailes>
                                                     hotelData.hotelName,
                                                     hotelData.hotelId,
                                                     hotelData.hotelAddress,
-                                                    startDate.toString(),
-                                                    endDate.toString());
+                                                    startDate
+                                                        .toString()
+                                                        .substring(0, 10),
+                                                    endDate
+                                                        .toString()
+                                                        .substring(0, 10));
                                           }),
                                     ),
                                   ],

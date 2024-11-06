@@ -127,8 +127,9 @@ class _SearchTypeListViewState extends State<SearchTypeListView>
                                       child: Center(
                                         child: Icon(
                                           FontAwesomeIcons.check,
-                                          color:
-                                              Theme.of(context).colorScheme.background,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .background,
                                         ),
                                       ),
                                     ),
