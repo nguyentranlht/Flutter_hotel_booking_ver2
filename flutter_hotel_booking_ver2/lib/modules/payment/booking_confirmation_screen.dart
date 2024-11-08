@@ -3,7 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hotel_booking_ver2/constants/themes.dart';
-import 'package:flutter_hotel_booking_ver2/provider/room_service.dart';
 import 'package:flutter_hotel_booking_ver2/widgets/app_constant.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_hotel_booking_ver2/provider/room_provider.dart';

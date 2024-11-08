@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hotel_booking_ver2/constants/helper.dart';
 import 'package:flutter_hotel_booking_ver2/constants/themes.dart';
+import 'package:flutter_hotel_booking_ver2/provider/favorite_provider.dart';
 import 'package:flutter_hotel_booking_ver2/widgets/common_card.dart';
 import 'package:flutter_hotel_booking_ver2/widgets/list_cell_animation_view.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -26,6 +27,9 @@ class HotelListView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final oCcy = NumberFormat("#,##0", "vi_VN");
+
+    // Watch the user's favorite hotel IDs
+    final favoriteHotelIdsAsync = ref.watch(favoriteHotelIdsProvider);
 
     return ListCellAnimationView(
       animation: animation,
@@ -133,10 +137,7 @@ class HotelListView extends ConsumerWidget {
                                         const SizedBox(width: 4),
                                         Expanded(
                                           child: Text(
-                                            (hotelData.distanceFromCenter)
-                                                    .toString() +
-                                                " km" +
-                                                ' đến trung tâm',
+                                            "${hotelData.distanceFromCenter} km đến trung tâm",
                                             style:
                                                 const TextStyle(fontSize: 14),
                                           ),
@@ -208,32 +209,41 @@ class HotelListView extends ConsumerWidget {
                         ),
                       ),
                     ),
+                    // Favorite icon with condition based on favoriteHotelIds
                     Positioned(
                       top: 8,
                       right: 8,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.background,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Material(
-                          color: Colors.transparent,
-                          child: InkWell(
-                            borderRadius: const BorderRadius.all(
-                              Radius.circular(32.0),
-                            ),
-                            onTap: () {}, // Add your favorite action here
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
+                      child: favoriteHotelIdsAsync.when(
+                        data: (favoriteHotelIds) {
+                          final isFavorite =
+                              favoriteHotelIds.contains(hotelData.hotelId);
+                          return GestureDetector(
+                            onTap: () {
+                              ref
+                                  .read(favoriteServiceProvider)
+                                  .toggleFavoriteHotel(hotelData.hotelId);
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).colorScheme.background,
+                                shape: BoxShape.circle,
+                              ),
+                              padding: const EdgeInsets.all(
+                                  8.0), // Padding for icon inside the circle
                               child: Icon(
-                                Icons.favorite_border,
+                                isFavorite
+                                    ? Icons.favorite
+                                    : Icons.favorite_border,
                                 color: Theme.of(context).primaryColor,
                               ),
                             ),
-                          ),
-                        ),
+                          );
+                        },
+                        loading: () => CircularProgressIndicator(),
+                        error: (error, stack) =>
+                            Icon(Icons.error, color: Colors.red),
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),
