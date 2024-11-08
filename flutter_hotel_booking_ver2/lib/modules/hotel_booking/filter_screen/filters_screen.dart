@@ -7,7 +7,6 @@ import 'package:flutter_hotel_booking_ver2/provider/hotel_filter_prodiver.dart';
 import 'package:flutter_hotel_booking_ver2/widgets/common_appbar_view.dart';
 import 'package:flutter_hotel_booking_ver2/widgets/common_button.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 
 class FiltersScreen extends ConsumerWidget {
   const FiltersScreen({Key? key}) : super(key: key);
