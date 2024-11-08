@@ -1,18 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hotel_booking_ver2/constants/helper.dart';
-import 'package:flutter_hotel_booking_ver2/constants/text_styles.dart';
 import 'package:flutter_hotel_booking_ver2/constants/themes.dart';
-import 'package:flutter_hotel_booking_ver2/language/app_localizations.dart';
 import 'package:flutter_hotel_booking_ver2/widgets/common_card.dart';
 import 'package:flutter_hotel_booking_ver2/widgets/list_cell_animation_view.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hotel_repository/hotel_repository.dart';
 import 'package:intl/intl.dart';
 
-class HotelListView extends StatelessWidget {
+class HotelListView extends ConsumerWidget {
   final bool isShowDate;
   final VoidCallback callback;
-  final Hotel hotelData; // Thay đổi thành Hotel
+  final Hotel hotelData;
   final AnimationController animationController;
   final Animation<double> animation;
 
@@ -26,8 +24,9 @@ class HotelListView extends StatelessWidget {
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final oCcy = NumberFormat("#,##0", "vi_VN");
+
     return ListCellAnimationView(
       animation: animation,
       animationController: animationController,
@@ -42,8 +41,8 @@ class HotelListView extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          'Ngày check-in', // hoặc thông tin ngày từ Hotel nếu có
-                          style: TextStyle(fontSize: 14),
+                          'Ngày check-in', // Adjust as needed based on date requirements
+                          style: const TextStyle(fontSize: 14),
                         ),
                       ],
                     ),
@@ -85,7 +84,7 @@ class HotelListView extends StatelessWidget {
                                     Text(
                                       hotelData.hotelName,
                                       textAlign: TextAlign.left,
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                           fontSize: 22,
                                           fontWeight: FontWeight.bold),
                                     ),
@@ -96,29 +95,51 @@ class HotelListView extends StatelessWidget {
                                           MainAxisAlignment.start,
                                       children: <Widget>[
                                         Padding(
-                                          padding: const EdgeInsets.only(
-                                              top:
-                                                  3.0), // Giảm khoảng cách từ trên xuống
+                                          padding:
+                                              const EdgeInsets.only(top: 3.0),
                                           child: Icon(
-                                            FontAwesomeIcons.locationDot,
+                                            Icons.location_on,
                                             size: 12,
                                             color:
                                                 Theme.of(context).primaryColor,
                                           ),
                                         ),
-                                        const SizedBox(
-                                          width: 4,
-                                        ),
+                                        const SizedBox(width: 4),
                                         Expanded(
                                           child: Text(
                                             hotelData.hotelAddress,
-                                            style: TextStyle(fontSize: 14),
+                                            style:
+                                                const TextStyle(fontSize: 14),
                                           ),
-                                          // Text(
-                                          //   "${hotelData.location.latitude}, ${hotelData.location.longitude}",
-                                          //   overflow: TextOverflow.ellipsis,
-                                          //   style: TextStyle(fontSize: 14),
-                                          // ),
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: <Widget>[
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 3.0),
+                                          child: Icon(
+                                            Icons.accessibility_new,
+                                            size: 12,
+                                            color:
+                                                Theme.of(context).primaryColor,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 4),
+                                        Expanded(
+                                          child: Text(
+                                            (hotelData.distanceFromCenter)
+                                                    .toString() +
+                                                " km" +
+                                                ' đến trung tâm',
+                                            style:
+                                                const TextStyle(fontSize: 14),
+                                          ),
                                         ),
                                       ],
                                     ),
@@ -129,12 +150,11 @@ class HotelListView extends StatelessWidget {
                                           Helper.ratingStar(),
                                           Text(
                                             " ${hotelData.starRating}",
-                                            style: TextStyle(fontSize: 14),
+                                            style:
+                                                const TextStyle(fontSize: 14),
                                           ),
-                                          Text(
-                                            " reviews",
-                                            style: TextStyle(fontSize: 14),
-                                          ),
+                                          const Text(" reviews",
+                                              style: TextStyle(fontSize: 14)),
                                         ],
                                       ),
                                     ),
@@ -152,19 +172,16 @@ class HotelListView extends StatelessWidget {
                                   Text(
                                     "${(oCcy.format(num.parse(hotelData.perNight)))}₫",
                                     textAlign: TextAlign.left,
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                         fontSize: 22,
                                         fontWeight: FontWeight.bold),
                                   ),
                                   Text(
-                                    Loc.alized.per_night,
-                                    style: TextStyles(context)
-                                        .getRegularStyle()
-                                        .copyWith(
-                                          fontSize: 15,
-                                          color:
-                                              Theme.of(context).disabledColor,
-                                        ),
+                                    "per night",
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      color: Theme.of(context).disabledColor,
+                                    ),
                                   ),
                                 ],
                               ),
@@ -181,17 +198,14 @@ class HotelListView extends StatelessWidget {
                       child: Material(
                         color: Colors.transparent,
                         child: InkWell(
-                            highlightColor: Colors.transparent,
-                            splashColor:
-                                Theme.of(context).primaryColor.withOpacity(0.1),
-                            borderRadius: const BorderRadius.all(
-                              Radius.circular(16.0),
-                            ),
-                            onTap: () {
-                              try {
-                                callback();
-                              } catch (_) {}
-                            }),
+                          highlightColor: Colors.transparent,
+                          splashColor:
+                              Theme.of(context).primaryColor.withOpacity(0.1),
+                          borderRadius: const BorderRadius.all(
+                            Radius.circular(16.0),
+                          ),
+                          onTap: callback,
+                        ),
                       ),
                     ),
                     Positioned(
@@ -199,15 +213,16 @@ class HotelListView extends StatelessWidget {
                       right: 8,
                       child: Container(
                         decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.background,
-                            shape: BoxShape.circle),
+                          color: Theme.of(context).colorScheme.background,
+                          shape: BoxShape.circle,
+                        ),
                         child: Material(
                           color: Colors.transparent,
                           child: InkWell(
                             borderRadius: const BorderRadius.all(
                               Radius.circular(32.0),
                             ),
-                            onTap: () {},
+                            onTap: () {}, // Add your favorite action here
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Icon(

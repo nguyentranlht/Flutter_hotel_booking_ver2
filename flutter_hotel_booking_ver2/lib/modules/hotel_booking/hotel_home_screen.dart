@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hotel_booking_ver2/modules/myTrips/hotel_list_view.dart';
+import 'package:flutter_hotel_booking_ver2/provider/hotel_filter_prodiver.dart';
 import 'package:flutter_hotel_booking_ver2/provider/hotel_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -97,7 +98,8 @@ class _HotelHomeScreenState extends State<HotelHomeScreen>
                     : Expanded(
                         child: Consumer(
                           builder: (context, ref, _) {
-                            final hotelListAsync = ref.watch(hotelProvider);
+                            final hotelListAsync =
+                                ref.watch(filteredHotelProvider);
 
                             return hotelListAsync.when(
                               data: (hotelList) => Stack(

@@ -430,8 +430,8 @@ class BookingConfirmationScreen extends ConsumerWidget {
           bookingData,
           paymentData,
         );
-        await RoomService()
-            .updateAvailableDates(roomData.roomId, startDate, endDate);
+        // await RoomService()
+        //     .updateAvailableDates(roomData.roomId, startDate, endDate);
 
         // Hiển thị thông báo thanh toán thành công
         showDialog(
