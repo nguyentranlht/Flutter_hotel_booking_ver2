@@ -11,6 +11,7 @@ class HotelEntity {
   final String descrition;
   final String perNight;
   final bool isSelected;
+  final double distanceFromCenter;
 
   HotelEntity({
     required this.hotelId,
@@ -23,5 +24,6 @@ class HotelEntity {
     required this.descrition,
     required this.perNight,
     required this.isSelected,
+    required this.distanceFromCenter,
   });
 }
