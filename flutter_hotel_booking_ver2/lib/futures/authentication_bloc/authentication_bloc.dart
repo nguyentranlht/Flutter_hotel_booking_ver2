@@ -30,7 +30,8 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     on<SignInWithGoogleRequested>((event, emit) async {
       emit(SignInProcess());
       try {
-        await userRepository.signInGoogle();
+        MyUser user = await userRepository.signInGoogle();
+        await userRepository.setUserData(user);
         emit(SignInSuccess());
       } catch (e) {
         emit(SignInFailure(e.toString()));
@@ -41,7 +42,8 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     on<SignInWithFacebookRequested>((event, emit) async {
       emit(SignInProcess());
       try {
-        await userRepository.signInFacebook();
+        MyUser user = await userRepository.signInFacebook();
+        await userRepository.setUserData(user);
         emit(SignInSuccess());
       } catch (e) {
         emit(SignInFailure(e.toString()));

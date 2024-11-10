@@ -67,7 +67,7 @@ class FirebaseUserRepository implements UserRepository {
   }
 
   @override
-  Future<void> signInGoogle() async {
+  Future<MyUser> signInGoogle() async {
     try {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
       if (googleUser != null) {
@@ -77,7 +77,22 @@ class FirebaseUserRepository implements UserRepository {
           accessToken: googleAuth.accessToken,
           idToken: googleAuth.idToken,
         );
-        await _firebaseAuth.signInWithCredential(credential);
+        final UserCredential userCredential =
+            await _firebaseAuth.signInWithCredential(credential);
+        final myUser = MyUser(
+          userId: userCredential
+              .user!.uid, // Hoặc để trống nếu không cần tại thời điểm này
+          email: userCredential.user?.email ?? '',
+          fullname: userCredential.user!.displayName ?? 'User',
+          picture: userCredential.user!.photoURL ?? null, // Nếu không có ảnh
+          phonenumber: userCredential.user?.phoneNumber ??
+              '', // Nếu chưa có số điện thoại
+          birthday: DateTime.now(), // Nếu không có ngày sinh cụ thể
+          role: 'user', // Gán quyền mặc định
+        );
+        return myUser;
+      } else {
+        throw Exception("Sign-In was canceled by user");
       }
     } catch (e) {
       log(e.toString());
@@ -86,13 +101,28 @@ class FirebaseUserRepository implements UserRepository {
   }
 
   @override
-  Future<void> signInFacebook() async {
+  Future<MyUser> signInFacebook() async {
     try {
       final FacebookLoginResult loginResult = await _facebookAuth.logIn();
       if (loginResult.status == FacebookLoginStatus.success) {
         final FacebookAccessToken accessToken = loginResult.accessToken!;
         final credential = FacebookAuthProvider.credential(accessToken.token);
-        await _firebaseAuth.signInWithCredential(credential);
+        final UserCredential userCredential =
+            await _firebaseAuth.signInWithCredential(credential);
+        final myUser = MyUser(
+          userId: userCredential
+              .user!.uid, // Hoặc để trống nếu không cần tại thời điểm này
+          email: userCredential.user?.email ?? '',
+          fullname: userCredential.user!.displayName ?? 'User',
+          picture: userCredential.user!.photoURL ?? null, // Nếu không có ảnh
+          phonenumber: userCredential.user?.phoneNumber ??
+              '', // Nếu chưa có số điện thoại
+          birthday: DateTime.now(), // Nếu không có ngày sinh cụ thể
+          role: 'user', // Gán quyền mặc định
+        );
+        return myUser;
+      } else {
+        throw Exception("Sign-In was canceled by user");
       }
     } catch (e) {
       log(e.toString());
