@@ -118,8 +118,8 @@ class RoomeBookView extends ConsumerWidget {
                                   hotelId,
                                   hotelAddress,
                                   perNight.toString(),
-                                  startDate.toString(),
-                                  endDate.toString(),
+                                  startDate.toString().substring(0, 10),
+                                  endDate.toString().substring(0, 10),
                                   roomData,
                                 );
                               },
