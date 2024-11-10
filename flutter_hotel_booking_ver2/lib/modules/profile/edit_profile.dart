@@ -6,16 +6,21 @@ import 'package:flutter_hotel_booking_ver2/language/app_localizations.dart';
 import 'package:flutter_hotel_booking_ver2/widgets/common_appbar_view.dart';
 import 'package:flutter_hotel_booking_ver2/widgets/common_card.dart';
 import 'package:flutter_hotel_booking_ver2/widgets/remove_focuse.dart';
+import 'package:intl/intl.dart';
+import 'package:user_repository/user_repository.dart';
 import '../../models/setting_list_data.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class EditProfile extends StatefulWidget {
-  const EditProfile({Key? key}) : super(key: key);
+class EditProfile extends ConsumerStatefulWidget {
+  final MyUser myUser;
+  const EditProfile({Key? key, required this.myUser}) : super(key: key);
 
   @override
-  State<EditProfile> createState() => _EditProfileState();
+  _EditProfileState createState() => _EditProfileState();
 }
 
-class _EditProfileState extends State<EditProfile> {
+class _EditProfileState extends ConsumerState<EditProfile>
+    with TickerProviderStateMixin {
   List<SettingsListData> userInfoList = SettingsListData.userInfoList;
 
   @override
@@ -72,7 +77,15 @@ class _EditProfileState extends State<EditProfile> {
                                       padding: const EdgeInsets.only(
                                           right: 16.0, bottom: 16, top: 16),
                                       child: Text(
-                                        userInfoList[index].subTxt,
+                                        index == 1
+                                            ? widget.myUser.fullname
+                                            : index == 2
+                                                ? widget.myUser.email
+                                                : index == 3
+                                                    ? widget.myUser.phonenumber
+                                                    : index == 4
+                                                        ? DateFormat('dd/MM/yyyy').format(widget.myUser.birthday)
+                                                        : "Default Text",
                                         style: TextStyles(context)
                                             .getRegularStyle()
                                             .copyWith(
@@ -131,7 +144,15 @@ class _EditProfileState extends State<EditProfile> {
                   ),
                   child: ClipRRect(
                     borderRadius: const BorderRadius.all(Radius.circular(60.0)),
-                    child: Image.asset(Localfiles.userImage),
+                    child: (widget.myUser.picture != null &&
+                            widget.myUser.picture!.isNotEmpty)
+                        ? Image.network(
+                            widget.myUser.picture!,
+                            fit: BoxFit.cover,
+                          )
+                        : Icon(Icons.person,
+                            size: 70.0,
+                            color: const Color.fromARGB(179, 41, 40, 40)),
                   ),
                 ),
                 Positioned(

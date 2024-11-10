@@ -300,9 +300,9 @@ class SettingsListData {
       titleTxt: 'date_of_birth',
       subTxt: "20, Aug, 1990",
     ),
-    SettingsListData(
-      titleTxt: 'address_text',
-      subTxt: "123 Royal Street, New York",
-    ),
+    // SettingsListData(
+    //   titleTxt: 'address_text',
+    //   subTxt: "123 Royal Street, New York",
+    // ),
   ];
 }

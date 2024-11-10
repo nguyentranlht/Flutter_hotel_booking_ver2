@@ -32,7 +32,7 @@ class _LoginScreenState extends State<LoginScreen> {
       body: BlocListener<AuthenticationBloc, AuthenticationState>(
         listener: (context, state) {
           if (state is SignInFailure) {
-            ErrorDialog.show(context, state.error);
+            //ErrorDialog.show(context, state.error);
           } else if (state is AuthenticationStateAuthenticated) {
             Navigator.pushNamed(context, RoutesName.home); // Điều hướng đến trang chủ
           }

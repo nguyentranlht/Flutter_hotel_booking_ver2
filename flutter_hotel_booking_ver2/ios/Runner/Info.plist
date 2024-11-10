@@ -2,50 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<!-- URL Scheme cần thiết cho Google Sign-In -->
-	<key>CFBundleURLTypes</key>
-	<array>
-	<dict>
-		<key>CFBundleTypeRole</key>
-		<string>Editor</string>
-		<key>CFBundleURLSchemes</key>
-		<array>
-		<!-- Thay YOUR_REVERSED_CLIENT_ID bằng client ID từ GoogleService-Info.plist -->
-		<string>com.googleusercontent.apps.118280658959-ssgeklvrgddgfaqgslcl2qc7c8001bm8</string>
-		<string>fb857025586590946</string> <!-- Thay YOUR_APP_ID bằng App ID của bạn -->
-		</array>
-	</dict>
-	</array>
-    <key>NSLocationWhenInUseUsageDescription</key>
-    <string>To get user cureent location</string>
-	<key>NSLocationTemporaryUsageDescriptionDictionary</key>
-	<dict>
-		<key>YourPurposeKey</key>
-		<string>The example App requires temporary access to the device&apos;s precise location.</string>
-	</dict>
-	<!-- Cấu hình Payment Stripe -->
-	<key>NSCameraUsageDescription</key>
-	<string>Scan your card to add it automatically</string>
-	<key>NSCameraUsageDescription
-	&lt;string&gt;To scan cards&lt;/string&gt;</key>
-	<string>To scan cards</string>
-
-	<!-- Cấu hình Google Sign-In -->
-	<key>GIDClientID</key>
-	<string>118280658959-ssgeklvrgddgfaqgslcl2qc7c8001bm8.apps.googleusercontent.com</string>
-	<key>FacebookAppID</key>
-		<string>857025586590946</string>
-		<key>FacebookClientToken</key>
-		<string>63650b004e84bafcd00c4d7ed31ef791</string>
-		<key>FacebookDisplayName</key>
-		<string>GoG</string>
-		<key>LSApplicationQueriesSchemes</key>
-		<array>
-			<string>fbapi</string>
-			<string>fb-messenger-share-api</string>
-			<string>fbauth2</string>
-			<string>fbshareextension</string>
-		</array>
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
@@ -64,9 +22,56 @@
 	<string>$(FLUTTER_BUILD_NAME)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.118280658959-ssgeklvrgddgfaqgslcl2qc7c8001bm8</string>
+				<string>fb857025586590946</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array/>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>FacebookAppID</key>
+	<string>857025586590946</string>
+	<key>FacebookClientToken</key>
+	<string>63650b004e84bafcd00c4d7ed31ef791</string>
+	<key>FacebookDisplayName</key>
+	<string>GoG</string>
+	<key>GIDClientID</key>
+	<string>118280658959-ssgeklvrgddgfaqgslcl2qc7c8001bm8.apps.googleusercontent.com</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>fbapi</string>
+		<string>fb-messenger-share-api</string>
+		<string>fbauth2</string>
+		<string>fbshareextension</string>
+	</array>
 	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>Scan your card to add it automatically</string>
+	<key>NSCameraUsageDescription
+	&lt;string&gt;To scan cards&lt;/string&gt;</key>
+	<string>To scan cards</string>
+	<key>NSLocationTemporaryUsageDescriptionDictionary</key>
+	<dict>
+		<key>YourPurposeKey</key>
+		<string>The example App requires temporary access to the device's precise location.</string>
+	</dict>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>To get user cureent location</string>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
@@ -85,9 +90,5 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>CADisableMinimumFrameDurationOnPhone</key>
-	<true/>
-	<key>UIApplicationSupportsIndirectInputEvents</key>
-	<true/>
 </dict>
 </plist>

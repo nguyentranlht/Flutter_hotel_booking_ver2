@@ -118,7 +118,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     return userAsyncValue.when(
       data: (userData) => InkWell(
         onTap: () {
-          NavigationServices(context).gotoEditProfile();
+          NavigationServices(context).gotoEditProfile(userData);
         },
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -157,14 +157,15 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 height: 70,
                 child: ClipRRect(
                   borderRadius: const BorderRadius.all(Radius.circular(40.0)),
-                  child: (userData != null &&
-                          userData.picture != null &&
-                          userData.picture!.isNotEmpty)
-                      ? Image.network(
-                          userData!.picture!,
-                          fit: BoxFit.cover,
-                        )
-                      : Icon(Icons.person, size: 70.0, color: const Color.fromARGB(179, 41, 40, 40)),
+                  child:
+                      (userData.picture != null && userData.picture!.isNotEmpty)
+                          ? Image.network(
+                              userData.picture!,
+                              fit: BoxFit.cover,
+                            )
+                          : Icon(Icons.person,
+                              size: 70.0,
+                              color: const Color.fromARGB(179, 41, 40, 40)),
                 ),
               ),
             ),

@@ -21,6 +21,7 @@ import 'package:flutter_hotel_booking_ver2/modules/profile/settings_screen.dart'
 import 'package:flutter_hotel_booking_ver2/routes/routes.dart';
 import 'package:hotel_repository/hotel_repository.dart';
 import 'package:room_repository/room_repository.dart';
+import 'package:user_repository/user_repository.dart';
 
 class NavigationServices {
   NavigationServices(this.context);
@@ -119,8 +120,8 @@ class NavigationServices {
     return await _pushMaterialPageRoute(const ReviewsListScreen());
   }
 
-  Future<dynamic> gotoEditProfile() async {
-    return await _pushMaterialPageRoute(const EditProfile());
+  Future<dynamic> gotoEditProfile(MyUser myUser) async {
+    return await _pushMaterialPageRoute(EditProfile(myUser: myUser));
   }
 
   Future<dynamic> gotoSettingsScreen() async {

@@ -1,12 +1,14 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:user_repository/user_repository.dart';
 part 'authentication_event.dart';
 part 'authentication_state.dart';
 
-class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> {
+class AuthenticationBloc
+    extends Bloc<AuthenticationEvent, AuthenticationState> {
   final UserRepository userRepository;
   late final StreamSubscription<User?> _userSubscription;
 
@@ -31,7 +33,12 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       emit(SignInProcess());
       try {
         MyUser user = await userRepository.signInGoogle();
-        await userRepository.setUserData(user);
+        final userDoc =
+            FirebaseFirestore.instance.collection('users').doc(user.userId);
+        final userSnapshot = await userDoc.get();
+        if (!userSnapshot.exists) {
+          await userRepository.setUserData(user);
+        }
         emit(SignInSuccess());
       } catch (e) {
         emit(SignInFailure(e.toString()));
@@ -43,7 +50,12 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       emit(SignInProcess());
       try {
         MyUser user = await userRepository.signInFacebook();
-        await userRepository.setUserData(user);
+        final userDoc =
+            FirebaseFirestore.instance.collection('users').doc(user.userId);
+        final userSnapshot = await userDoc.get();
+        if (!userSnapshot.exists) {
+          await userRepository.setUserData(user);
+        }
         emit(SignInSuccess());
       } catch (e) {
         emit(SignInFailure(e.toString()));
@@ -76,10 +88,12 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     // Xử lý sự kiện đăng xuất
     on<SignOutRequired>((event, emit) async {
       try {
-        await userRepository.logOut();  // Thực hiện đăng xuất
-        emit(const AuthenticationStateUnauthenticated());  // Phát trạng thái không đăng nhập
+        await userRepository.logOut(); // Thực hiện đăng xuất
+        emit(
+            const AuthenticationStateUnauthenticated()); // Phát trạng thái không đăng nhập
       } catch (e) {
-        emit(const AuthenticationStateUnauthenticated());  // Dù có lỗi cũng phát trạng thái không đăng nhập
+        emit(
+            const AuthenticationStateUnauthenticated()); // Dù có lỗi cũng phát trạng thái không đăng nhập
       }
     });
   }
