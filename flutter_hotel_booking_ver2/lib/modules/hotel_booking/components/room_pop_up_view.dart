@@ -163,17 +163,22 @@ class _RoomPopupViewState extends State<RoomPopupView>
                               onTap: () {
                                 setState(() {
                                   if (popupTextType == PopupTextType.no) {
-                                    _roomData!.numberRoom += 1;
-                                  } else if (popupTextType ==
-                                      PopupTextType.ad) {
-                                    _roomData!.people += 1;
+                                    _roomData!.numberRoom -= 1;
+                                    if (_roomData!.numberRoom < 0) {
+                                      _roomData!.numberRoom = 0;
+                                    }
+                                  } else {
+                                    _roomData!.people -= 1;
+                                    if (_roomData!.people < 0) {
+                                      _roomData!.people = 0;
+                                    }
                                   }
                                 });
                               },
                               child: Padding(
                                 padding: const EdgeInsets.all(10.0),
                                 child: Icon(
-                                  Icons.add_circle_outline,
+                                  Icons.remove_circle_outline,
                                   size: 28,
                                   color: Theme.of(context).disabledColor,
                                 ),
@@ -193,22 +198,18 @@ class _RoomPopupViewState extends State<RoomPopupView>
                               onTap: () {
                                 setState(() {
                                   if (popupTextType == PopupTextType.no) {
-                                    _roomData!.numberRoom -= 1;
-                                    if (_roomData!.numberRoom < 0) {
-                                      _roomData!.numberRoom = 0;
-                                    }
-                                  } else {
-                                    _roomData!.people -= 1;
-                                    if (_roomData!.people < 0) {
-                                      _roomData!.people = 0;
-                                    }
+                                    _roomData!.numberRoom += 1;
+                                  } else if (popupTextType ==
+                                      PopupTextType.ad) {
+                                    _roomData!.people += 1;
                                   }
+                                  
                                 });
                               },
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Icon(
-                                  Icons.remove_circle_outline,
+                                  Icons.add_circle_outline,
                                   size: 28,
                                   color: Theme.of(context).disabledColor,
                                 ),
