@@ -1,3 +1,5 @@
+import 'dart:io';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hotel_booking_ver2/constants/localfiles.dart';
 import 'package:flutter_hotel_booking_ver2/constants/text_styles.dart';
@@ -6,10 +8,12 @@ import 'package:flutter_hotel_booking_ver2/language/app_localizations.dart';
 import 'package:flutter_hotel_booking_ver2/widgets/common_appbar_view.dart';
 import 'package:flutter_hotel_booking_ver2/widgets/common_card.dart';
 import 'package:flutter_hotel_booking_ver2/widgets/remove_focuse.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:user_repository/user_repository.dart';
 import '../../models/setting_list_data.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../provider/user_provider.dart';
 
 class EditProfile extends ConsumerStatefulWidget {
   final MyUser myUser;
@@ -19,9 +23,48 @@ class EditProfile extends ConsumerStatefulWidget {
   _EditProfileState createState() => _EditProfileState();
 }
 
-class _EditProfileState extends ConsumerState<EditProfile>
-    with TickerProviderStateMixin {
+class _EditProfileState extends ConsumerState<EditProfile> {
   List<SettingsListData> userInfoList = SettingsListData.userInfoList;
+  File? _imageFile;
+  final ImagePicker _picker = ImagePicker();
+
+  Future<void> _pickImage() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _imageFile = File(pickedFile.path);
+      });
+      await _uploadImage();
+    } else {
+      print("No image selected");
+    }
+  }
+
+  Future<void> _uploadImage() async {
+    if (_imageFile == null) return;
+    try {
+      final userId = widget.myUser.userId;
+      final storageRef = FirebaseStorage.instance
+          .ref()
+          .child('user_images/$userId.jpg');
+      await storageRef.putFile(_imageFile!);
+
+      // Lấy URL của ảnh từ Firebase Storage
+      final photoURL = await storageRef.getDownloadURL();
+
+      // Cập nhật URL ảnh trong Firestore thông qua provider
+      await ref.read(userServiceProvider).uploadPicture(photoURL, userId);
+
+      // Cập nhật UI với ảnh mới
+      setState(() {
+        widget.myUser.picture = photoURL;
+      });
+
+      print("Image uploaded successfully");
+    } catch (e) {
+      print("Error uploading image: $e");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,8 +98,7 @@ class _EditProfileState extends ConsumerState<EditProfile>
                           child: Column(
                             children: <Widget>[
                               Padding(
-                                padding:
-                                    const EdgeInsets.only(left: 8, right: 16),
+                                padding: const EdgeInsets.only(left: 8, right: 16),
                                 child: Row(
                                   children: <Widget>[
                                     Expanded(
@@ -84,7 +126,8 @@ class _EditProfileState extends ConsumerState<EditProfile>
                                                 : index == 3
                                                     ? widget.myUser.phonenumber
                                                     : index == 4
-                                                        ? DateFormat('dd/MM/yyyy').format(widget.myUser.birthday)
+                                                        ? DateFormat('dd/MM/yyyy')
+                                                            .format(widget.myUser.birthday)
                                                         : "Default Text",
                                         style: TextStyles(context)
                                             .getRegularStyle()
@@ -166,7 +209,7 @@ class _EditProfileState extends ConsumerState<EditProfile>
                       child: InkWell(
                         borderRadius:
                             const BorderRadius.all(Radius.circular(24.0)),
-                        onTap: () {},
+                        onTap: _pickImage,
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Icon(
