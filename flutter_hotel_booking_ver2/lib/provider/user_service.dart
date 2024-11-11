@@ -33,6 +33,28 @@ class UserService {
       return null;
     }
   }
+  Future<void> updateUser(MyUser user) async {
+    try {
+      // Tham chiếu đến document của user dựa trên userId
+      DocumentReference userDocRef = _firestore.collection('users').doc(user.userId);
+
+      // Tạo một map chứa dữ liệu cần cập nhật
+      Map<String, dynamic> userData = {
+        'fullname': user.fullname,
+        'email': user.email,
+        'phonenumber': user.phonenumber,
+        'picture': user.picture,
+        'birthday': user.birthday,
+      };
+
+      // Cập nhật dữ liệu lên Firestore
+      await userDocRef.update(userData);
+      print("User information updated successfully");
+    } catch (e) {
+      print("Error updating user information: $e");
+      rethrow;
+    }
+  }
   Future<String?> uploadPicture(String? file, String userId) async {
     try {
       await _firestore.collection('users').doc(userId).update({

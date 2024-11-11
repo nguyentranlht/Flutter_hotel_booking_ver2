@@ -28,6 +28,19 @@ class _EditProfileState extends ConsumerState<EditProfile> {
   File? _imageFile;
   final ImagePicker _picker = ImagePicker();
 
+  // Controllers for editing user information
+  late TextEditingController _nameController;
+  late TextEditingController _emailController;
+  late TextEditingController _phoneController;
+
+  @override
+  void initState() {
+    super.initState();
+    _nameController = TextEditingController(text: widget.myUser.fullname);
+    _emailController = TextEditingController(text: widget.myUser.email);
+    _phoneController = TextEditingController(text: widget.myUser.phonenumber);
+  }
+
   Future<void> _pickImage() async {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
@@ -44,18 +57,12 @@ class _EditProfileState extends ConsumerState<EditProfile> {
     if (_imageFile == null) return;
     try {
       final userId = widget.myUser.userId;
-      final storageRef = FirebaseStorage.instance
-          .ref()
-          .child('user_images/$userId.jpg');
+      final storageRef = FirebaseStorage.instance.ref().child('user_images/$userId.jpg');
       await storageRef.putFile(_imageFile!);
 
-      // Lấy URL của ảnh từ Firebase Storage
       final photoURL = await storageRef.getDownloadURL();
-
-      // Cập nhật URL ảnh trong Firestore thông qua provider
       await ref.read(userServiceProvider).uploadPicture(photoURL, userId);
 
-      // Cập nhật UI với ảnh mới
       setState(() {
         widget.myUser.picture = photoURL;
       });
@@ -63,6 +70,21 @@ class _EditProfileState extends ConsumerState<EditProfile> {
       print("Image uploaded successfully");
     } catch (e) {
       print("Error uploading image: $e");
+    }
+  }
+
+  Future<void> _saveChanges() async {
+    final userService = ref.read(userServiceProvider);
+
+    widget.myUser.fullname = _nameController.text;
+    widget.myUser.email = _emailController.text;
+    widget.myUser.phonenumber = _phoneController.text;
+
+    try {
+      await userService.updateUser(widget.myUser);
+      print("User information updated successfully");
+    } catch (e) {
+      print("Error updating user information: $e");
     }
   }
 
@@ -86,72 +108,31 @@ class _EditProfileState extends ConsumerState<EditProfile> {
               },
             ),
             Expanded(
-              child: ListView.builder(
-                padding: EdgeInsets.only(
-                    bottom: 16 + MediaQuery.of(context).padding.bottom),
-                itemCount: userInfoList.length,
-                itemBuilder: (context, index) {
-                  return index == 0
-                      ? getProfileUI()
-                      : InkWell(
-                          onTap: () {},
-                          child: Column(
-                            children: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.only(left: 8, right: 16),
-                                child: Row(
-                                  children: <Widget>[
-                                    Expanded(
-                                      child: Padding(
-                                        padding: const EdgeInsets.only(
-                                            left: 16.0, bottom: 16, top: 16),
-                                        child: Text(
-                                          userInfoList[index].titleTxt,
-                                          style: TextStyles(context)
-                                              .getDescriptionStyle()
-                                              .copyWith(
-                                                fontSize: 16,
-                                              ),
-                                        ),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          right: 16.0, bottom: 16, top: 16),
-                                      child: Text(
-                                        index == 1
-                                            ? widget.myUser.fullname
-                                            : index == 2
-                                                ? widget.myUser.email
-                                                : index == 3
-                                                    ? widget.myUser.phonenumber
-                                                    : index == 4
-                                                        ? DateFormat('dd/MM/yyyy')
-                                                            .format(widget.myUser.birthday)
-                                                        : "Default Text",
-                                        style: TextStyles(context)
-                                            .getRegularStyle()
-                                            .copyWith(
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 16,
-                                            ),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                              const Padding(
-                                padding: EdgeInsets.only(left: 16, right: 16),
-                                child: Divider(
-                                  height: 1,
-                                ),
-                              )
-                            ],
+              child: ListView(
+                padding: EdgeInsets.only(bottom: 16 + MediaQuery.of(context).padding.bottom),
+                children: [
+                  getProfileUI(),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildEditableField("Name", _nameController),
+                        _buildEditableField("Email", _emailController, enabled: false),
+                        _buildEditableField("Phone", _phoneController),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 24.0),
+                          child: ElevatedButton(
+                            onPressed: _saveChanges,
+                            child: Text("Save Changes"),
                           ),
-                        );
-                },
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -187,15 +168,12 @@ class _EditProfileState extends ConsumerState<EditProfile> {
                   ),
                   child: ClipRRect(
                     borderRadius: const BorderRadius.all(Radius.circular(60.0)),
-                    child: (widget.myUser.picture != null &&
-                            widget.myUser.picture!.isNotEmpty)
+                    child: (widget.myUser.picture != null && widget.myUser.picture!.isNotEmpty)
                         ? Image.network(
                             widget.myUser.picture!,
                             fit: BoxFit.cover,
                           )
-                        : Icon(Icons.person,
-                            size: 70.0,
-                            color: const Color.fromARGB(179, 41, 40, 40)),
+                        : Icon(Icons.person, size: 70.0, color: const Color.fromARGB(179, 41, 40, 40)),
                   ),
                 ),
                 Positioned(
@@ -207,8 +185,7 @@ class _EditProfileState extends ConsumerState<EditProfile> {
                     child: Material(
                       color: Colors.transparent,
                       child: InkWell(
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(24.0)),
+                        borderRadius: const BorderRadius.all(Radius.circular(24.0)),
                         onTap: _pickImage,
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
@@ -226,6 +203,20 @@ class _EditProfileState extends ConsumerState<EditProfile> {
             ),
           )
         ],
+      ),
+    );
+  }
+
+  Widget _buildEditableField(String label, TextEditingController controller, {bool enabled = true}) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 16.0),
+      child: TextField(
+        controller: controller,
+        enabled: enabled,
+        decoration: InputDecoration(
+          labelText: label,
+          border: OutlineInputBorder(),
+        ),
       ),
     );
   }
