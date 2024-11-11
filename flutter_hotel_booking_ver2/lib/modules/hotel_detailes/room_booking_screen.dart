@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hotel_booking_ver2/constants/text_styles.dart';
+import 'package:flutter_hotel_booking_ver2/modules/hotel_booking/components/time_date_view.dart';
 import 'package:flutter_hotel_booking_ver2/modules/hotel_detailes/room_book_view.dart';
 import 'package:flutter_hotel_booking_ver2/provider/room_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -27,12 +28,18 @@ class RoomBookingScreen extends ConsumerStatefulWidget {
 class _RoomBookingScreenState extends ConsumerState<RoomBookingScreen>
     with TickerProviderStateMixin {
   late AnimationController animationController;
+  late DateTime startDateRoom;
+  late DateTime endDateRoom;
 
   @override
   void initState() {
+    super.initState();
     animationController = AnimationController(
         duration: const Duration(milliseconds: 0), vsync: this);
-    super.initState();
+
+    // Khởi tạo startDateRoom và endDateRoom từ widget.startDate và widget.endDate
+    startDateRoom = DateTime.parse(widget.startDate);
+    endDateRoom = DateTime.parse(widget.endDate);
   }
 
   @override
@@ -47,6 +54,20 @@ class _RoomBookingScreenState extends ConsumerState<RoomBookingScreen>
       body: Column(
         children: <Widget>[
           getAppBarUI(),
+          TimeDateView(
+            startDate: startDateRoom,
+            endDate: endDateRoom,
+            onStartDateChanged: (newStartDate) {
+              setState(() {
+                startDateRoom = newStartDate;
+              });
+            },
+            onEndDateChanged: (newEndDate) {
+              setState(() {
+                endDateRoom = newEndDate;
+              });
+            },
+          ),
           Expanded(
             child: Consumer(
               builder: (context, ref, child) {
@@ -71,8 +92,10 @@ class _RoomBookingScreenState extends ConsumerState<RoomBookingScreen>
                           hotelName: widget.hotelName,
                           hotelId: widget.hotelId,
                           hotelAddress: widget.hotelAddress,
-                          startDate: widget.startDate,
-                          endDate: widget.endDate,
+                          startDate: startDateRoom
+                              .toIso8601String(), // Cập nhật với startDateRoom
+                          endDate: endDateRoom
+                              .toIso8601String(), // Cập nhật với endDateRoom
                           roomData: rooms[index],
                           animation: animation,
                           animationController: animationController,

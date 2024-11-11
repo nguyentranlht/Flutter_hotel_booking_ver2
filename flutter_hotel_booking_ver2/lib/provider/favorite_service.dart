@@ -2,11 +2,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-/// FavoriteService class that fetches userId internally
 class FavoriteService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  /// Retrieves the current user's ID from FirebaseAuth
   String? get _userId => FirebaseAuth.instance.currentUser?.uid;
 
   Future<void> toggleFavoriteHotel(String hotelId) async {
@@ -21,10 +19,8 @@ class FavoriteService {
 
     final docSnapshot = await favoriteRef.get();
     if (docSnapshot.exists) {
-      // If hotel is already in favorites, remove it
       await favoriteRef.delete();
     } else {
-      // If hotel is not in favorites, add it
       await favoriteRef
           .set({'hotelId': hotelId, 'timestamp': FieldValue.serverTimestamp()});
     }
