@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hotel_booking_ver2/modules/myTrips/hotel_list_view_data.dart';
+import 'package:flutter_hotel_booking_ver2/provider/booking_provider.dart';
 import 'package:flutter_hotel_booking_ver2/provider/hotel_provider.dart';
 import 'package:flutter_hotel_booking_ver2/routes/route_names.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -12,20 +13,32 @@ class FinishTripView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final finishedBookings =
+        ref.watch(finishedBookingsProvider); // Trực tiếp là List<Booking>
+
     final hotelListAsyncValue =
-        ref.watch(hotelProvider); // Ensure `hotelProvider` fetches hotel list
+        ref.watch(hotelProvider); // HotelProvider là một AsyncValue
 
     DateTime startDate = DateTime.now();
     DateTime endDate = DateTime.now().add(const Duration(days: 1));
 
     return hotelListAsyncValue.when(
       data: (hotelList) {
+        // Lấy danh sách hotelIds từ các bookings đã hoàn thành
+        final finishedHotelIds =
+            finishedBookings.map((booking) => booking.hotelId).toSet();
+
+        // Lọc các hotel có trong danh sách finishedHotelIds
+        final finishedHotels = hotelList
+            .where((hotel) => finishedHotelIds.contains(hotel.hotelId))
+            .toList();
+
         return ListView.builder(
-          itemCount: hotelList.length,
+          itemCount: finishedHotels.length,
           padding: const EdgeInsets.only(top: 8, bottom: 16),
           scrollDirection: Axis.vertical,
           itemBuilder: (context, index) {
-            var count = hotelList.length > 10 ? 10 : hotelList.length;
+            var count = finishedHotels.length > 10 ? 10 : finishedHotels.length;
             var animation = Tween(begin: 0.0, end: 1.0).animate(
               CurvedAnimation(
                 parent: animationController,
@@ -35,8 +48,8 @@ class FinishTripView extends ConsumerWidget {
             );
             animationController.forward();
 
-            // Get individual hotel information
-            final hotelData = hotelList[index];
+            // Get individual finished hotel information
+            final hotelData = finishedHotels[index];
 
             return HotelListViewData(
               callback: () {
