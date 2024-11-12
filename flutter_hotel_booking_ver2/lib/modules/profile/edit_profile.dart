@@ -61,7 +61,8 @@ class _EditProfileState extends ConsumerState<EditProfile> {
       // Kiểm tra nếu có ảnh mới thì tải ảnh lên và lấy URL
       if (_imageFile != null) {
         final userId = widget.myUser.userId;
-        final storageRef = FirebaseStorage.instance.ref().child('user_images/$userId.jpg');
+        final storageRef =
+            FirebaseStorage.instance.ref().child('user_images/$userId.jpg');
         await storageRef.putFile(_imageFile!);
         photoURL = await storageRef.getDownloadURL();
       }
@@ -82,7 +83,13 @@ class _EditProfileState extends ConsumerState<EditProfile> {
         widget.myUser.phonenumber = _phoneController.text;
         widget.myUser.picture = photoURL ?? widget.myUser.picture;
       });
-
+      // Hiển thị thông báo thành công
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(Loc.alized.update_user_successfully),
+          backgroundColor: Colors.green,
+        ),
+      );
       print("Đã cập nhật thông tin người dùng thành công");
     } catch (e) {
       print("Lỗi khi cập nhật thông tin người dùng: $e");
@@ -119,8 +126,10 @@ class _EditProfileState extends ConsumerState<EditProfile> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _buildEditableField(Loc.alized.full_name, _nameController),
-                        _buildEditableField("Email", _emailController, enabled: false),
+                        _buildEditableField(
+                            Loc.alized.full_name, _nameController),
+                        _buildEditableField("Email", _emailController,
+                            enabled: false),
                         _buildEditableField(Loc.alized.phone, _phoneController),
                         Padding(
                           padding: const EdgeInsets.only(top: 24.0),
@@ -172,9 +181,13 @@ class _EditProfileState extends ConsumerState<EditProfile> {
                     borderRadius: const BorderRadius.all(Radius.circular(60.0)),
                     child: (_imageFile != null)
                         ? Image.file(_imageFile!, fit: BoxFit.cover)
-                        : (widget.myUser.picture != null && widget.myUser.picture!.isNotEmpty)
-                            ? Image.network(widget.myUser.picture!, fit: BoxFit.cover)
-                            : Icon(Icons.person, size: 70.0, color: const Color.fromARGB(179, 41, 40, 40)),
+                        : (widget.myUser.picture != null &&
+                                widget.myUser.picture!.isNotEmpty)
+                            ? Image.network(widget.myUser.picture!,
+                                fit: BoxFit.cover)
+                            : Icon(Icons.person,
+                                size: 70.0,
+                                color: const Color.fromARGB(179, 41, 40, 40)),
                   ),
                 ),
                 Positioned(
@@ -186,7 +199,8 @@ class _EditProfileState extends ConsumerState<EditProfile> {
                     child: Material(
                       color: Colors.transparent,
                       child: InkWell(
-                        borderRadius: const BorderRadius.all(Radius.circular(24.0)),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(24.0)),
                         onTap: _pickImage,
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
@@ -208,7 +222,8 @@ class _EditProfileState extends ConsumerState<EditProfile> {
     );
   }
 
-  Widget _buildEditableField(String label, TextEditingController controller, {bool enabled = true}) {
+  Widget _buildEditableField(String label, TextEditingController controller,
+      {bool enabled = true}) {
     return Padding(
       padding: const EdgeInsets.only(top: 16.0),
       child: TextField(
