@@ -57,15 +57,15 @@ class _EditProfileState extends ConsumerState<EditProfile> {
     if (_imageFile == null) return;
     try {
       final userId = widget.myUser.userId;
-      final storageRef = FirebaseStorage.instance.ref().child('user_images/$userId.jpg');
+      final storageRef =
+          FirebaseStorage.instance.ref().child('user_images/$userId.jpg');
       await storageRef.putFile(_imageFile!);
 
       final photoURL = await storageRef.getDownloadURL();
-      await ref.read(userServiceProvider).uploadPicture(photoURL, userId);
-
       setState(() {
         widget.myUser.picture = photoURL;
       });
+      ref.watch(uploadPictureProvider(widget.myUser));
 
       print("Image uploaded successfully");
     } catch (e) {
@@ -74,14 +74,15 @@ class _EditProfileState extends ConsumerState<EditProfile> {
   }
 
   Future<void> _saveChanges() async {
-    final userService = ref.read(userServiceProvider);
-
     widget.myUser.fullname = _nameController.text;
-    widget.myUser.email = _emailController.text;
     widget.myUser.phonenumber = _phoneController.text;
 
     try {
-      await userService.updateUser(widget.myUser);
+      setState(() {
+        widget.myUser.fullname = _nameController.text;
+        widget.myUser.phonenumber = _phoneController.text;
+      });
+      ref.watch(uploadUserProvider(widget.myUser));
       print("User information updated successfully");
     } catch (e) {
       print("Error updating user information: $e");
@@ -109,7 +110,8 @@ class _EditProfileState extends ConsumerState<EditProfile> {
             ),
             Expanded(
               child: ListView(
-                padding: EdgeInsets.only(bottom: 16 + MediaQuery.of(context).padding.bottom),
+                padding: EdgeInsets.only(
+                    bottom: 16 + MediaQuery.of(context).padding.bottom),
                 children: [
                   getProfileUI(),
                   Padding(
@@ -118,7 +120,8 @@ class _EditProfileState extends ConsumerState<EditProfile> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         _buildEditableField("Name", _nameController),
-                        _buildEditableField("Email", _emailController, enabled: false),
+                        _buildEditableField("Email", _emailController,
+                            enabled: false),
                         _buildEditableField("Phone", _phoneController),
                         Padding(
                           padding: const EdgeInsets.only(top: 24.0),
@@ -168,12 +171,15 @@ class _EditProfileState extends ConsumerState<EditProfile> {
                   ),
                   child: ClipRRect(
                     borderRadius: const BorderRadius.all(Radius.circular(60.0)),
-                    child: (widget.myUser.picture != null && widget.myUser.picture!.isNotEmpty)
+                    child: (widget.myUser.picture != null &&
+                            widget.myUser.picture!.isNotEmpty)
                         ? Image.network(
                             widget.myUser.picture!,
                             fit: BoxFit.cover,
                           )
-                        : Icon(Icons.person, size: 70.0, color: const Color.fromARGB(179, 41, 40, 40)),
+                        : Icon(Icons.person,
+                            size: 70.0,
+                            color: const Color.fromARGB(179, 41, 40, 40)),
                   ),
                 ),
                 Positioned(
@@ -185,7 +191,8 @@ class _EditProfileState extends ConsumerState<EditProfile> {
                     child: Material(
                       color: Colors.transparent,
                       child: InkWell(
-                        borderRadius: const BorderRadius.all(Radius.circular(24.0)),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(24.0)),
                         onTap: _pickImage,
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
@@ -207,7 +214,8 @@ class _EditProfileState extends ConsumerState<EditProfile> {
     );
   }
 
-  Widget _buildEditableField(String label, TextEditingController controller, {bool enabled = true}) {
+  Widget _buildEditableField(String label, TextEditingController controller,
+      {bool enabled = true}) {
     return Padding(
       padding: const EdgeInsets.only(top: 16.0),
       child: TextField(

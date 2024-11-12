@@ -29,7 +29,7 @@ class UserService {
       return null;
     }
   }
-  Future<void> updateUser(MyUser user) async {
+  Future<String?> updateUser(MyUser user) async {
     try {
       // Tham chiếu đến document của user dựa trên userId
       DocumentReference userDocRef = _firestore.collection('users').doc(user.userId);

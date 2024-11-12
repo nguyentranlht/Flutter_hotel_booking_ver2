@@ -19,3 +19,8 @@ final uploadPictureProvider = FutureProvider.family<String?, MyUser>((ref, param
   return userService.uploadPicture(params.picture, params.userId);
 });
 
+final uploadUserProvider = FutureProvider.family<String?, MyUser>((ref, params) async {
+  final userService = ref.watch(userServiceProvider);
+  return userService.updateUser(params);
+});
+
