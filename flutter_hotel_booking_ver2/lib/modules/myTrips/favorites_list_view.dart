@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hotel_booking_ver2/modules/myTrips/hotel_favorites_list_view.dart';
+import 'package:flutter_hotel_booking_ver2/modules/myTrips/hotel_list_view.dart';
+import 'package:flutter_hotel_booking_ver2/provider/favorite_provider.dart';
 import 'package:flutter_hotel_booking_ver2/provider/favorite_service.dart';
 import 'package:flutter_hotel_booking_ver2/provider/hotel_provider.dart';
 import 'package:flutter_hotel_booking_ver2/routes/route_names.dart';
@@ -58,7 +59,7 @@ class _FavoritesListViewState extends State<FavoritesListView> {
                     );
                     widget.animationController.forward();
 
-                    return HotelFavoriteListViewPage(
+                    return HotelListView(
                       callback: () {
                         NavigationServices(context).gotoRoomBookingScreen(
                           favoriteHotels[index].hotelName,

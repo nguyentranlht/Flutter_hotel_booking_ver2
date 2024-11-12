@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hotel_booking_ver2/constants/themes.dart';
+import 'package:flutter_hotel_booking_ver2/routes/route_names.dart';
 import 'package:flutter_hotel_booking_ver2/widgets/app_constant.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_hotel_booking_ver2/provider/room_provider.dart';
@@ -361,10 +362,16 @@ class BookingConfirmationScreen extends ConsumerWidget {
     WriteBatch batch = FirebaseFirestore.instance.batch();
 
     // Tham chiếu đến tài liệu
-    DocumentReference bookingRef =
-        FirebaseFirestore.instance.collection('Bookings').doc(bookingId);
-    DocumentReference paymentRef =
-        FirebaseFirestore.instance.collection('Payments').doc();
+    DocumentReference bookingRef = FirebaseFirestore.instance
+        .collection('users')
+        .doc(userId)
+        .collection('bookings')
+        .doc(bookingId);
+    DocumentReference paymentRef = FirebaseFirestore.instance
+        .collection('users')
+        .doc(userId)
+        .collection('payments')
+        .doc();
 
     // Thêm dữ liệu đặt phòng và thanh toán vào batch
     batch.set(bookingRef, bookingData);
@@ -402,13 +409,13 @@ class BookingConfirmationScreen extends ConsumerWidget {
           'userId': userId,
           'hotelId': selectedHotelId,
           'roomId': selectedRoomId,
-          'checkInDate': startDate,
-          'checkOutDate': endDate,
+          'bookingDate': Timestamp.fromDate(DateTime.now()),
+          'checkInDate': Timestamp.fromDate(DateTime.parse(startDate)),
+          'checkOutDate': Timestamp.fromDate(DateTime.parse(endDate)),
           'numberOfGuests': numberOfGuests,
-          'bookingStatus': 'pending',
-          'createdAt': DateTime.now(),
-          'updatedAt': DateTime.now(),
-          'paymentStatus': 'pending',
+          'bookingStatus': 'success',
+          'totalPrice': amount,
+          'paymentStatus': 'success',
         };
 
         Map<String, dynamic> paymentData = {
@@ -417,7 +424,7 @@ class BookingConfirmationScreen extends ConsumerWidget {
           'userId': userId,
           'amount': amount,
           'currency': 'VND',
-          'status': 'pending',
+          'status': 'success',
           'createdAt': DateTime.now(),
           'updatedAt': DateTime.now(),
         };
@@ -470,7 +477,7 @@ class BookingConfirmationScreen extends ConsumerWidget {
                     Center(
                       child: GestureDetector(
                         onTap: () {
-                          Navigator.pop(context);
+                          NavigationServices(context).gotoTabScreen();
                         },
                         child: Container(
                           width: 100,

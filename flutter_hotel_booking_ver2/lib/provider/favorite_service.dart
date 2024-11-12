@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class FavoriteService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -41,11 +40,3 @@ class FavoriteService {
         .map((snapshot) => snapshot.docs.map((doc) => doc.id).toList());
   }
 }
-
-/// Provider for FavoriteService
-final favoriteServiceProvider = Provider((ref) => FavoriteService());
-
-/// Favorite hotel IDs provider that uses FavoriteService
-final favoriteHotelIdsProvider = StreamProvider<List<String>>((ref) {
-  return ref.read(favoriteServiceProvider).getFavoriteHotelIds();
-});
