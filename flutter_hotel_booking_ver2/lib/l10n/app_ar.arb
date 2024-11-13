@@ -163,5 +163,6 @@
     "first_name_cannot_empty": "لا يمكن أن يكون الاسم الأول فارغًا",
     "full_name_cannot_empty": "لا يمكن أن يكون الاسم الكامل فارغًا",
     "last_name_cannot_empty": "لا يمكن أن يكون اسم العائلة فارغًا",
+    "capacity": "السعة",
     "phone_cannot_empty": "لا يمكن أن يكون رقم الهاتف فارغًا"
 }

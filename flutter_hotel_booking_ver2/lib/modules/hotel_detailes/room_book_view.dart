@@ -127,7 +127,7 @@ class RoomeBookView extends ConsumerWidget {
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 16, vertical: 4),
                                 child: Text(
-                                  "Book Now",
+                                  Loc.alized.book_now,
                                   textAlign: TextAlign.center,
                                   style: TextStyle(fontSize: 16),
                                 ),
@@ -160,7 +160,7 @@ class RoomeBookView extends ConsumerWidget {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
                           Text(
-                            "Capacity: ${roomData.capacity} people",
+                            Loc.alized.capacity+": ${roomData.capacity} "+Loc.alized.people_data,
                             textAlign: TextAlign.left,
                             style: TextStyle(fontSize: 14),
                           ),
@@ -171,7 +171,7 @@ class RoomeBookView extends ConsumerWidget {
                             child: Row(
                               children: <Widget>[
                                 Text(
-                                  "More details",
+                                  Loc.alized.more_details,
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
                                 const Icon(

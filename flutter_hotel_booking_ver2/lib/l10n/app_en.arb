@@ -163,5 +163,6 @@
     "first_name_cannot_empty": "First Name cannot be empty",
     "full_name_cannot_empty": "Full name cannot be empty",
     "last_name_cannot_empty": "Last Name cannot be empty",
+    "capacity": "Capacity",
     "phone_cannot_empty": "Phone cannot be empty"
 }

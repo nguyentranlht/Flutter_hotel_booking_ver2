@@ -163,5 +163,6 @@
     "first_name_cannot_empty": "Tên không được để trống",
     "full_name_cannot_empty": "Họ và tên không được để trống",
     "last_name_cannot_empty": "Họ không được để trống",
+    "capacity": "Sức chứa",
     "phone_cannot_empty": "Số điện thoại không được để trống"
 }

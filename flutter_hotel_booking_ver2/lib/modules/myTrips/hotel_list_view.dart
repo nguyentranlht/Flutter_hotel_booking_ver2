@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hotel_booking_ver2/constants/helper.dart';
 import 'package:flutter_hotel_booking_ver2/constants/themes.dart';
+import 'package:flutter_hotel_booking_ver2/language/app_localizations.dart';
 import 'package:flutter_hotel_booking_ver2/provider/favorite_provider.dart';
 import 'package:flutter_hotel_booking_ver2/widgets/common_card.dart';
 import 'package:flutter_hotel_booking_ver2/widgets/list_cell_animation_view.dart';
@@ -137,7 +138,7 @@ class HotelListView extends ConsumerWidget {
                                         const SizedBox(width: 4),
                                         Expanded(
                                           child: Text(
-                                            "${hotelData.distanceFromCenter} km đến trung tâm",
+                                            "${hotelData.distanceFromCenter} "+Loc.alized.km_to_city,
                                             style:
                                                 const TextStyle(fontSize: 14),
                                           ),
@@ -154,8 +155,8 @@ class HotelListView extends ConsumerWidget {
                                             style:
                                                 const TextStyle(fontSize: 14),
                                           ),
-                                          const Text(" reviews",
-                                              style: TextStyle(fontSize: 14)),
+                                          // const Text(" reviews",
+                                          //     style: TextStyle(fontSize: 14)),
                                         ],
                                       ),
                                     ),
@@ -178,7 +179,7 @@ class HotelListView extends ConsumerWidget {
                                         fontWeight: FontWeight.bold),
                                   ),
                                   Text(
-                                    "per night",
+                                    Loc.alized.per_night,
                                     style: TextStyle(
                                       fontSize: 15,
                                       color: Theme.of(context).disabledColor,

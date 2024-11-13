@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_hotel_booking_ver2/constants/helper.dart';
 import 'package:flutter_hotel_booking_ver2/constants/localfiles.dart';
@@ -14,18 +15,19 @@ import 'package:flutter_hotel_booking_ver2/widgets/common_card.dart';
 import 'package:hotel_repository/hotel_repository.dart';
 import 'package:intl/intl.dart';
 import '../../models/hotel_list_data.dart';
+import '../../provider/favorite_provider.dart';
 import 'hotel_roome_list.dart';
 import 'rating_view.dart';
 
-class HotelDetailes extends StatefulWidget {
+class HotelDetailes extends ConsumerStatefulWidget {
   final Hotel hotelData;
 
   const HotelDetailes({Key? key, required this.hotelData}) : super(key: key);
   @override
-  State<HotelDetailes> createState() => _HotelDetailesState();
+  ConsumerState<HotelDetailes> createState() => _HotelDetailesState();
 }
 
-class _HotelDetailesState extends State<HotelDetailes>
+class _HotelDetailesState extends ConsumerState<HotelDetailes>
     with TickerProviderStateMixin {
   final oCcy = NumberFormat("#,##0", "vi_VN");
   DateTime startDate = DateTime.now();
@@ -254,20 +256,34 @@ class _HotelDetailesState extends State<HotelDetailes>
                     child: SizedBox(),
                   ),
                   // like and unlike view
-                  _getAppBarUi(
-                      AppTheme.backgroundColor,
-                      isFav ? Icons.favorite : Icons.favorite_border,
-                      AppTheme.primaryColor, () {
-                    setState(() {
-                      isFav = !isFav;
-                    });
-                  })
+                  _getFavoriteAppBarUi(context, ref, widget.hotelData.hotelId),
                 ],
               ),
             ),
           )
         ],
       ),
+    );
+  }
+
+  Widget _getFavoriteAppBarUi(
+      BuildContext context, WidgetRef ref, String hotelId) {
+    final favoriteHotelIdsAsync = ref.watch(favoriteHotelIdsProvider);
+
+    return favoriteHotelIdsAsync.when(
+      data: (favoriteHotelIds) {
+        final isFavorite = favoriteHotelIds.contains(hotelId);
+        return _getAppBarUi(
+          Theme.of(context).colorScheme.background, // Màu nền của nút
+          isFavorite ? Icons.favorite : Icons.favorite_border, // Icon
+          Theme.of(context).primaryColor, // Màu biểu tượng
+          () {
+            ref.read(favoriteServiceProvider).toggleFavoriteHotel(hotelId);
+          },
+        );
+      },
+      loading: () => CircularProgressIndicator(),
+      error: (error, stack) => Icon(Icons.error, color: Colors.red),
     );
   }
 
@@ -615,16 +631,16 @@ class _HotelDetailesState extends State<HotelDetailes>
                                           : Colors.white,
                                     ),
                           ),
-                          Text(
-                            Loc.alized.reviews,
-                            style:
-                                TextStyles(context).getRegularStyle().copyWith(
-                                      fontSize: 14,
-                                      color: isInList
-                                          ? Theme.of(context).disabledColor
-                                          : Colors.white,
-                                    ),
-                          ),
+                          // Text(
+                          //   Loc.alized.reviews,
+                          //   style:
+                          //       TextStyles(context).getRegularStyle().copyWith(
+                          //             fontSize: 14,
+                          //             color: isInList
+                          //                 ? Theme.of(context).disabledColor
+                          //                 : Colors.white,
+                          //           ),
+                          // ),
                         ],
                       ),
                     ),
