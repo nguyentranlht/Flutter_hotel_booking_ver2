@@ -190,7 +190,7 @@ class _HotelDetailesState extends ConsumerState<HotelDetailes>
                       aspectRatio: 1.5,
                       child: GoogleMap(
                         initialCameraPosition: CameraPosition(
-                          target: LatLng(10.8016022, 106.7942758),
+                          target: widget.hotelData.location,
                           zoom: 17,
                         ),
                         mapType: MapType.normal,
