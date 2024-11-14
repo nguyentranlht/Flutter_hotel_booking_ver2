@@ -164,5 +164,6 @@
     "full_name_cannot_empty": "フルネームは空にできません",
     "last_name_cannot_empty": "姓は空にできません",
     "capacity": "容量",
-    "phone_cannot_empty": "電話番号は空にできません"
+    "phone_cannot_empty": "電話番号は空にできません",
+    "birthday": "誕生日"
 }

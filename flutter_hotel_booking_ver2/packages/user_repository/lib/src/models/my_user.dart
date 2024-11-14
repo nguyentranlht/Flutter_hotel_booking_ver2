@@ -7,7 +7,7 @@ class MyUser extends Equatable {
   late String fullname;
   String? picture;
   late String phonenumber;
-  final DateTime birthday; // Chuyển đổi sang DateTime
+  late DateTime birthday; // Chuyển đổi sang DateTime
   final String role;
 
   MyUser({

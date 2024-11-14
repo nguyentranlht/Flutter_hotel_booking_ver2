@@ -1,8 +1,6 @@
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hotel_booking_ver2/constants/localfiles.dart';
-import 'package:flutter_hotel_booking_ver2/constants/text_styles.dart';
 import 'package:flutter_hotel_booking_ver2/constants/themes.dart';
 import 'package:flutter_hotel_booking_ver2/language/app_localizations.dart';
 import 'package:flutter_hotel_booking_ver2/widgets/common_appbar_view.dart';
@@ -32,6 +30,7 @@ class _EditProfileState extends ConsumerState<EditProfile> {
   late TextEditingController _nameController;
   late TextEditingController _emailController;
   late TextEditingController _phoneController;
+  late TextEditingController _birthdayController;
 
   @override
   void initState() {
@@ -39,6 +38,9 @@ class _EditProfileState extends ConsumerState<EditProfile> {
     _nameController = TextEditingController(text: widget.myUser.fullname);
     _emailController = TextEditingController(text: widget.myUser.email);
     _phoneController = TextEditingController(text: widget.myUser.phonenumber);
+    _birthdayController = TextEditingController(
+      text: DateFormat('dd/MM/yyyy').format(widget.myUser.birthday),
+    );
   }
 
   // Hàm chọn ảnh từ thư viện
@@ -50,6 +52,21 @@ class _EditProfileState extends ConsumerState<EditProfile> {
       });
     } else {
       print("Chưa chọn ảnh nào");
+    }
+  }
+
+  // Hàm chọn ngày sinh
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: widget.myUser.birthday,
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+    );
+    if (pickedDate != null && pickedDate != widget.myUser.birthday) {
+      setState(() {
+        _birthdayController.text = DateFormat('dd/MM/yyyy').format(pickedDate);
+      });
     }
   }
 
@@ -72,6 +89,7 @@ class _EditProfileState extends ConsumerState<EditProfile> {
         fullname: _nameController.text,
         phonenumber: _phoneController.text,
         picture: photoURL ?? widget.myUser.picture,
+        birthday: DateFormat('dd/MM/yyyy').parse(_birthdayController.text),
       );
 
       // Sử dụng provider để cập nhật Firestore
@@ -82,6 +100,8 @@ class _EditProfileState extends ConsumerState<EditProfile> {
         widget.myUser.fullname = _nameController.text;
         widget.myUser.phonenumber = _phoneController.text;
         widget.myUser.picture = photoURL ?? widget.myUser.picture;
+        widget.myUser.birthday =
+            DateFormat('dd/MM/yyyy').parse(_birthdayController.text);
       });
       // Hiển thị thông báo thành công
       ScaffoldMessenger.of(context).showSnackBar(
@@ -131,6 +151,15 @@ class _EditProfileState extends ConsumerState<EditProfile> {
                         _buildEditableField("Email", _emailController,
                             enabled: false),
                         _buildEditableField(Loc.alized.phone, _phoneController),
+                        GestureDetector(
+                          onTap: () => _selectDate(context),
+                          child: AbsorbPointer(
+                            child: _buildEditableField(
+                              Loc.alized.birthday,
+                              _birthdayController,
+                            ),
+                          ),
+                        ),
                         Padding(
                           padding: const EdgeInsets.only(top: 24.0),
                           child: ElevatedButton(

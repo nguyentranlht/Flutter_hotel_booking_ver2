@@ -164,5 +164,6 @@
     "full_name_cannot_empty": "Le nom complet ne peut pas être vide",
     "last_name_cannot_empty": "Le nom de famille ne peut pas être vide",
     "capacity": "Capacité",
-    "phone_cannot_empty": "Le téléphone ne peut pas être vide"
+    "phone_cannot_empty": "Le téléphone ne peut pas être vide",
+    "birthday": "Anniversaire"
 }
