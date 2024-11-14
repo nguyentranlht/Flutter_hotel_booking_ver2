@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_hotel_booking_ver2/constants/helper.dart';
-import 'package:flutter_hotel_booking_ver2/constants/localfiles.dart';
 import 'package:flutter_hotel_booking_ver2/constants/text_styles.dart';
 import 'package:flutter_hotel_booking_ver2/constants/themes.dart';
 import 'package:flutter_hotel_booking_ver2/language/app_localizations.dart';
@@ -12,6 +11,7 @@ import 'package:flutter_hotel_booking_ver2/modules/hotel_detailes/review_data_vi
 import 'package:flutter_hotel_booking_ver2/routes/route_names.dart';
 import 'package:flutter_hotel_booking_ver2/widgets/common_button.dart';
 import 'package:flutter_hotel_booking_ver2/widgets/common_card.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hotel_repository/hotel_repository.dart';
 import 'package:intl/intl.dart';
 import '../../models/hotel_list_data.dart';
@@ -30,6 +30,7 @@ class HotelDetailes extends ConsumerStatefulWidget {
 class _HotelDetailesState extends ConsumerState<HotelDetailes>
     with TickerProviderStateMixin {
   final oCcy = NumberFormat("#,##0", "vi_VN");
+  GoogleMapController? _mapController;
   DateTime startDate = DateTime.now();
   DateTime endDate = DateTime.now().add(const Duration(days: 1));
   ScrollController scrollController = ScrollController(initialScrollOffset: 0);
@@ -187,9 +188,29 @@ class _HotelDetailesState extends ConsumerState<HotelDetailes>
                   children: <Widget>[
                     AspectRatio(
                       aspectRatio: 1.5,
-                      child: Image.asset(
-                        Localfiles.mapImage,
-                        fit: BoxFit.cover,
+                      child: GoogleMap(
+                        initialCameraPosition: CameraPosition(
+                          target: LatLng(10.8016022, 106.7942758),
+                          zoom: 17,
+                        ),
+                        mapType: MapType.normal,
+                        mapToolbarEnabled: false,
+                        compassEnabled: false,
+                        myLocationButtonEnabled: false,
+                        rotateGesturesEnabled: false,
+                        tiltGesturesEnabled: false,
+                        myLocationEnabled: true,
+                        zoomControlsEnabled: false,
+                        onMapCreated: (GoogleMapController controller) async {
+                          _mapController = controller;
+                          await _mapController?.setMapStyle(
+                            await DefaultAssetBundle.of(context).loadString(
+                              AppTheme.isLightMode
+                                  ? "assets/json/mapstyle_light.json"
+                                  : "assets/json/mapstyle_dark.json",
+                            ),
+                          );
+                        },
                       ),
                     ),
                     Padding(
