@@ -202,7 +202,7 @@ class _HotelDetailesState extends ConsumerState<HotelDetailes>
                         myLocationEnabled: true,
                         zoomControlsEnabled: false,
                         onMapCreated: (GoogleMapController controller) async {
-                          _mapController = controller;
+                          // _mapController = controller;
                           // await _mapController?.setMapStyle(
                           //   await DefaultAssetBundle.of(context).loadString(
                           //     AppTheme.isLightMode

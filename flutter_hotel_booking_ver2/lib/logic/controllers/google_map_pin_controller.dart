@@ -45,9 +45,9 @@ class GoogleMapPinController extends GetxController {
           for (var item in _hotelList) {
             if (item.location != null) {
               var fdl =
-                  _visibleRegion!.northeast.latitude - item.location!.latitude;
+                  _visibleRegion!.northeast.latitude - item.location.latitude;
               var fdlg = _visibleRegion!.southwest.longitude -
-                  item.location!.longitude;
+                  item.location.longitude;
               item.screenMapPin = Offset(
                   (fdlg * sSize!.width) / sdlg, (fdl * sSize.height) / sdl);
             }

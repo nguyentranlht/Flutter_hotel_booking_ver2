@@ -5,6 +5,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter_hotel_booking_ver2/constants/themes.dart';
 import 'package:flutter_hotel_booking_ver2/logic/controllers/google_map_pin_controller.dart';
 import 'package:hotel_repository/hotel_repository.dart';
+import 'package:intl/intl.dart';
 
 class GoogleMapUIView extends StatefulWidget {
   final List<Hotel> hotelList; // Thay đổi kiểu thành List<Hotel>
@@ -17,6 +18,7 @@ class GoogleMapUIView extends StatefulWidget {
 class _GoogleMapUIViewState extends State<GoogleMapUIView> {
   GoogleMapController? _mapController;
   late GoogleMapPinController _googleMapPinController;
+  final oCcy = NumberFormat("#,##0", "vi_VN");
 
   @override
   void initState() {
@@ -117,7 +119,7 @@ class _GoogleMapUIViewState extends State<GoogleMapUIView> {
                                       padding: const EdgeInsets.only(
                                           left: 8, right: 8, top: 4, bottom: 4),
                                       child: Text(
-                                        "${item.perNight} ₫", // Cập nhật giá nếu có
+                                        "${(oCcy.format(num.parse(item.perNight)))}₫", // Cập nhật giá nếu có
                                         style: TextStyle(
                                             color: item.isSelected
                                                 ? AppTheme.backgroundColor
