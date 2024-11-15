@@ -203,13 +203,13 @@ class _HotelDetailesState extends ConsumerState<HotelDetailes>
                         zoomControlsEnabled: false,
                         onMapCreated: (GoogleMapController controller) async {
                           _mapController = controller;
-                          await _mapController?.setMapStyle(
-                            await DefaultAssetBundle.of(context).loadString(
-                              AppTheme.isLightMode
-                                  ? "assets/json/mapstyle_light.json"
-                                  : "assets/json/mapstyle_dark.json",
-                            ),
-                          );
+                          // await _mapController?.setMapStyle(
+                          //   await DefaultAssetBundle.of(context).loadString(
+                          //     AppTheme.isLightMode
+                          //         ? "assets/json/mapstyle_light.json"
+                          //         : "assets/json/mapstyle_dark.json",
+                          //   ),
+                          // );
                         },
                       ),
                     ),
