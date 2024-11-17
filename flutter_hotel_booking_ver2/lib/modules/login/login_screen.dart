@@ -8,7 +8,6 @@ import 'package:flutter_hotel_booking_ver2/widgets/common_appbar_view.dart';
 import 'package:flutter_hotel_booking_ver2/widgets/common_button.dart';
 import 'package:flutter_hotel_booking_ver2/widgets/common_text_field_view.dart';
 import 'package:flutter_hotel_booking_ver2/widgets/remove_focuse.dart';
-import 'package:flutter_hotel_booking_ver2/widgets/dialog_widget.dart';
 import '../../futures/authentication_bloc/authentication_bloc.dart';
 
 import '../../routes/routes.dart';

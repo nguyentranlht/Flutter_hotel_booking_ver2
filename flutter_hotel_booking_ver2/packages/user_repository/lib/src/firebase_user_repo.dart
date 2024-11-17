@@ -9,7 +9,6 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:user_repository/src/models/my_user.dart';
 import 'entities/entities.dart';
 import 'user_repo.dart';
-import 'package:firebase_database/firebase_database.dart';
 
 class FirebaseUserRepository implements UserRepository {
   final nameFocusNode = FocusNode();
@@ -24,7 +23,6 @@ class FirebaseUserRepository implements UserRepository {
   final GoogleSignIn _googleSignIn;
   final FacebookLogin _facebookAuth;
   final usersCollection = FirebaseFirestore.instance.collection('users');
-  DatabaseReference ref = FirebaseDatabase.instance.ref().child('User');
   final CollectionReference userCollection =
       FirebaseFirestore.instance.collection('users');
 
