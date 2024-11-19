@@ -221,7 +221,7 @@ class BookingConfirmationScreen extends ConsumerWidget {
                     ? null // Khóa nút khi isLoading là true
                     : () async {
                         String bookingId = FirebaseFirestore.instance
-                            .collection('Bookings')
+                            .collection('bookings')
                             .doc()
                             .id;
                         await makePayment(
@@ -362,16 +362,10 @@ class BookingConfirmationScreen extends ConsumerWidget {
     WriteBatch batch = FirebaseFirestore.instance.batch();
 
     // Tham chiếu đến tài liệu
-    DocumentReference bookingRef = FirebaseFirestore.instance
-        .collection('users')
-        .doc(userId)
-        .collection('bookings')
-        .doc(bookingId);
-    DocumentReference paymentRef = FirebaseFirestore.instance
-        .collection('users')
-        .doc(userId)
-        .collection('payments')
-        .doc();
+    DocumentReference bookingRef =
+        FirebaseFirestore.instance.collection('bookings').doc(bookingId);
+    DocumentReference paymentRef =
+        FirebaseFirestore.instance.collection('payments').doc();
 
     // Thêm dữ liệu đặt phòng và thanh toán vào batch
     batch.set(bookingRef, bookingData);
@@ -417,9 +411,10 @@ class BookingConfirmationScreen extends ConsumerWidget {
           'totalPrice': amount,
           'paymentStatus': 'success',
         };
-
+        String paymentId =
+            FirebaseFirestore.instance.collection('payments').doc().id;
         Map<String, dynamic> paymentData = {
-          'paymentId': bookingId, // Hoặc một ID tùy chỉnh
+          'paymentId': paymentId, // Hoặc một ID tùy chỉnh
           'bookingId': bookingId,
           'userId': userId,
           'amount': amount,

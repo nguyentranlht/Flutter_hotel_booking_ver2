@@ -78,16 +78,17 @@ class FirebaseUserRepository implements UserRepository {
         final UserCredential userCredential =
             await _firebaseAuth.signInWithCredential(credential);
         final myUser = MyUser(
-          userId: userCredential
-              .user!.uid, // Hoặc để trống nếu không cần tại thời điểm này
-          email: userCredential.user?.email ?? '',
-          fullname: userCredential.user!.displayName ?? 'User',
-          picture: userCredential.user!.photoURL ?? null, // Nếu không có ảnh
-          phonenumber: userCredential.user?.phoneNumber ??
-              '', // Nếu chưa có số điện thoại
-          birthday: DateTime.now(), // Nếu không có ngày sinh cụ thể
-          role: 'user', // Gán quyền mặc định
-        );
+            userId: userCredential
+                .user!.uid, // Hoặc để trống nếu không cần tại thời điểm này
+            email: userCredential.user?.email ?? '',
+            fullname: userCredential.user!.displayName ?? 'User',
+            picture: userCredential.user!.photoURL ?? null, // Nếu không có ảnh
+            phonenumber: userCredential.user?.phoneNumber ??
+                '', // Nếu chưa có số điện thoại
+            birthday: DateTime.now(), // Nếu không có ngày sinh cụ thể
+            role: 'user', // Gán quyền mặc định
+            status: 'active');
+
         return myUser;
       } else {
         throw Exception("Sign-In was canceled by user");
@@ -108,16 +109,17 @@ class FirebaseUserRepository implements UserRepository {
         final UserCredential userCredential =
             await _firebaseAuth.signInWithCredential(credential);
         final myUser = MyUser(
-          userId: userCredential
-              .user!.uid, // Hoặc để trống nếu không cần tại thời điểm này
-          email: userCredential.user?.email ?? '',
-          fullname: userCredential.user!.displayName ?? 'User',
-          picture: userCredential.user!.photoURL ?? null, // Nếu không có ảnh
-          phonenumber: userCredential.user?.phoneNumber ??
-              '', // Nếu chưa có số điện thoại
-          birthday: DateTime.now(), // Nếu không có ngày sinh cụ thể
-          role: 'user', // Gán quyền mặc định
-        );
+            userId: userCredential
+                .user!.uid, // Hoặc để trống nếu không cần tại thời điểm này
+            email: userCredential.user?.email ?? '',
+            fullname: userCredential.user!.displayName ?? 'User',
+            picture: userCredential.user!.photoURL ?? null, // Nếu không có ảnh
+            phonenumber: userCredential.user?.phoneNumber ??
+                '', // Nếu chưa có số điện thoại
+            birthday: DateTime.now(), // Nếu không có ngày sinh cụ thể
+            role: 'user', // Gán quyền mặc định
+            status: 'active');
+
         return myUser;
       } else {
         throw Exception("Sign-In was canceled by user");

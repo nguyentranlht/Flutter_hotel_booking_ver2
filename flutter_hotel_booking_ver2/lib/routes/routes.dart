@@ -5,4 +5,5 @@ class RoutesName {
   static const String home = '/home';
   static const String tabScreen = "/bottomTab/bottomTabScreen";
   static const String owner = "/owner";
+  static const String admin = '/admin';
 }

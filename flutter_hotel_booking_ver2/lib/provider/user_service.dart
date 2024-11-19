@@ -20,6 +20,7 @@ class UserService {
             phonenumber: data['phonenumber'],
             birthday: (data['birthday'] as Timestamp).toDate(),
             role: data['role'],
+            status: data['status'],
           );
         }
       }
@@ -33,6 +34,8 @@ class UserService {
     try {
       // Tham chiếu đến document của user dựa trên userId
       DocumentReference userDocRef = _firestore.collection('users').doc(user.userId);
+
+  
 
       // Tạo một map chứa dữ liệu cần cập nhật
       Map<String, dynamic> userData = {

@@ -9,7 +9,7 @@ class MyUser extends Equatable {
   late String phonenumber;
   late DateTime birthday; // Chuyển đổi sang DateTime
   final String role;
-
+  final String status;
   MyUser({
     required this.userId,
     required this.email,
@@ -18,6 +18,7 @@ class MyUser extends Equatable {
     required this.phonenumber,
     required this.birthday, // Chuyển đổi sang DateTime
     required this.role,
+    required this.status,
   });
 
   /// Empty user which represents an unauthenticated user.
@@ -29,6 +30,7 @@ class MyUser extends Equatable {
     phonenumber: '', // Nếu chưa có số điện thoại
     birthday: DateTime.now(), // Nếu không có ngày sinh cụ thể
     role: 'user',
+    status: 'active',
   );
 
   /// Modify MyUser parameters
@@ -40,6 +42,7 @@ class MyUser extends Equatable {
     String? phonenumber,
     DateTime? birthday, // Chuyển đổi sang DateTime
     String? role,
+    String? status,
   }) {
     return MyUser(
       userId: userId ?? this.userId,
@@ -49,6 +52,7 @@ class MyUser extends Equatable {
       phonenumber: phonenumber ?? this.phonenumber,
       birthday: birthday ?? this.birthday, // Chuyển đổi sang DateTime
       role: role ?? this.role,
+      status: status ?? this.status,
     );
   }
 
@@ -68,6 +72,7 @@ class MyUser extends Equatable {
       phonenumber: phonenumber,
       birthday: birthday, // Sử dụng DateTime
       role: role,
+      status: status,
     );
   }
 
@@ -81,10 +86,12 @@ class MyUser extends Equatable {
       phonenumber: entity.phonenumber,
       birthday: entity.birthday, // Sử dụng DateTime từ entity
       role: entity.role,
+      status: entity.status,
     );
   }
 
   @override
+<<<<<<< Updated upstream
   List<Object?> get props => [
         userId,
         email,
@@ -94,4 +101,8 @@ class MyUser extends Equatable {
         birthday,
         role
       ];
+=======
+  List<Object?> get props =>
+      [userId, email, fullname, picture, phonenumber, birthday, role, status];
+>>>>>>> Stashed changes
 }

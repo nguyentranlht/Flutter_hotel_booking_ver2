@@ -2,6 +2,12 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_hotel_booking_ver2/admin/AdminDashboard.dart';
+import 'package:flutter_hotel_booking_ver2/admin/screen/AppContentManagementScreen.dart';
+import 'package:flutter_hotel_booking_ver2/admin/screen/BookingManagementScreen.dart';
+import 'package:flutter_hotel_booking_ver2/admin/screen/FinanceManagementScreen.dart';
+import 'package:flutter_hotel_booking_ver2/admin/screen/ReportsScreen.dart';
+import 'package:flutter_hotel_booking_ver2/admin/screen/userManagementScreen.dart';
 import 'package:flutter_hotel_booking_ver2/common/common.dart';
 import 'package:flutter_hotel_booking_ver2/constants/themes.dart';
 import 'package:flutter_hotel_booking_ver2/language/app_localizations.dart';
@@ -41,7 +47,8 @@ class _MotelAppState extends State<MotelApp> {
               builder: (controller) {
                 final ThemeData theme = AppTheme.getThemeData;
                 return GetMaterialApp(
-                  localizationsDelegates: AppLocalizations.localizationsDelegates,
+                  localizationsDelegates:
+                      AppLocalizations.localizationsDelegates,
                   supportedLocales: const [
                     Locale('vi'), // VietNam
                     Locale('en'), // English
@@ -66,11 +73,12 @@ class _MotelAppState extends State<MotelApp> {
                         key: ValueKey(
                             'languageCode ${locController.locale.languageCode}'),
                         data: MediaQuery.of(context).copyWith(
-                          textScaleFactor: MediaQuery.of(context).size.width > 360
-                              ? 1.0
-                              : MediaQuery.of(context).size.width >= 340
-                                  ? 0.9
-                                  : 0.8,
+                          textScaleFactor:
+                              MediaQuery.of(context).size.width > 360
+                                  ? 1.0
+                                  : MediaQuery.of(context).size.width >= 340
+                                      ? 0.9
+                                      : 0.8,
                         ),
                         child: child ?? const SizedBox(),
                       ),
@@ -115,6 +123,16 @@ class _MotelAppState extends State<MotelApp> {
           IntroductionScreen(FirebaseUserRepository()),
       RoutesName.home: (BuildContext context) => const BottomTabScreen(),
       RoutesName.login: (BuildContext context) => const LoginScreen(),
+      '/admin/dashboard': (BuildContext context) => const AdminDashboard(),
+      '/admin/app-content': (BuildContext context) =>
+          const AppContentManagementScreen(),
+      '/admin/booking-management': (BuildContext context) =>
+          const BookingManagementScreen(),
+      '/admin/reports': (BuildContext context) => const ReportsScreen(),
+      '/admin/user-management': (BuildContext context) =>
+          UserManagementScreen(),
+      '/admin/finance-management': (BuildContext context) =>
+          FinanceManagementScreen(),
     };
   }
 }
