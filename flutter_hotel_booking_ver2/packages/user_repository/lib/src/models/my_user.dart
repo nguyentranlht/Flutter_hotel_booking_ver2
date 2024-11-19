@@ -91,18 +91,6 @@ class MyUser extends Equatable {
   }
 
   @override
-<<<<<<< Updated upstream
-  List<Object?> get props => [
-        userId,
-        email,
-        fullname,
-        picture,
-        phonenumber,
-        birthday,
-        role
-      ];
-=======
   List<Object?> get props =>
       [userId, email, fullname, picture, phonenumber, birthday, role, status];
->>>>>>> Stashed changes
 }
