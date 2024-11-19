@@ -10,9 +10,8 @@ final bookingProvider = StreamProvider<List<Booking>>((ref) {
         []); // Trả về một stream rỗng nếu người dùng chưa đăng nhập
   }
   return FirebaseFirestore.instance
-      .collection('users')
-      .doc(userId)
       .collection('bookings')
+      .where('userId', isEqualTo: userId)
       .snapshots()
       .map((snapshot) =>
           snapshot.docs.map((doc) => Booking.fromFirestore(doc)).toList());

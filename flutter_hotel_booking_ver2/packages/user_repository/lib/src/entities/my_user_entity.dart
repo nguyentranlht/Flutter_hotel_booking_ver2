@@ -10,6 +10,7 @@ class MyUserEntity extends Equatable {
   final String phonenumber;
   final DateTime birthday;
   final String role;
+  final String status;
 
   const MyUserEntity({
     required this.userId,
@@ -20,6 +21,7 @@ class MyUserEntity extends Equatable {
     required this.phonenumber,
     required this.birthday,
     required this.role,
+    required this.status,
   });
 
   Map<String, dynamic> toDocument() {
@@ -33,6 +35,7 @@ class MyUserEntity extends Equatable {
       'birthday':
           Timestamp.fromDate(birthday), // Chuyển DateTime thành Timestamp
       'role': role,
+      'status': status,
     };
   }
 
@@ -46,10 +49,12 @@ class MyUserEntity extends Equatable {
         phonenumber: doc['phonenumber'] as String,
         birthday: (doc['birthday'] as Timestamp)
             .toDate(), // Chuyển Timestamp thành DateTime
-        role: doc['role'] as String);
+        role: doc['role'] as String,
+        status: doc['status'] as String);
   }
 
   @override
+<<<<<<< Updated upstream
   List<Object?> get props => [
         userId,
         email,
@@ -60,6 +65,10 @@ class MyUserEntity extends Equatable {
         birthday,
         role
       ];
+=======
+  List<Object?> get props =>
+      [userId, email, fullname, picture, phonenumber, birthday, role, status];
+>>>>>>> Stashed changes
 
   @override
   String toString() {
@@ -71,7 +80,8 @@ class MyUserEntity extends Equatable {
       picture: $picture,
       phonenumber: $phonenumber,
       birthday: $birthday,
-      role: $role
+      role: $role,
+      status: $status
     }''';
   }
 }

@@ -126,6 +126,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         onTap: () {
                           if (_allValidation()) {
                             final myUser = MyUser(
+<<<<<<< Updated upstream
                               userId: '', // Hoặc để trống nếu không cần tại thời điểm này
                               email: _emailController.text.trim(),
                               firstname: _fnameController.text.trim(),
@@ -135,6 +136,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               birthday: DateTime.now(), // Nếu không có ngày sinh cụ thể
                               role: 'user', // Gán quyền mặc định
                             );
+=======
+                                userId:
+                                    '', // Hoặc để trống nếu không cần tại thời điểm này
+                                email: _emailController.text.trim(),
+                                fullname: _fnameController.text.trim(),
+                                picture: null, // Nếu không có ảnh
+                                phonenumber: _pnumController.text
+                                    .trim(), // Nếu chưa có số điện thoại
+                                birthday: DateTime
+                                    .now(), // Nếu không có ngày sinh cụ thể
+                                role: 'user', // Gán quyền mặc định
+                                status: 'active');
+>>>>>>> Stashed changes
                             setState(() {
                               context
                                   .read<AuthenticationBloc>()
