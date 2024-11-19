@@ -1,0 +1,130 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_hotel_booking_ver2/constants/themes.dart';
+import 'package:flutter_hotel_booking_ver2/owner/bookingschedulescreen.dart';
+import 'package:flutter_hotel_booking_ver2/owner/managehotelsscreen.dart';
+import 'package:flutter_hotel_booking_ver2/owner/manageroomsscreen.dart';
+import 'package:flutter_hotel_booking_ver2/owner/revenuereportscreen.dart';
+import 'package:flutter_hotel_booking_ver2/widgets/common_button.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:user_repository/user_repository.dart';
+
+class OwnerDashboard extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    // final userId = FirebaseAuth.instance.currentUser?.uid;
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Owner Dashboard"),
+        backgroundColor: AppTheme.primaryColor,
+        // actions: [
+        //   IconButton(
+        //     icon: const Icon(Icons.logout),
+        //     onPressed: (),
+        //   ),
+        // ],
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              "Welcome, Owner!",
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 16),
+            Expanded(
+              child: GridView.count(
+                crossAxisCount: 2,
+                crossAxisSpacing: 16,
+                mainAxisSpacing: 16,
+                children: [
+                  _buildDashboardCard(
+                    context,
+                    title: "Manage Hotels",
+                    icon: Icons.hotel,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => ManageHotelsScreen()),
+                      );
+                    },
+                  ),
+                  _buildDashboardCard(
+                    context,
+                    title: "Manage Rooms",
+                    icon: Icons.bed,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => ManageRoomsScreen()),
+                      );
+                    },
+                  ),
+                  _buildDashboardCard(
+                    context,
+                    title: "Booking Schedule",
+                    icon: Icons.schedule,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => BookingScheduleScreen()),
+                      );
+                    },
+                  ),
+                  _buildDashboardCard(
+                    context,
+                    title: "Revenue Report",
+                    icon: Icons.bar_chart,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => RevenueReportScreen()),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDashboardCard(
+    BuildContext context, {
+    required String title,
+    required IconData icon,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Card(
+        elevation: 4,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 48, color: AppTheme.primaryColor),
+            const SizedBox(height: 8),
+            Text(
+              title,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

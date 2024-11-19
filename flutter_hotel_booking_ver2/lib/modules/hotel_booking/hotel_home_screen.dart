@@ -102,102 +102,110 @@ class _HotelHomeScreenState extends State<HotelHomeScreen>
                                 ref.watch(filteredHotelProvider);
 
                             return hotelListAsync.when(
-                              data: (hotelList) => Stack(
-                                children: <Widget>[
-                                  Container(
-                                    color: AppTheme.scaffoldBackgroundColor,
-                                    child: ListView.builder(
-                                      controller: scrollController,
-                                      itemCount: hotelList.length,
-                                      padding: const EdgeInsets.only(
-                                        top: 8 + 158 + 52.0,
-                                      ),
-                                      scrollDirection: Axis.vertical,
-                                      itemBuilder: (context, index) {
-                                        var count = hotelList.length > 10
-                                            ? 10
-                                            : hotelList.length;
-                                        var animation = Tween(
-                                          begin: 0.0,
-                                          end: 1.0,
-                                        ).animate(
-                                          CurvedAnimation(
-                                            parent: animationController,
-                                            curve: Interval(
-                                              (1 / count) * index,
-                                              1.0,
-                                              curve: Curves.fastOutSlowIn,
+                              data: (hotelList) {
+                                // Lọc danh sách các khách sạn có isSelected == true
+                                final selectedHotels = hotelList
+                                    .where((hotel) => hotel.isSelected)
+                                    .toList();
+
+                                return Stack(
+                                  children: <Widget>[
+                                    Container(
+                                      color: AppTheme.scaffoldBackgroundColor,
+                                      child: ListView.builder(
+                                        controller: scrollController,
+                                        itemCount: selectedHotels.length,
+                                        padding: const EdgeInsets.only(
+                                          top: 8 + 158 + 52.0,
+                                        ),
+                                        scrollDirection: Axis.vertical,
+                                        itemBuilder: (context, index) {
+                                          var count = selectedHotels.length > 10
+                                              ? 10
+                                              : selectedHotels.length;
+                                          var animation = Tween(
+                                            begin: 0.0,
+                                            end: 1.0,
+                                          ).animate(
+                                            CurvedAnimation(
+                                              parent: animationController,
+                                              curve: Interval(
+                                                (1 / count) * index,
+                                                1.0,
+                                                curve: Curves.fastOutSlowIn,
+                                              ),
                                             ),
+                                          );
+                                          animationController.forward();
+                                          return HotelListView(
+                                            callback: () {
+                                              NavigationServices(context)
+                                                  .gotoRoomBookingScreen(
+                                                      selectedHotels[index]
+                                                          .hotelName,
+                                                      selectedHotels[index]
+                                                          .hotelId,
+                                                      selectedHotels[index]
+                                                          .hotelAddress,
+                                                      startDate
+                                                          .toString()
+                                                          .substring(0, 10),
+                                                      endDate
+                                                          .toString()
+                                                          .substring(0, 10));
+                                            },
+                                            hotelData: selectedHotels[index],
+                                            animation: animation,
+                                            animationController:
+                                                animationController,
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                    AnimatedBuilder(
+                                      animation: _animationController,
+                                      builder: (BuildContext context,
+                                          Widget? child) {
+                                        return Positioned(
+                                          top: -searchBarHieght *
+                                              (_animationController.value),
+                                          left: 0,
+                                          right: 0,
+                                          child: Column(
+                                            children: <Widget>[
+                                              Container(
+                                                color: Theme.of(context)
+                                                    .scaffoldBackgroundColor,
+                                                child: Column(
+                                                  children: <Widget>[
+                                                    _getSearchBarUI(),
+                                                    const FilterBarUI(),
+                                                  ],
+                                                ),
+                                              ),
+                                              TimeDateView(
+                                                startDate: startDate,
+                                                endDate: endDate,
+                                                onStartDateChanged:
+                                                    (newStartDate) {
+                                                  setState(() {
+                                                    startDate = newStartDate;
+                                                  });
+                                                },
+                                                onEndDateChanged: (newEndDate) {
+                                                  setState(() {
+                                                    endDate = newEndDate;
+                                                  });
+                                                },
+                                              ),
+                                            ],
                                           ),
-                                        );
-                                        animationController.forward();
-                                        return HotelListView(
-                                          callback: () {
-                                            NavigationServices(
-                                                    context)
-                                                .gotoRoomBookingScreen(
-                                                    hotelList[index].hotelName,
-                                                    hotelList[index].hotelId,
-                                                    hotelList[index]
-                                                        .hotelAddress,
-                                                    startDate
-                                                        .toString()
-                                                        .substring(0, 10),
-                                                    endDate
-                                                        .toString()
-                                                        .substring(0, 10));
-                                          },
-                                          hotelData: hotelList[index],
-                                          animation: animation,
-                                          animationController:
-                                              animationController,
                                         );
                                       },
                                     ),
-                                  ),
-                                  AnimatedBuilder(
-                                    animation: _animationController,
-                                    builder:
-                                        (BuildContext context, Widget? child) {
-                                      return Positioned(
-                                        top: -searchBarHieght *
-                                            (_animationController.value),
-                                        left: 0,
-                                        right: 0,
-                                        child: Column(
-                                          children: <Widget>[
-                                            Container(
-                                              color: Theme.of(context)
-                                                  .scaffoldBackgroundColor,
-                                              child: Column(
-                                                children: <Widget>[
-                                                  _getSearchBarUI(),
-                                                  const FilterBarUI(),
-                                                ],
-                                              ),
-                                            ),
-                                            TimeDateView(
-                                              startDate: startDate,
-                                              endDate: endDate,
-                                              onStartDateChanged:
-                                                  (newStartDate) {
-                                                setState(() {
-                                                  startDate = newStartDate;
-                                                });
-                                              },
-                                              onEndDateChanged: (newEndDate) {
-                                                setState(() {
-                                                  endDate = newEndDate;
-                                                });
-                                              },
-                                            ),
-                                          ],
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ],
-                              ),
+                                  ],
+                                );
+                              },
                               loading: () => const Center(
                                 child: CircularProgressIndicator(),
                               ),

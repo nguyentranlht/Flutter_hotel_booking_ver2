@@ -30,7 +30,6 @@ class HotelDetailes extends ConsumerStatefulWidget {
 class _HotelDetailesState extends ConsumerState<HotelDetailes>
     with TickerProviderStateMixin {
   final oCcy = NumberFormat("#,##0", "vi_VN");
-  GoogleMapController? _mapController;
   DateTime startDate = DateTime.now();
   DateTime endDate = DateTime.now().add(const Duration(days: 1));
   ScrollController scrollController = ScrollController(initialScrollOffset: 0);

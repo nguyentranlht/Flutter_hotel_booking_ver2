@@ -9,6 +9,7 @@ import 'package:flutter_hotel_booking_ver2/routes/route_names.dart';
 import 'package:flutter_hotel_booking_ver2/widgets/common_button.dart';
 
 import '../../futures/authentication_bloc/authentication_bloc.dart';
+import '../../owner/ownerdashboard.dart';
 import '../bottom_tab/bottom_tab_screen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -42,7 +43,11 @@ class _SplashScreenState extends State<SplashScreen> {
       builder: (context, state) {
         if (state is AuthenticationStateAuthenticated) {
           // Nếu người dùng đã đăng nhập, hiển thị màn hình chính
-          return BottomTabScreen();
+          if (true) {
+            return OwnerDashboard();
+          } else {
+            return BottomTabScreen();
+          }
         } else {
           // Nếu người dùng chưa đăng nhập, hiển thị SplashScreen
           return Scaffold(

@@ -16,6 +16,7 @@ class Hotel extends Equatable {
   Offset? screenMapPin;
   bool isSelected;
   final double distanceFromCenter;
+  final String userId;
 
   Hotel({
     required this.hotelId,
@@ -29,6 +30,7 @@ class Hotel extends Equatable {
     required this.perNight,
     required this.isSelected,
     required this.distanceFromCenter,
+    required this.userId,
   });
 
   // Định nghĩa phương thức fromFirestore
@@ -53,6 +55,7 @@ class Hotel extends Equatable {
           ? (data['distanceFromCenter'] as int)
               .toDouble() // Convert int to double
           : (data['distanceFromCenter'] as double? ?? 0.0), // Use 0.0 if null
+      userId: data['userId'],
     );
   }
 
@@ -69,5 +72,6 @@ class Hotel extends Equatable {
         perNight,
         isSelected,
         distanceFromCenter,
+        userId,
       ];
 }

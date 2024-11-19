@@ -232,7 +232,7 @@ class _HomeExploreScreenState extends State<HomeExploreScreen>
 
         return hotelListAsync.when(
           data: (hotelList) {
-            final selectedHotels = hotelList.toList();
+            final selectedHotels = hotelList.where((hotel) => hotel.isSelected).toList();
             List<Widget> list = [];
 
             for (var hotel in selectedHotels) {

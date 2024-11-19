@@ -7,6 +7,7 @@ import 'package:hotel_repository/hotel_repository.dart';
 class GoogleMapPinController extends GetxController {
   LatLngBounds? _visibleRegion;
   Size? _visibleScreenSize;
+  int? selectedIndex; // Lưu trữ chỉ số của item được chọn
   GoogleMapController? _mapController;
   List<Hotel> _hotelList = [];
 
@@ -17,7 +18,12 @@ class GoogleMapPinController extends GetxController {
     await _setPositionOnScreen();
     update();
   }
-
+  
+  void updateSelectedIndex(int index) {
+    selectedIndex = index;
+    update(); // Thông báo UI cập nhật
+  }
+  
   void updateScreenVisibleArea(Size size) {
     _visibleScreenSize = size;
     update();

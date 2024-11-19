@@ -76,7 +76,7 @@ class _GoogleMapUIViewState extends State<GoogleMapUIView> {
                 },
               ),
               for (var item in provider.hotelList)
-                item.screenMapPin != null
+                (item.screenMapPin != null && item.isSelected)
                     ? AnimatedPositioned(
                         duration: const Duration(milliseconds: 1),
                         top: item.screenMapPin!.dy - 48,
@@ -89,7 +89,8 @@ class _GoogleMapUIViewState extends State<GoogleMapUIView> {
                             children: <Widget>[
                               Container(
                                 decoration: BoxDecoration(
-                                  color: item.isSelected
+                                  color: provider.hotelList.indexOf(item) ==
+                                          _googleMapPinController.selectedIndex
                                       ? AppTheme.primaryColor
                                       : AppTheme.backgroundColor,
                                   borderRadius: const BorderRadius.all(
@@ -104,28 +105,27 @@ class _GoogleMapUIViewState extends State<GoogleMapUIView> {
                                 ),
                                 child: Material(
                                   color: Colors.transparent,
-                                  child: GestureDetector(
-                                    behavior: HitTestBehavior.translucent,
+                                  child: InkWell(
                                     onTap: () {
-                                      if (item.isSelected == false) {
-                                        for (var f in provider.hotelList) {
-                                          f.isSelected = false;
-                                        }
-                                        item.isSelected = true;
-                                      }
-                                      _googleMapPinController.updateUI();
+                                      _googleMapPinController
+                                          .updateSelectedIndex(
+                                              provider.hotelList.indexOf(item));
                                     },
                                     child: Padding(
                                       padding: const EdgeInsets.only(
                                           left: 8, right: 8, top: 4, bottom: 4),
                                       child: Text(
-                                        "${(oCcy.format(num.parse(item.perNight)))}₫", // Cập nhật giá nếu có
+                                        "${(oCcy.format(num.parse(item.perNight)))}₫",
                                         style: TextStyle(
-                                            color: item.isSelected
-                                                ? AppTheme.backgroundColor
-                                                : AppTheme.primaryColor,
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w600),
+                                          color: provider.hotelList
+                                                      .indexOf(item) ==
+                                                  _googleMapPinController
+                                                      .selectedIndex
+                                              ? AppTheme.backgroundColor
+                                              : AppTheme.primaryColor,
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w600,
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -134,7 +134,8 @@ class _GoogleMapUIViewState extends State<GoogleMapUIView> {
                               IgnorePointer(
                                 child: Container(
                                   width: 1,
-                                  color: item.isSelected
+                                  color: provider.hotelList.indexOf(item) ==
+                                          _googleMapPinController.selectedIndex
                                       ? AppTheme.primaryColor
                                       : AppTheme.backgroundColor,
                                   height: 13,
