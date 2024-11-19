@@ -68,6 +68,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   } else if (role == 'user') {
                     // Điều hướng đến trang chủ nếu role là user
                     Navigator.pushNamed(context, RoutesName.home);
+                  } else if (role == 'owner') {
+                    // Điều hướng đến trang chủ nếu role là user
+                    Navigator.pushNamed(context, RoutesName.owner);
                   } else {
                     // Trường hợp không xác định vai trò
                     ScaffoldMessenger.of(context).showSnackBar(

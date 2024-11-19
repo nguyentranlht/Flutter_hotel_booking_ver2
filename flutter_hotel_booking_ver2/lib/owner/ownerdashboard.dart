@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hotel_booking_ver2/constants/themes.dart';
 import 'package:flutter_hotel_booking_ver2/owner/bookingschedulescreen.dart';
@@ -9,6 +10,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:user_repository/user_repository.dart';
 
 class OwnerDashboard extends ConsumerWidget {
+  const OwnerDashboard({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // final userId = FirebaseAuth.instance.currentUser?.uid;
@@ -16,12 +19,15 @@ class OwnerDashboard extends ConsumerWidget {
       appBar: AppBar(
         title: const Text("Owner Dashboard"),
         backgroundColor: AppTheme.primaryColor,
-        // actions: [
-        //   IconButton(
-        //     icon: const Icon(Icons.logout),
-        //     onPressed: (),
-        //   ),
-        // ],
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout), // Biểu tượng đăng xuất
+            onPressed: () {
+              // Thực hiện đăng xuất
+              _logout(context);
+            },
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -83,7 +89,8 @@ class OwnerDashboard extends ConsumerWidget {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => RevenueReportScreen()),
+                        MaterialPageRoute(
+                            builder: (_) => RevenueReportScreen()),
                       );
                     },
                   ),
@@ -126,5 +133,12 @@ class OwnerDashboard extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  void _logout(BuildContext context) {
+    // Ví dụ: Xử lý đăng xuất với Firebase Auth
+    FirebaseAuth.instance.signOut();
+    Navigator.pushReplacementNamed(
+        context, '/login'); // Điều hướng đến trang đăng nhập
   }
 }

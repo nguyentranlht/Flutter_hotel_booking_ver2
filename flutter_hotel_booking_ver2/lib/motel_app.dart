@@ -17,6 +17,7 @@ import 'package:flutter_hotel_booking_ver2/modules/bottom_tab/bottom_tab_screen.
 import 'package:flutter_hotel_booking_ver2/modules/login/login_screen.dart';
 import 'package:flutter_hotel_booking_ver2/modules/splash/introduction_screen.dart';
 import 'package:flutter_hotel_booking_ver2/modules/splash/splash_screen.dart';
+import 'package:flutter_hotel_booking_ver2/owner/ownerdashboard.dart';
 import 'package:flutter_hotel_booking_ver2/routes/routes.dart';
 import 'package:get/get.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
@@ -123,6 +124,7 @@ class _MotelAppState extends State<MotelApp> {
           IntroductionScreen(FirebaseUserRepository()),
       RoutesName.home: (BuildContext context) => const BottomTabScreen(),
       RoutesName.login: (BuildContext context) => const LoginScreen(),
+      RoutesName.owner: (BuildContext context) => const OwnerDashboard(),
       '/admin/dashboard': (BuildContext context) => const AdminDashboard(),
       '/admin/app-content': (BuildContext context) =>
           const AppContentManagementScreen(),
