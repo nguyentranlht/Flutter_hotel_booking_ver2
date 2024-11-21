@@ -38,6 +38,8 @@ class _HotelHomeScreenState extends State<HotelHomeScreen>
   final searchBarHieght = 130.0;
   final filterBarHieght = 100.0;
 
+  String searchQuery = "";
+
   @override
   void initState() {
     animationController = AnimationController(
