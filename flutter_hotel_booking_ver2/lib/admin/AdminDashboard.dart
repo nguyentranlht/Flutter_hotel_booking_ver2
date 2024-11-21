@@ -24,6 +24,7 @@ class AdminDashboard extends StatelessWidget {
         return Scaffold(
           drawer: isMobile ? const Sidebar() : null,
           appBar: AppBar(
+            automaticallyImplyLeading: false, // Loại bỏ nút back mặc định
             title: const Text('Admin Dashboard'),
             actions: [
               IconButton(
@@ -71,10 +72,9 @@ class AdminDashboard extends StatelessWidget {
 
   // Hàm xử lý đăng xuất
   void _logout(BuildContext context) {
-    // Ví dụ: Xử lý đăng xuất với Firebase Auth
     FirebaseAuth.instance.signOut();
-    Navigator.pushReplacementNamed(
-        context, '/login'); // Điều hướng đến trang đăng nhập
+    Navigator.pushNamedAndRemoveUntil(
+        context, '/login', (Route<dynamic> route) => false);
   }
 
   List<Map<String, dynamic>> get _adminCards => [

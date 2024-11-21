@@ -500,7 +500,7 @@ class BookingConfirmationScreen extends ConsumerWidget {
         print('Error presenting payment sheet: $error $stackTrace');
         showDialog(
           context: context,
-          builder: (_) => AlertDialog(
+          builder: (_) => const AlertDialog(
             content: Text("Failed to present payment sheet. Please try again."),
           ),
         );

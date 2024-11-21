@@ -20,14 +20,35 @@ class ReportsScreen extends StatelessWidget {
             return const Center(child: Text('Không có dữ liệu.'));
           }
           final bookings = snapshot.data!.docs;
+
+          // Tính tổng doanh thu, xử lý khi totalPrice là String
           final totalRevenue = bookings.fold<double>(
             0.0,
-            (sum, booking) => sum + (booking['totalPrice'] ?? 0.0),
+            (sum, booking) {
+              final totalPrice = booking['totalPrice'];
+              final doublePrice = (totalPrice is String)
+                  ? double.tryParse(totalPrice) ?? 0.0
+                  : (totalPrice as double? ?? 0.0);
+              return sum + doublePrice;
+            },
           );
+
           return Center(
-            child: Text(
-              'Tổng doanh thu: ${totalRevenue.toStringAsFixed(2)}₫',
-              style: Theme.of(context).textTheme.headlineSmall,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Tổng doanh thu:',
+                  style: Theme.of(context).textTheme.headlineSmall,
+                ),
+                Text(
+                  '${totalRevenue.toStringAsFixed(2)}₫',
+                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                        color: Colors.teal,
+                        fontWeight: FontWeight.bold,
+                      ),
+                ),
+              ],
             ),
           );
         },
