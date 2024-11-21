@@ -58,6 +58,25 @@ class Hotel extends Equatable {
       userId: data['userId'],
     );
   }
+  // Chuyển Hotel thành Map để lưu vào Firestore
+  Map<String, dynamic> toMap() {
+    return {
+      'hotelName': hotelName,
+      'imagePath': imagePath,
+      'starRating': starRating,
+      'location': {
+        'latitude': location.latitude,
+        'longitude': location.longitude,
+      },
+      'dist': dist,
+      'hotelAddress': hotelAddress,
+      'description': description,
+      'perNight': perNight,
+      'isSelected': isSelected,
+      'distanceFromCenter': distanceFromCenter,
+      'userId': userId,
+    };
+  }
 
   @override
   List<Object?> get props => [

@@ -1,13 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hotel_booking_ver2/constants/themes.dart';
-import 'package:flutter_hotel_booking_ver2/owner/bookingschedulescreen.dart';
-import 'package:flutter_hotel_booking_ver2/owner/managehotelsscreen.dart';
-import 'package:flutter_hotel_booking_ver2/owner/manageroomsscreen.dart';
-import 'package:flutter_hotel_booking_ver2/owner/revenuereportscreen.dart';
-import 'package:flutter_hotel_booking_ver2/widgets/common_button.dart';
+import 'package:flutter_hotel_booking_ver2/owner/managerbooking/bookingschedulescreen.dart';
+import 'package:flutter_hotel_booking_ver2/owner/managehotel/managehotelsscreen.dart';
+import 'package:flutter_hotel_booking_ver2/owner/managerroom/manageroomsscreen.dart';
+import 'package:flutter_hotel_booking_ver2/owner/revenuereport/revenuereportscreen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:user_repository/user_repository.dart';
 
 class OwnerDashboard extends ConsumerWidget {
   const OwnerDashboard({Key? key}) : super(key: key);
@@ -55,7 +53,7 @@ class OwnerDashboard extends ConsumerWidget {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => ManageHotelsScreen()),
+                        MaterialPageRoute(builder: (_) => HotelListScreen()),
                       );
                     },
                   ),
@@ -66,7 +64,7 @@ class OwnerDashboard extends ConsumerWidget {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => ManageRoomsScreen()),
+                        MaterialPageRoute(builder: (_) => RoomManagementScreen()),
                       );
                     },
                   ),
