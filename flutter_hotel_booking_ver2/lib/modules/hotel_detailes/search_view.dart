@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hotel_booking_ver2/constants/helper.dart';
 import 'package:flutter_hotel_booking_ver2/constants/text_styles.dart';
 import 'package:flutter_hotel_booking_ver2/constants/themes.dart';
-import 'package:flutter_hotel_booking_ver2/models/hotel_list_data.dart';
 import 'package:flutter_hotel_booking_ver2/widgets/common_card.dart';
 import 'package:flutter_hotel_booking_ver2/widgets/list_cell_animation_view.dart';
+import 'package:hotel_repository/hotel_repository.dart';
 
 class SerchView extends StatelessWidget {
-  final HotelListData hotelInfo;
+  final Hotel hotelInfo;
   final AnimationController animationController;
   final Animation<double> animation;
 
@@ -35,12 +35,17 @@ class SerchView extends StatelessWidget {
               child: Column(
                 children: <Widget>[
                   AspectRatio(
-                    aspectRatio: 1.5,
-                    child: Image.asset(
-                      hotelInfo.imagePath,
-                      fit: BoxFit.cover,
+                      aspectRatio: 1.05,
+                      child: hotelInfo.imagePath != null
+                          ? Image.network(
+                              hotelInfo.imagePath!,
+                              fit: BoxFit.cover,
+                            )
+                          : Image.asset(
+                              'assets/images/placeholder.png',
+                              fit: BoxFit.cover,
+                            ),
                     ),
-                  ),
                   Expanded(
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -49,33 +54,46 @@ class SerchView extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Text(
-                            hotelInfo.titleTxt,
+                            hotelInfo.hotelName,
                             style: TextStyles(context).getBoldStyle(),
                           ),
-                          Text(
-                            Helper.getRoomText(hotelInfo.roomData!),
-                            // Helper.getRoomText(hotelInfo.roomData!),
-                            style:
-                                TextStyles(context).getRegularStyle().copyWith(
-                                      fontWeight: FontWeight.w100,
-                                      fontSize: 12,
-                                      color: Theme.of(context)
-                                          .disabledColor
-                                          .withOpacity(0.6),
-                                    ),
-                          ),
-                          Text(
-                            Helper.getLastSearchDate(hotelInfo.date!),
-                            // Helper.getRoomText(hotelInfo.roomData!),
-                            style:
-                                TextStyles(context).getRegularStyle().copyWith(
-                                      fontWeight: FontWeight.w100,
-                                      fontSize: 12,
-                                      color: Theme.of(context)
-                                          .disabledColor
-                                          .withOpacity(0.6),
-                                    ),
-                          ),
+                          
+                            // Text(
+                          //   Helper.getLastSearchDate(hotelInfo.date!),
+                          //   // Helper.getRoomText(hotelInfo.roomData!),
+                          //   style:
+                          //       TextStyles(context).getRegularStyle().copyWith(
+                          //             fontWeight: FontWeight.w100,
+                          //             fontSize: 12,
+                          //             color: Theme.of(context)
+                          //                 .disabledColor
+                          //                 .withOpacity(0.6),
+                          //           ),
+                          // ),
+                          // Text(
+                          //   Helper.getRoomText(hotelInfo),
+                          //   // Helper.getRoomText(hotelInfo.roomData!),
+                          //   style:
+                          //       TextStyles(context).getRegularStyle().copyWith(
+                          //             fontWeight: FontWeight.w100,
+                          //             fontSize: 12,
+                          //             color: Theme.of(context)
+                          //                 .disabledColor
+                          //                 .withOpacity(0.6),
+                          //           ),
+                          // ),
+                          // Text(
+                          //   Helper.getLastSearchDate(hotelInfo.date!),
+                          //   // Helper.getRoomText(hotelInfo.roomData!),
+                          //   style:
+                          //       TextStyles(context).getRegularStyle().copyWith(
+                          //             fontWeight: FontWeight.w100,
+                          //             fontSize: 12,
+                          //             color: Theme.of(context)
+                          //                 .disabledColor
+                          //                 .withOpacity(0.6),
+                          //           ),
+                          // ),
                         ],
                       ),
                     ),

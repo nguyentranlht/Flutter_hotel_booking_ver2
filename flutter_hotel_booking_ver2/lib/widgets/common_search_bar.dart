@@ -1,21 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hotel_booking_ver2/constants/text_styles.dart';
-import 'package:flutter_hotel_booking_ver2/constants/themes.dart';
 
 class CommonSearchBar extends StatelessWidget {
   final String? text;
   final bool enabled, ishsow;
   final double height;
   final IconData? iconData;
+  final Function(String)? onChanged;  // Callback to handle search input
 
-  const CommonSearchBar(
-      {Key? key,
-      this.text,
-      this.enabled = false,
-      this.height = 48,
-      this.iconData,
-      this.ishsow = true})
-      : super(key: key);
+  const CommonSearchBar({
+    Key? key,
+    this.text,
+    this.enabled = false,
+    this.height = 48,
+    this.iconData,
+    this.ishsow = true,
+    this.onChanged,  // Callback for search input
+  }) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -28,31 +29,28 @@ class CommonSearchBar extends StatelessWidget {
               ishsow == true
                   ? Icon(
                       iconData,
-                      // FontAwesomeIcons.search,
                       size: 18,
                       color: Theme.of(context).primaryColor,
                     )
                   : const SizedBox(),
               ishsow == true
-                  ? const SizedBox(
-                      width: 8,
-                    )
+                  ? const SizedBox(width: 8)
                   : const SizedBox(),
               Expanded(
                 child: TextField(
                   maxLines: 1,
                   enabled: enabled,
-                  onChanged: (String txt) {},
+                  onChanged: onChanged,  // Trigger search when text changes
                   cursorColor: Theme.of(context).primaryColor,
                   decoration: InputDecoration(
                     contentPadding: const EdgeInsets.all(0),
                     errorText: null,
                     border: InputBorder.none,
                     hintText: text,
-                    hintStyle: TextStyles(context)
-                        .getDescriptionStyle()
-                        .copyWith(
-                            color: AppTheme.secondaryTextColor, fontSize: 18),
+                    hintStyle: TextStyle(
+                      color: Theme.of(context).secondaryHeaderColor,
+                      fontSize: 18,
+                    ),
                   ),
                 ),
               ),
