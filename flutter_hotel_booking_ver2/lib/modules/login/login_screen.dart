@@ -52,16 +52,38 @@ class _LoginScreenState extends State<LoginScreen> {
                   final role = userDoc.data()?['role'] ?? 'user';
                   final status = userDoc.data()?['status'] ?? 'active';
 
-                  if (status == 'suspended') {
-                    // Thông báo nếu tài khoản bị tạm ngưng
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text(
-                            'Tài khoản của bạn đã bị khóa hoặc tạm ngưng.'),
-                      ),
-                    );
-                    await FirebaseAuth.instance.signOut();
-                    Navigator.pushNamed(context, RoutesName.login);
+                  if (status != 'active') {
+                    // Hiển thị thông báo trạng thái tài khoản không hợp lệ
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text('Tài khoản bị tạm ngưng'),
+                            content: const Text(
+                              'Tài khoản của bạn đã bị khóa hoặc tạm ngưng. Vui lòng liên hệ bộ phận hỗ trợ để biết thêm chi tiết.',
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  // Đăng xuất người dùng
+                                  context
+                                      .read<AuthenticationBloc>()
+                                      .add(SignOutRequired());
+                                  Navigator.of(context).pop(); // Đóng Dialog
+                                  NavigationServices(context).gotoLoginScreen();
+                                },
+                                child: const Text('Thoát'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    });
+
+                    // Ngăn các widget tiếp tục xây dựng khi tài khoản không hợp lệ
+                    SizedBox();
                   } else if (role == 'admin') {
                     // Điều hướng đến trang Admin nếu role là admin
                     Navigator.pushNamed(context, '/admin/dashboard');
