@@ -31,18 +31,27 @@ class HotelListNotifier extends StateNotifier<List<Hotel>> {
       return withinPriceRange;
     }).toList();
   }
-
+  Future<void> deleteHotel(String hotelId) async {
+    try {
+      await hotelService.deleteHotel(hotelId);
+      state = state.where((hotel) => hotel.hotelId != hotelId).toList();
+    } catch (e) {
+      throw Exception('Failed to delete hotel: $e');
+    }
+  }
   //Function find hotel and price, address
-   Future<void> searchHotels({
-    required String searchQuery,  // find keyword(name hotel, address)
-    required double minPrice,     // min Price
-    required double maxPrice,     // max Price
+  Future<void> searchHotels({
+    required String searchQuery, // find keyword(name hotel, address)
+    required double minPrice, // min Price
+    required double maxPrice, // max Price
   }) async {
     final hotels = await hotelService.fetchHotels(); // Get all hotel
     state = hotels.where((hotel) {
       final price = double.tryParse(hotel.perNight) ?? 0.0;
-      final matchesSearchQuery = hotel.hotelName.toLowerCase().contains(searchQuery.toLowerCase()) ||
-                                 hotel.hotelAddress.toLowerCase().contains(searchQuery.toLowerCase());
+      final matchesSearchQuery = hotel.hotelName
+              .toLowerCase()
+              .contains(searchQuery.toLowerCase()) ||
+          hotel.hotelAddress.toLowerCase().contains(searchQuery.toLowerCase());
 
       final withinPriceRange = price >= minPrice && price <= maxPrice;
 
@@ -50,3 +59,25 @@ class HotelListNotifier extends StateNotifier<List<Hotel>> {
     }).toList();
   }
 }
+
+class AddHotelNotifier extends StateNotifier<AsyncValue<void>> {
+  final HotelService _hotelService;
+
+  AddHotelNotifier(this._hotelService) : super(const AsyncValue.data(null));
+
+  Future<void> addHotel(Hotel hotel) async {
+    state = const AsyncValue.loading();
+    try {
+      await _hotelService.addHotel(hotel);
+      state = const AsyncValue.data(null);
+    } catch (e, stack) {
+      state = AsyncValue.error(e, stack);
+    }
+  }
+}
+
+final addHotelProvider =
+    StateNotifierProvider<AddHotelNotifier, AsyncValue<void>>((ref) {
+  final hotelService = ref.watch(hotelServiceProvider);
+  return AddHotelNotifier(hotelService);
+});

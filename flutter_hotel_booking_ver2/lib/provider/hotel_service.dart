@@ -17,9 +17,24 @@ class HotelService {
   // Thêm khách sạn mới
   Future<void> addHotel(Hotel hotel) async {
     try {
-      await _firestore.collection('hotels').add(hotel.toMap());
+      final docRef = _firestore.collection('hotels').doc();
+      
+      await docRef.set({
+        'hotelId': docRef.id,
+        'hotelName': hotel.hotelName,
+        'imagePath': hotel.imagePath,
+        'starRating': hotel.starRating,
+        'location': GeoPoint(hotel.location.latitude, hotel.location.longitude),
+        'dist': hotel.dist,
+        'hotelAddress': hotel.hotelAddress,
+        'description': hotel.description,
+        'perNight': hotel.perNight,
+        'distanceFromCenter': hotel.distanceFromCenter,
+        'userId': hotel.userId,
+        'isSelected': hotel.isSelected,
+      });
     } catch (e) {
-      throw Exception("Failed to add hotel: $e");
+      throw Exception('Error adding hotel: $e');
     }
   }
 

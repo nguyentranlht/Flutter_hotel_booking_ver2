@@ -18,6 +18,7 @@ import 'package:flutter_hotel_booking_ver2/modules/profile/hepl_center_screen.da
 import 'package:flutter_hotel_booking_ver2/modules/profile/how_do_screen.dart';
 import 'package:flutter_hotel_booking_ver2/modules/profile/invite_screen.dart';
 import 'package:flutter_hotel_booking_ver2/modules/profile/settings_screen.dart';
+import 'package:flutter_hotel_booking_ver2/owner/managehotel/addhotel.dart';
 import 'package:flutter_hotel_booking_ver2/routes/routes.dart';
 import 'package:hotel_repository/hotel_repository.dart';
 import 'package:room_repository/room_repository.dart';
@@ -118,6 +119,10 @@ class NavigationServices {
 
   Future<dynamic> gotoReviewsListScreen() async {
     return await _pushMaterialPageRoute(const ReviewsListScreen());
+  }
+
+  Future<dynamic> gotoAddHotel() async {
+    return await _pushMaterialPageRoute(AddHotelScreen());
   }
 
   Future<dynamic> gotoEditProfile(MyUser myUser) async {

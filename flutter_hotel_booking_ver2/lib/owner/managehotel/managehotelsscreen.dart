@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hotel_repository/hotel_repository.dart';
 
 import '../../constants/themes.dart';
-import '../../modules/myTrips/hotel_list_view.dart';
-import '../../provider/hotel_filter_prodiver.dart';
+import '../../routes/route_names.dart';
 
 class HotelListScreen extends StatefulWidget {
   const HotelListScreen({Key? key}) : super(key: key);
@@ -34,6 +34,26 @@ class _HotelListScreenState extends State<HotelListScreen>
     super.dispose();
   }
 
+  void _editHotel(Hotel hotel) {
+    Navigator.pushNamed(context, '/edit-hotel', arguments: hotel);
+  }
+
+  void _deleteHotel(String hotelId) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('hotels')
+          .doc(hotelId)
+          .delete();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Khách sạn đã được xóa thành công')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Lỗi khi xóa khách sạn: $e')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,65 +67,128 @@ class _HotelListScreenState extends State<HotelListScreen>
           },
         ),
       ),
-      body: Stack(
-        children: <Widget>[
-          Consumer(
-            builder: (context, ref, _) {
-              final hotelListAsync = ref.watch(filteredHotelProvider);
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance.collection('hotels').snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
 
-              return hotelListAsync.when(
-                data: (hotelList) {
-                  // Lọc danh sách các khách sạn có isSelected == true
-                  final selectedHotels =
-                      hotelList.where((hotel) => hotel.isSelected).toList();
+          if (snapshot.hasError) {
+            return Center(
+              child: Text('Lỗi khi tải danh sách khách sạn: ${snapshot.error}'),
+            );
+          }
 
-                  return Container(
-                    color: AppTheme.scaffoldBackgroundColor,
-                    child: ListView.builder(
-                      controller: scrollController,
-                      itemCount: selectedHotels.length,
-                      padding: const EdgeInsets.only(
-                        top: 16.0,
-                      ),
-                      scrollDirection: Axis.vertical,
-                      itemBuilder: (context, index) {
-                        var count = selectedHotels.length > 10
-                            ? 10
-                            : selectedHotels.length;
-                        var animation = Tween(
-                          begin: 0.0,
-                          end: 1.0,
-                        ).animate(
-                          CurvedAnimation(
-                            parent: animationController,
-                            curve: Interval(
-                              (1 / count) * index,
-                              1.0,
-                              curve: Curves.fastOutSlowIn,
-                            ),
-                          ),
-                        );
-                        animationController.forward();
-                        return HotelListView(
-                          callback: () {},
-                          hotelData: selectedHotels[index],
-                          animation: animation,
-                          animationController: animationController,
-                        );
-                      },
+          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+            return const Center(
+              child: Text('Không có khách sạn nào được thêm.'),
+            );
+          }
+
+          final hotelDocs = snapshot.data!.docs;
+
+          return ListView.builder(
+            controller: scrollController,
+            itemCount: hotelDocs.length,
+            padding: const EdgeInsets.symmetric(vertical: 16.0),
+            itemBuilder: (context, index) {
+              final hotel = Hotel.fromFirestore(
+                  hotelDocs[index] as DocumentSnapshot<Map<String, dynamic>>);
+
+              animationController.forward();
+
+              return Slidable(
+                key: ValueKey(hotel.hotelId),
+                endActionPane: ActionPane(
+                  motion: const ScrollMotion(),
+                  children: [
+                    SlidableAction(
+                      onPressed: (context) => _editHotel(hotel),
+                      backgroundColor: Colors.blue,
+                      foregroundColor: Colors.white,
+                      icon: Icons.edit,
+                      label: 'Sửa',
                     ),
-                  );
-                },
-                loading: () => const Center(
-                  child: CircularProgressIndicator(),
+                    SlidableAction(
+                      onPressed: (context) => _deleteHotel(hotel.hotelId),
+                      backgroundColor: Colors.red,
+                      foregroundColor: Colors.white,
+                      icon: Icons.delete,
+                      label: 'Xóa',
+                    ),
+                  ],
                 ),
-                error: (error, stack) => Center(
-                  child: Text('Error loading hotels: $error'),
+                child: Card(
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
+                  child: Row(
+                    children: [
+                      ClipRRect(
+                        borderRadius: const BorderRadius.horizontal(
+                            left: Radius.circular(8.0)),
+                        child: Image.network(
+                          hotel.imagePath ?? '',
+                          width: 100,
+                          height: 100,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Container(
+                              width: 100,
+                              height: 100,
+                              color: Colors.grey[300],
+                              child: const Icon(Icons.broken_image),
+                            );
+                          },
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              hotel.hotelName,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              hotel.hotelAddress,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              'Giá: ${hotel.perNight}₫/đêm',
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: Colors.green,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               );
             },
-          ),
-        ],
+          );
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          NavigationServices(context).gotoAddHotel();
+        },
+        backgroundColor: AppTheme.primaryColor,
+        child: const Icon(Icons.add),
       ),
     );
   }
