@@ -79,4 +79,33 @@ class RoomService {
           .toList();
     });
   }
+
+  Future<void> addRoom(Room room) async {
+    final docRef = await _firestore.collection('rooms').add(room.toFirestore());
+    // Cập nhật roomId để khớp với document ID trong Firestore
+    await docRef.update({'roomId': docRef.id});
+  }
+
+  // Lấy danh sách phòng theo hotelId
+  Stream<List<Room>> getRoomsByHotel(String hotelId) {
+    return _firestore
+        .collection('rooms')
+        .where('hotelId', isEqualTo: hotelId)
+        .snapshots()
+        .map((snapshot) =>
+            snapshot.docs.map((doc) => Room.fromFirestore(doc)).toList());
+  }
+
+  // Sửa thông tin phòng
+  Future<void> updateRoom(Room room) async {
+    await _firestore
+        .collection('rooms')
+        .doc(room.roomId)
+        .update(room.toFirestore());
+  }
+
+  // Xóa phòng
+  Future<void> deleteRoom(String roomId) async {
+    await _firestore.collection('rooms').doc(roomId).delete();
+  }
 }

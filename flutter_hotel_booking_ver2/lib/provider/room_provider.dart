@@ -10,6 +10,28 @@ final roomsProvider = StreamProvider.family<List<Room>, String>((ref, hotelId) {
   final roomService = ref.watch(roomServiceProvider);
   return roomService.streamRoomsByHotelId(hotelId);
 });
+final selectedRoomProvider = StateProvider<Room?>((ref) => null);
+final addRoomProvider =
+    StateNotifierProvider<AddRoomNotifier, AsyncValue<void>>((ref) {
+  final roomService = ref.read(roomServiceProvider);
+  return AddRoomNotifier(roomService);
+});
+
+class AddRoomNotifier extends StateNotifier<AsyncValue<void>> {
+  final RoomService _roomService;
+
+  AddRoomNotifier(this._roomService) : super(const AsyncValue.data(null));
+
+  Future<void> addRoom(Room room) async {
+    state = const AsyncValue.loading();
+    try {
+      await _roomService.addRoom(room);
+      state = const AsyncValue.data(null);
+    } catch (e) {
+      state = AsyncValue.error(e, StackTrace.current);
+    }
+  }
+}
 // final roomsAvailableProvider =
 //     StreamProvider.family<List<Room>, SearchCriteria>((ref, criteria) {
 //   final roomService = ref.watch(roomServiceProvider);

@@ -25,6 +25,7 @@ import 'package:room_repository/room_repository.dart';
 import 'package:user_repository/user_repository.dart';
 
 import '../owner/managehotel/edithotel.dart';
+import '../owner/managerroom/addroom.dart';
 
 class NavigationServices {
   NavigationServices(this.context);
@@ -125,6 +126,9 @@ class NavigationServices {
 
   Future<dynamic> gotoAddHotel() async {
     return await _pushMaterialPageRoute(AddHotelScreen());
+  }
+  Future<dynamic> gotoAddRoom(String hotelId) async {
+    return await _pushMaterialPageRoute(AddRoomScreen(hotelId: hotelId,));
   }
 
   Future<dynamic> gotoEditHotel(Hotel hotel) async {

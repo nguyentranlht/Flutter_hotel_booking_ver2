@@ -64,7 +64,7 @@ class OwnerDashboard extends ConsumerWidget {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => RoomManagementScreen()),
+                        MaterialPageRoute(builder: (_) => RoomListScreen(hotelId: '2',)),
                       );
                     },
                   ),

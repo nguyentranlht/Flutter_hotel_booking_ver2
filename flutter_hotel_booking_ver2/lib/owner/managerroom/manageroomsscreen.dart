@@ -1,53 +1,69 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class RoomManagementScreen extends StatelessWidget {
+import '../../constants/themes.dart';
+import '../../provider/room_provider.dart';
+import '../../routes/route_names.dart';
+
+class RoomListScreen extends StatelessWidget {
+  final String hotelId;
+
+  const RoomListScreen({Key? key, required this.hotelId}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Manage Rooms'),
+        title: const Text('Manage Rooms'),
+        backgroundColor: AppTheme.primaryColor,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pop(context);
           },
         ),
       ),
-      body: ListView(
-        padding: const EdgeInsets.all(16.0),
-        children: [
-          Text(
-            'Manage Rooms',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              // Navigate to Add Room Screen
+      body: Consumer(
+        builder: (context, ref, _) {
+          final roomListAsync = ref.watch(roomsProvider(hotelId));
+
+          return roomListAsync.when(
+            data: (roomList) {
+              if (roomList.isEmpty) {
+                return const Center(
+                  child: Text('No rooms available.'),
+                );
+              }
+              return ListView.builder(
+                itemCount: roomList.length,
+                itemBuilder: (context, index) {
+                  final room = roomList[index];
+                  return ListTile(
+                    title: Text(room.roomName),
+                    subtitle: Text('Price: ${room.pricePerNight}₫'),
+                    trailing: IconButton(
+                      icon: const Icon(Icons.edit),
+                      onPressed: () {
+                        // Navigate to edit room
+                      },
+                    ),
+                  );
+                },
+              );
             },
-            child: Text('Add Room'),
-          ),
-          ListTile(
-            title: Text('Deluxe Room'),
-            subtitle: Text('Price: 1,500,000₫'),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                IconButton(
-                  icon: Icon(Icons.edit),
-                  onPressed: () {
-                    // Edit room
-                  },
-                ),
-                IconButton(
-                  icon: Icon(Icons.delete),
-                  onPressed: () {
-                    // Delete room
-                  },
-                ),
-              ],
+            loading: () => const Center(child: CircularProgressIndicator()),
+            error: (error, stack) => Center(
+              child: Text('Error loading rooms: $error'),
             ),
-          ),
-        ],
+          );
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          NavigationServices(context).gotoAddRoom(hotelId);
+        },
+        backgroundColor: AppTheme.primaryColor,
+        child: const Icon(Icons.add),
       ),
     );
   }

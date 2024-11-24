@@ -5,6 +5,7 @@ import 'package:hotel_repository/hotel_repository.dart';
 
 import '../../constants/themes.dart';
 import '../../routes/route_names.dart';
+import '../managerroom/manageroomsscreen.dart';
 
 class HotelListScreen extends StatefulWidget {
   const HotelListScreen({Key? key}) : super(key: key);
@@ -76,13 +77,13 @@ class _HotelListScreenState extends State<HotelListScreen>
 
           if (snapshot.hasError) {
             return Center(
-              child: Text('Lỗi khi tải danh sách khách sạn: ${snapshot.error}'),
+              child: Text('Error loading hotels: ${snapshot.error}'),
             );
           }
 
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
             return const Center(
-              child: Text('Không có khách sạn nào được thêm.'),
+              child: Text('No hotels found.'),
             );
           }
 
@@ -108,14 +109,14 @@ class _HotelListScreenState extends State<HotelListScreen>
                       backgroundColor: Colors.blue,
                       foregroundColor: Colors.white,
                       icon: Icons.edit,
-                      label: 'Sửa',
+                      label: 'Edit',
                     ),
                     SlidableAction(
                       onPressed: (context) => _deleteHotel(hotel.hotelId),
                       backgroundColor: Colors.red,
                       foregroundColor: Colors.white,
                       icon: Icons.delete,
-                      label: 'Xóa',
+                      label: 'Delete',
                     ),
                   ],
                 ),
@@ -124,55 +125,83 @@ class _HotelListScreenState extends State<HotelListScreen>
                     horizontal: 16,
                     vertical: 8,
                   ),
-                  child: Row(
+                  child: Column(
                     children: [
-                      ClipRRect(
-                        borderRadius: const BorderRadius.horizontal(
-                            left: Radius.circular(8.0)),
-                        child: Image.network(
-                          hotel.imagePath ?? '',
-                          width: 100,
-                          height: 100,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            return Container(
+                      Row(
+                        children: [
+                          // Hotel image
+                          ClipRRect(
+                            borderRadius: const BorderRadius.horizontal(
+                                left: Radius.circular(8.0)),
+                            child: Image.network(
+                              hotel.imagePath ?? '',
                               width: 100,
                               height: 100,
-                              color: Colors.grey[300],
-                              child: const Icon(Icons.broken_image),
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Container(
+                                  width: 100,
+                                  height: 100,
+                                  color: Colors.grey[300],
+                                  child: const Icon(Icons.broken_image),
+                                );
+                              },
+                            ),
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  hotel.hotelName,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  hotel.hotelAddress,
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  'Price: ${hotel.perNight}₫/night',
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.green,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      const Divider(),
+                      // Add Manage Rooms button
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16.0, vertical: 8.0),
+                        child: ElevatedButton.icon(
+                          icon: const Icon(Icons.meeting_room),
+                          label: const Text('Manage Rooms'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppTheme.backColor,
+                          ),
+                          onPressed: () {
+                            // Navigate to RoomListScreen with hotelId
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    RoomListScreen(hotelId: hotel.hotelId),
+                              ),
                             );
                           },
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              hotel.hotelName,
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              hotel.hotelAddress,
-                              style: const TextStyle(
-                                fontSize: 14,
-                                color: Colors.grey,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              'Giá: ${hotel.perNight}₫/đêm',
-                              style: const TextStyle(
-                                fontSize: 14,
-                                color: Colors.green,
-                              ),
-                            ),
-                          ],
                         ),
                       ),
                     ],
