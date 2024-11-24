@@ -35,7 +35,7 @@ class _HotelListScreenState extends State<HotelListScreen>
   }
 
   void _editHotel(Hotel hotel) {
-    Navigator.pushNamed(context, '/edit-hotel', arguments: hotel);
+    NavigationServices(context).gotoEditHotel(hotel);
   }
 
   void _deleteHotel(String hotelId) async {
