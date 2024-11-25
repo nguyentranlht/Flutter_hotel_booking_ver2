@@ -199,7 +199,7 @@ class _HotelDetailesState extends State<HotelDetailes>
                           padding: const EdgeInsets.all(12.0),
                           child: Icon(
                             FontAwesomeIcons.mapPin,
-                            color: Theme.of(context).colorScheme.background,
+                            color: Theme.of(context).colorScheme.surface,
                             size: 28,
                           ),
                         ),
@@ -271,6 +271,30 @@ class _HotelDetailesState extends State<HotelDetailes>
     );
   }
 
+<<<<<<< Updated upstream
+=======
+  Widget _getFavoriteAppBarUi(
+      BuildContext context, WidgetRef ref, String hotelId) {
+    final favoriteHotelIdsAsync = ref.watch(favoriteHotelIdsProvider);
+
+    return favoriteHotelIdsAsync.when(
+      data: (favoriteHotelIds) {
+        final isFavorite = favoriteHotelIds.contains(hotelId);
+        return _getAppBarUi(
+          Theme.of(context).colorScheme.surface, // Màu nền của nút
+          isFavorite ? Icons.favorite : Icons.favorite_border, // Icon
+          Theme.of(context).primaryColor, // Màu biểu tượng
+          () {
+            ref.read(favoriteServiceProvider).toggleFavoriteHotel(hotelId);
+          },
+        );
+      },
+      loading: () => CircularProgressIndicator(),
+      error: (error, stack) => Icon(Icons.error, color: Colors.red),
+    );
+  }
+
+>>>>>>> Stashed changes
   Widget _getAppBarUi(
       Color color, IconData icon, Color iconcolor, VoidCallback onTap) {
     return SizedBox(

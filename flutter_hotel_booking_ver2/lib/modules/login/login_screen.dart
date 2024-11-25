@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_hotel_booking_ver2/constants/UserCache.dart';
 import 'package:flutter_hotel_booking_ver2/language/app_localizations.dart';
 import 'package:flutter_hotel_booking_ver2/modules/login/facebook_google_button_view.dart';
 import 'package:flutter_hotel_booking_ver2/routes/route_names.dart';
@@ -10,7 +11,11 @@ import 'package:flutter_hotel_booking_ver2/widgets/common_appbar_view.dart';
 import 'package:flutter_hotel_booking_ver2/widgets/common_button.dart';
 import 'package:flutter_hotel_booking_ver2/widgets/common_text_field_view.dart';
 import 'package:flutter_hotel_booking_ver2/widgets/remove_focuse.dart';
+<<<<<<< Updated upstream
 import 'package:flutter_hotel_booking_ver2/widgets/dialog_widget.dart';
+=======
+import 'package:user_repository/user_repository.dart';
+>>>>>>> Stashed changes
 import '../../futures/authentication_bloc/authentication_bloc.dart';
 
 import '../../routes/routes.dart';
@@ -33,6 +38,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       body: BlocListener<AuthenticationBloc, AuthenticationState>(
         listener: (context, state) async {
+<<<<<<< Updated upstream
           if (state is SignInFailure) {
 <<<<<<< Updated upstream
             ErrorDialog.show(context, state.error);
@@ -42,21 +48,34 @@ class _LoginScreenState extends State<LoginScreen> {
 >>>>>>> Stashed changes
           } else if (state is AuthenticationStateAuthenticated) {
             // Lấy user hiện tại từ Firebase
+=======
+          if (state is AuthenticationStateAuthenticated) {
+>>>>>>> Stashed changes
             final user = FirebaseAuth.instance.currentUser;
 
             if (user != null) {
               try {
-                // Truy cập Firestore để lấy dữ liệu user
+                // Lấy dữ liệu người dùng từ Firestore
                 final userDoc = await FirebaseFirestore.instance
                     .collection('users')
                     .doc(user.uid)
                     .get();
 
                 if (userDoc.exists) {
-                  // Lấy role và status từ dữ liệu user
-                  final role = userDoc.data()?['role'] ?? 'user';
-                  final status = userDoc.data()?['status'] ?? 'active';
+                  final userData = userDoc.data()!;
+                  final myUser = MyUser(
+                    userId: user.uid,
+                    email: userData['email'],
+                    fullname: userData['fullname'],
+                    picture: userData['picture'],
+                    phonenumber: userData['phonenumber'],
+                    birthday: (userData['birthday'] as Timestamp)
+                        .toDate(), // Chuyển đổi từ Timestamp sang DateTime
+                    role: userData['role'],
+                    status: userData['status'],
+                  );
 
+<<<<<<< Updated upstream
                   if (status == 'suspended') {
                     // Thông báo nếu tài khoản bị tạm ngưng
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -80,24 +99,23 @@ class _LoginScreenState extends State<LoginScreen> {
                           content: Text('Vai trò của bạn không hợp lệ')),
                     );
                   }
+=======
+                  // Lưu vào bộ nhớ đệm
+                  await UserCache.saveUserData(myUser);
+                  _navigateBasedOnRole(myUser.role, myUser.status, context);
+>>>>>>> Stashed changes
                 } else {
-                  // Nếu không tìm thấy user trong Firestore
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                      content: Text('Người dùng không tồn tại trong hệ thống'),
-                    ),
+                        content: Text('Không tìm thấy dữ liệu người dùng.')),
                   );
                 }
               } catch (e) {
-                // Xử lý lỗi khi truy cập Firestore
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('Đã xảy ra lỗi: $e'),
-                  ),
+                  SnackBar(content: Text('Lỗi khi truy cập dữ liệu: $e')),
                 );
               }
             } else {
-              // Nếu user chưa đăng nhập
               Navigator.pushNamed(context, RoutesName.login);
             }
           }
@@ -213,49 +231,19 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  // void _navigateBasedOnRole(BuildContext context, String route) async {
-  //   final user = FirebaseAuth.instance.currentUser;
-
-  //   if (user != null) {
-  //     final userDoc = await FirebaseFirestore.instance
-  //         .collection('users')
-  //         .doc(user.uid)
-  //         .get();
-
-  //     if (userDoc.exists) {
-  //       final role = userDoc['role'];
-
-  //       if (role == 'admin' && route == '/admin/dashboard') {
-  //         Navigator.pushNamed(context, route);
-  //       } else if (role == 'users' && route == RoutesName.home) {
-  //         Navigator.pushNamed(context, route);
-  //       } else {
-  //         print('Unauthorized access!');
-  //         // Redirect hoặc hiển thị lỗi truy cập
-  //       }
-  //     }
-  //   } else {
-  //     Navigator.pushNamed(context, RoutesName.login);
-  //   }
-  // }
-
-  void _checkUserRole(BuildContext context, String userId) async {
-    final userDoc =
-        await FirebaseFirestore.instance.collection('users').doc(userId).get();
-
-    if (userDoc.exists) {
-      final role = userDoc['role'];
-
-      if (role == 'admin') {
-        Navigator.pushReplacementNamed(context, '/admin/dashboard');
-      } else if (role == 'users') {
-        Navigator.pushReplacementNamed(context, RoutesName.home);
-      } else {
-        // Xử lý role không xác định
-        print('Role không hợp lệ!');
-      }
+  void _navigateBasedOnRole(String role, String status, BuildContext context) {
+    if (status == 'suspended') {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Tài khoản của bạn đã bị tạm ngưng.')),
+      );
+      FirebaseAuth.instance.signOut();
+      Navigator.pushNamed(context, RoutesName.login);
+    } else if (role == 'admin') {
+      Navigator.pushNamed(context, '/admin/dashboard');
+    } else if (role == 'owner') {
+      Navigator.pushNamed(context, RoutesName.owner);
     } else {
-      print('Tài khoản không tồn tại trong Firestore.');
+      Navigator.pushNamed(context, RoutesName.home);
     }
   }
 

@@ -31,6 +31,24 @@ class Hotel extends Equatable {
     required this.distanceFromCenter,
   });
 
+  // Add an empty static method or constant
+  static Hotel empty() {
+    return Hotel(
+      hotelId: '',
+      hotelName: 'No Hotel Found',
+      imagePath: null,
+      starRating: 0.0,
+      location: LatLng(0.0, 0.0),
+      dist: 0.0,
+      hotelAddress: '',
+      description: 'No description available',
+      perNight: '0',
+      isSelected: false,
+      distanceFromCenter: 0.0,
+      userId: '',
+    );
+  }
+
   // Định nghĩa phương thức fromFirestore
   factory Hotel.fromFirestore(DocumentSnapshot<Map<String, dynamic>> doc) {
     final data = doc.data() as Map<String, dynamic>;
