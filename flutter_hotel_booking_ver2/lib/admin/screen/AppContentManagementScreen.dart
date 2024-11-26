@@ -12,13 +12,7 @@ class AppContentManagementScreen extends StatelessWidget {
       ),
       body: Center(
         child: ElevatedButton(
-          onPressed: () {
-            FirebaseFirestore.instance.collection('hotels').add({
-              'name': 'New Hotel',
-              'location': 'Location Name',
-              'price': 100,
-            });
-          },
+          onPressed: () {},
           child: const Text('Thêm khách sạn mới'),
         ),
       ),

@@ -59,6 +59,14 @@ class NavigationServices {
     return await _pushMaterialPageRoute(const BottomTabScreen());
   }
 
+  Future<dynamic> gotoTabScreenAndClearStack() async {
+    return Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => const BottomTabScreen()),
+      (route) => false, // Xóa toàn bộ ngăn xếp
+    );
+  }
+
   Future<dynamic> gotoSignScreen() async {
     return await _pushMaterialPageRoute(const SignUpScreen());
   }

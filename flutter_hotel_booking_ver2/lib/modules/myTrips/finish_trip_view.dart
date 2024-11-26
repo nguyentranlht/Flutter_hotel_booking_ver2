@@ -53,12 +53,8 @@ class FinishTripView extends ConsumerWidget {
 
             return HotelListViewData(
               callback: () {
-                NavigationServices(context).gotoRoomBookingScreen(
-                  hotelData.hotelName,
-                  hotelData.hotelId,
-                  hotelData.hotelAddress,
-                  startDate.toString(),
-                  endDate.toString(),
+                NavigationServices(context).gotoHotelDetailes(
+                  hotelData,
                 );
               },
               hotelData: hotelData,

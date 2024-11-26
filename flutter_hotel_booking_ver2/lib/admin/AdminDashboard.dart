@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hotel_booking_ver2/admin/AdminCard.dart';
@@ -27,10 +28,54 @@ class AdminDashboard extends StatelessWidget {
             automaticallyImplyLeading: false, // Loại bỏ nút back mặc định
             title: const Text('Admin Dashboard'),
             actions: [
+              // Biểu tượng thông báo
+              StreamBuilder<QuerySnapshot>(
+                stream: FirebaseFirestore.instance
+                    .collection('notifications')
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return IconButton(
+                      icon: const Icon(Icons.notifications),
+                      onPressed: () {},
+                    );
+                  }
+
+                  // Đếm số lượng thông báo
+                  final notifications = snapshot.data?.docs ?? [];
+                  final unreadCount = notifications.length;
+
+                  return Stack(
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.notifications),
+                        onPressed: () {
+                          Navigator.pushNamed(context, '/admin/notifications');
+                        },
+                      ),
+                      if (unreadCount > 0)
+                        Positioned(
+                          right: 8,
+                          top: 8,
+                          child: CircleAvatar(
+                            radius: 10,
+                            backgroundColor: Colors.red,
+                            child: Text(
+                              unreadCount.toString(),
+                              style: const TextStyle(
+                                fontSize: 12,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                    ],
+                  );
+                },
+              ),
               IconButton(
                 icon: const Icon(Icons.logout), // Biểu tượng đăng xuất
                 onPressed: () {
-                  // Thực hiện đăng xuất
                   _logout(context);
                 },
               ),

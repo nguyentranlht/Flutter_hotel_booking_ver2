@@ -12,6 +12,7 @@ final bookingProvider = StreamProvider<List<Booking>>((ref) {
   return FirebaseFirestore.instance
       .collection('bookings')
       .where('userId', isEqualTo: userId)
+      .where('bookingStatus', isEqualTo: 'success')
       .snapshots()
       .map((snapshot) =>
           snapshot.docs.map((doc) => Booking.fromFirestore(doc)).toList());

@@ -13,6 +13,7 @@ class Booking extends Equatable {
   final String paymentStatus;
   final String totalPrice;
   final int numberOfGuests;
+  final String paymentIntentId;
 
   Booking({
     required this.bookingId,
@@ -26,6 +27,7 @@ class Booking extends Equatable {
     required this.paymentStatus,
     required this.totalPrice,
     required this.numberOfGuests,
+    required this.paymentIntentId,
   });
 
   @override
@@ -41,6 +43,7 @@ class Booking extends Equatable {
         paymentStatus,
         totalPrice,
         numberOfGuests,
+        paymentIntentId,
       ];
 
   factory Booking.fromFirestore(DocumentSnapshot doc) {
@@ -57,6 +60,7 @@ class Booking extends Equatable {
       bookingStatus: data['bookingStatus'],
       totalPrice: data['totalPrice'],
       paymentStatus: data['paymentStatus'],
+      paymentIntentId: data['paymentIntentId'],
     );
   }
 }
