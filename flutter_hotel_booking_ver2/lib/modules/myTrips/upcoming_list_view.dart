@@ -21,15 +21,6 @@ class UpcomingListView extends ConsumerWidget {
 
     return hotelListAsyncValue.when(
       data: (hotelList) {
-        // Get the list of hotelIds from upcoming bookings
-        final upcomingHotelIds =
-            upcomingBookings.map((booking) => booking.hotelId).toSet();
-
-        // Filter hotels to include only those in the upcomingHotelIds
-        final upcomingHotels = hotelList
-            .where((hotel) => upcomingHotelIds.contains(hotel.hotelId))
-            .toList();
-
         return ListView.builder(
           itemCount: upcomingBookings.length,
           padding: const EdgeInsets.only(top: 8, bottom: 16),
@@ -61,10 +52,8 @@ class UpcomingListView extends ConsumerWidget {
                       hotelName: hotel.hotelName.toString(),
                       roomType: booking.numberOfGuests.toString(),
                       pricePerNight: booking.totalPrice.toString(),
-                      checkInDate:
-                          booking.checkInDate.toString().substring(0, 10),
-                      checkOutDate:
-                          booking.checkOutDate.toString().substring(0, 10),
+                      checkInDate: booking.checkInDate,
+                      checkOutDate: booking.checkOutDate,
                       hotelAddress: hotel.hotelAddress.toString(),
                       bookingId: booking.bookingId.toString(),
                       paymentIntentId: booking.paymentIntentId.toString(),

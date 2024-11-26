@@ -224,11 +224,16 @@ class BookingConfirmationScreen extends ConsumerWidget {
                             .collection('bookings')
                             .doc()
                             .id;
+                        String paymentId = FirebaseFirestore.instance
+                            .collection('payments')
+                            .doc()
+                            .id;
                         await makePayment(
                           context,
                           ref, // Truyền thêm ref vào
                           perNight,
                           bookingId,
+                          paymentId,
                           userId,
                           hotelId,
                           roomData.roomId,
@@ -255,51 +260,15 @@ class BookingConfirmationScreen extends ConsumerWidget {
     );
   }
 
-  String calculateAmount(String amount) {
-    // Parse the amount as a double and then cast it to an integer
-    final calculatedAmount = (double.parse(amount)).toInt();
-    return calculatedAmount.toString();
-  }
-
-  Future<Map<String, dynamic>?> createPaymentIntent(
-      String amount, String currency) async {
-    try {
-      Map<String, dynamic> body = {
-        'amount': calculateAmount(amount),
-        'currency': currency,
-        'payment_method_types[]': 'card'
-      };
-
-      var response = await http.post(
-        Uri.parse('https://api.stripe.com/v1/payment_intents'),
-        headers: {
-          'Authorization': 'Bearer $secretKey',
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: body,
-      );
-
-      if (response.statusCode == 200) {
-        print('Payment Intent Body->>> ${response.body.toString()}');
-        return jsonDecode(response.body);
-      } else {
-        print('Failed to create Payment Intent: ${response.body}');
-        return null;
-      }
-    } catch (err) {
-      print('Error charging user: ${err.toString()}');
-      return null;
-    }
-  }
-
   final isLoadingProvider = StateProvider<bool>((ref) => false);
-
+  String? paymentIntentId;
 // Trong hàm makePayment
   Future<void> makePayment(
     BuildContext context,
     WidgetRef ref, // Thêm ref để có thể truy cập StateProvider
     String amount,
     String bookingId,
+    String paymentId,
     String userId,
     String selectedHotelId,
     String selectedRoomId,
@@ -313,10 +282,8 @@ class BookingConfirmationScreen extends ConsumerWidget {
     try {
       // Bước 1: Tạo Payment Intent
       var paymentIntent = await createPaymentIntent(amount, 'VND');
-      if (paymentIntent == null) {
-        throw Exception("Không thể tạo Payment Intent");
-      }
-
+      paymentIntentId = paymentIntent!['id'];
+      print('paymentIntentId: $paymentIntentId');
       // Bước 2: Khởi tạo Payment Sheet
       await Stripe.instance.initPaymentSheet(
         paymentSheetParameters: SetupPaymentSheetParameters(
@@ -331,6 +298,7 @@ class BookingConfirmationScreen extends ConsumerWidget {
         context,
         amount,
         bookingId,
+        paymentId,
         userId,
         selectedHotelId,
         selectedRoomId,
@@ -388,6 +356,7 @@ class BookingConfirmationScreen extends ConsumerWidget {
     BuildContext context,
     String amount,
     String bookingId,
+    String paymentId,
     String userId,
     String selectedHotelId,
     String selectedRoomId,
@@ -400,6 +369,7 @@ class BookingConfirmationScreen extends ConsumerWidget {
         // Chuẩn bị dữ liệu bookingData và paymentData cho cập nhật sau khi thanh toán thành công
         Map<String, dynamic> bookingData = {
           'bookingId': bookingId,
+          'paymentIntentId': paymentIntentId,
           'userId': userId,
           'hotelId': selectedHotelId,
           'roomId': selectedRoomId,
@@ -411,8 +381,7 @@ class BookingConfirmationScreen extends ConsumerWidget {
           'totalPrice': amount,
           'paymentStatus': 'success',
         };
-        String paymentId =
-            FirebaseFirestore.instance.collection('payments').doc().id;
+
         Map<String, dynamic> paymentData = {
           'paymentId': paymentId, // Hoặc một ID tùy chỉnh
           'bookingId': bookingId,
@@ -521,6 +490,43 @@ class BookingConfirmationScreen extends ConsumerWidget {
           content: Text("An unexpected error occurred: $e"),
         ),
       );
+    }
+  }
+
+  String calculateAmount(String amount) {
+    // Parse the amount as a double and then cast it to an integer
+    final calculatedAmount = (double.parse(amount)).toInt();
+    return calculatedAmount.toString();
+  }
+
+  Future<Map<String, dynamic>?> createPaymentIntent(
+      String amount, String currency) async {
+    try {
+      Map<String, dynamic> body = {
+        'amount': calculateAmount(amount),
+        'currency': currency,
+        'payment_method_types[]': 'card'
+      };
+
+      var response = await http.post(
+        Uri.parse('https://api.stripe.com/v1/payment_intents'),
+        headers: {
+          'Authorization': 'Bearer $secretKey',
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: body,
+      );
+
+      if (response.statusCode == 200) {
+        print('Payment Intent Body->>> ${response.body.toString()}');
+        return jsonDecode(response.body);
+      } else {
+        print('Failed to create Payment Intent: ${response.body}');
+        return null;
+      }
+    } catch (err) {
+      print('Error charging user: ${err.toString()}');
+      return null;
     }
   }
 }

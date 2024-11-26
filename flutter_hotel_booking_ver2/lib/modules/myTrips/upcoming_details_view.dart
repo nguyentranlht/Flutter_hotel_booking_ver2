@@ -5,8 +5,8 @@ class DetailBookingsScreen extends StatelessWidget {
   final String hotelName;
   final String roomType;
   final String pricePerNight;
-  final String checkInDate;
-  final String checkOutDate;
+  final DateTime checkInDate;
+  final DateTime checkOutDate;
   final String hotelAddress;
   final String bookingId;
   final String paymentIntentId;
@@ -112,7 +112,7 @@ class DetailBookingsScreen extends StatelessWidget {
               ),
             ),
             Text(
-              checkInDate,
+              checkInDate.toString().substring(0, 10),
               style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.normal,
@@ -131,7 +131,7 @@ class DetailBookingsScreen extends StatelessWidget {
               ),
             ),
             Text(
-              checkOutDate,
+              checkOutDate.toString().substring(0, 10),
               style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.normal,
@@ -178,6 +178,7 @@ class DetailBookingsScreen extends StatelessWidget {
                           bookingId: bookingId,
                           paymentIntentId: paymentIntentId,
                           amount: pricePerNight,
+                          checkInDate: checkInDate,
                         ),
                       ),
                     );
