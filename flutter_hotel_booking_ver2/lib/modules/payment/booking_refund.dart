@@ -33,62 +33,58 @@ class _BookingRefundState extends ConsumerState<BookingRefund> {
   ];
   String? selectedReason;
 
-  String calculateRefundPercentage() {
+  // Tính toán % hoàn tiền
+  double calculateRefundPercentage() {
     final now = DateTime.now();
     final daysDifference = widget.checkInDate.difference(now).inDays;
 
     if (daysDifference > 7) {
-      return "100% (Hoàn tiền đầy đủ)";
+      return 1.0; // Hoàn tiền 100%
     } else if (daysDifference >= 3) {
-      return "50% (Hoàn tiền 50%)";
+      return 0.5; // Hoàn tiền 50%
     } else if (daysDifference >= 1) {
-      return "20% (Hoàn tiền 20%)";
+      return 0.2; // Hoàn tiền 20%
     } else {
-      return "0% (Không hoàn tiền)";
+      return 0.0; // Không hoàn tiền
     }
   }
 
+  // Thực hiện hoàn tiền
   Future<void> refundPayment(String paymentIntentId, String amount) async {
     try {
-      final percentage = calculateRefundPercentage();
-      int refundAmount = 0;
-
-      if (percentage.contains("100%")) {
-        refundAmount = int.parse(amount);
-      } else if (percentage.contains("50%")) {
-        refundAmount = (int.parse(amount) * 0.5).toInt();
-      } else if (percentage.contains("20%")) {
-        refundAmount = (int.parse(amount) * 0.2).toInt();
+      final refundPercentage = calculateRefundPercentage();
+      if (refundPercentage == 0.0) {
+        throw Exception("Điều khoản không cho phép hoàn tiền.");
       }
 
-      if (refundAmount > 0) {
-        Map<String, dynamic> body = {
-          'payment_intent': paymentIntentId,
-          'amount': refundAmount.toString(),
-        };
+      final refundAmount = (int.parse(amount) * refundPercentage).toInt();
 
-        var response = await http.post(
-          Uri.parse('https://api.stripe.com/v1/refunds'),
-          headers: {
-            'Authorization': 'Bearer $secretKey',
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-          body: body,
-        );
+      Map<String, dynamic> body = {
+        'payment_intent': paymentIntentId,
+        'amount': refundAmount.toString(),
+      };
 
-        if (response.statusCode == 200) {
-          print('Refund successful: ${response.body}');
-        } else {
-          print('Failed to refund: ${response.body}');
-        }
+      final response = await http.post(
+        Uri.parse('https://api.stripe.com/v1/refunds'),
+        headers: {
+          'Authorization': 'Bearer $secretKey',
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: body,
+      );
+
+      if (response.statusCode == 200) {
+        print('Refund successful: ${response.body}');
       } else {
-        print('No refund due to terms of cancellation.');
+        print('Failed to refund: ${response.body}');
+        throw Exception('Không thể hoàn tiền. Vui lòng thử lại sau.');
       }
     } catch (err) {
-      print('Error while refunding: ${err.toString()}');
+      throw Exception('Lỗi khi thực hiện hoàn tiền: ${err.toString()}');
     }
   }
 
+  // Hủy đặt phòng
   Future<void> cancelBooking(BuildContext context) async {
     if (selectedReason == null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -101,6 +97,17 @@ class _BookingRefundState extends ConsumerState<BookingRefund> {
     }
 
     try {
+      final refundPercentage = calculateRefundPercentage();
+      if (refundPercentage == 0.0) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Không thể hoàn tiền do điều khoản hủy đặt phòng.'),
+            backgroundColor: Colors.orange,
+          ),
+        );
+        return;
+      }
+
       await FirebaseFirestore.instance
           .collection('bookings')
           .doc(widget.bookingId)
@@ -113,7 +120,7 @@ class _BookingRefundState extends ConsumerState<BookingRefund> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Đặt phòng đã được hủy.'),
+          content: Text('Đặt phòng đã được hủy và hoàn tiền thành công.'),
           backgroundColor: Colors.green,
         ),
       );
@@ -135,6 +142,13 @@ class _BookingRefundState extends ConsumerState<BookingRefund> {
   @override
   Widget build(BuildContext context) {
     final refundPercentage = calculateRefundPercentage();
+    final refundText = refundPercentage == 1.0
+        ? "100% (Hoàn tiền đầy đủ)"
+        : refundPercentage == 0.5
+            ? "50% (Hoàn tiền 50%)"
+            : refundPercentage == 0.2
+                ? "20% (Hoàn tiền 20%)"
+                : "0% (Không hoàn tiền)";
 
     return Scaffold(
       appBar: AppBar(
@@ -211,7 +225,7 @@ class _BookingRefundState extends ConsumerState<BookingRefund> {
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    "Số tiền hoàn lại: $refundPercentage",
+                    "Số tiền hoàn lại: $refundText",
                     style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -223,20 +237,25 @@ class _BookingRefundState extends ConsumerState<BookingRefund> {
             const SizedBox(height: 30),
             Center(
               child: ElevatedButton(
-                onPressed: () => cancelBooking(context),
+                onPressed: (selectedReason != null && refundPercentage > 0)
+                    ? () => cancelBooking(context)
+                    : null,
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(
                     vertical: 14,
                     horizontal: 50,
                   ),
-                  backgroundColor: Colors.redAccent,
+                  backgroundColor:
+                      (selectedReason != null && refundPercentage > 0)
+                          ? Colors.redAccent
+                          : Colors.grey,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-                child: const Text(
-                  'Xác Nhận Hủy',
-                  style: TextStyle(
+                child: Text(
+                  refundPercentage == 0.0 ? 'Không Thể Hủy' : 'Xác Nhận Hủy',
+                  style: const TextStyle(
                     fontSize: 18,
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
