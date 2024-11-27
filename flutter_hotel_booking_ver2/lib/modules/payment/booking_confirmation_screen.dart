@@ -218,8 +218,14 @@ class BookingConfirmationScreen extends ConsumerWidget {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: ref.watch(isLoadingProvider)
-                    ? null // Khóa nút khi isLoading là true
+                    ? null
                     : () async {
+                        final userAsync = ref.read(userProvider(userId));
+                        final user = userAsync.maybeWhen(
+                          data: (user) => user?.fullname ?? '', // Lấy fullname
+                          orElse: () => '',
+                        );
+
                         String bookingId = FirebaseFirestore.instance
                             .collection('bookings')
                             .doc()
@@ -228,9 +234,10 @@ class BookingConfirmationScreen extends ConsumerWidget {
                             .collection('payments')
                             .doc()
                             .id;
+
                         await makePayment(
                           context,
-                          ref, // Truyền thêm ref vào
+                          ref,
                           perNight,
                           bookingId,
                           paymentId,
@@ -240,6 +247,7 @@ class BookingConfirmationScreen extends ConsumerWidget {
                           startDate,
                           endDate,
                           roomData.capacity,
+                          user, // Truyền fullname
                         );
                       },
                 style: ElevatedButton.styleFrom(
@@ -275,6 +283,7 @@ class BookingConfirmationScreen extends ConsumerWidget {
     String startDate,
     String endDate,
     int numberOfGuests,
+    String fullname,
   ) async {
     // Cập nhật isLoading thành true
     ref.read(isLoadingProvider.notifier).state = true;
@@ -305,6 +314,7 @@ class BookingConfirmationScreen extends ConsumerWidget {
         startDate,
         endDate,
         numberOfGuests,
+        fullname,
       );
     } catch (e, s) {
       print('Lỗi: $e $s');
@@ -363,6 +373,7 @@ class BookingConfirmationScreen extends ConsumerWidget {
     String startDate,
     String endDate,
     int numberOfGuests,
+    String fullname,
   ) async {
     try {
       await Stripe.instance.presentPaymentSheet().then((_) async {
@@ -380,6 +391,7 @@ class BookingConfirmationScreen extends ConsumerWidget {
           'bookingStatus': 'success',
           'totalPrice': amount,
           'paymentStatus': 'success',
+          'fullname': fullname
         };
 
         Map<String, dynamic> paymentData = {

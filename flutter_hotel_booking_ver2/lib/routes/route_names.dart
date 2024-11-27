@@ -10,6 +10,7 @@ import 'package:flutter_hotel_booking_ver2/modules/login/change_password.dart';
 import 'package:flutter_hotel_booking_ver2/modules/login/forgot_password.dart';
 import 'package:flutter_hotel_booking_ver2/modules/login/login_screen.dart';
 import 'package:flutter_hotel_booking_ver2/modules/login/sign_up_screen.dart';
+import 'package:flutter_hotel_booking_ver2/modules/myTrips/finish_review.dart';
 import 'package:flutter_hotel_booking_ver2/modules/payment/booking_confirmation_screen.dart';
 import 'package:flutter_hotel_booking_ver2/modules/profile/country_screen.dart';
 import 'package:flutter_hotel_booking_ver2/modules/profile/currency_screen.dart';
@@ -128,19 +129,36 @@ class NavigationServices {
     ));
   }
 
-  Future<dynamic> gotoReviewsListScreen() async {
-    return await _pushMaterialPageRoute(const ReviewsListScreen());
+  Future<dynamic> gotoReviewsScreen(
+    Hotel hotel,
+    String hotelId,
+    String userId,
+    String fullname,
+  ) async {
+    return await _pushMaterialPageRoute(ReviewScreen(
+        hotel: hotel, hotelId: hotelId, userId: userId, fullname: fullname));
+  }
+
+  Future<dynamic> gotoReviewsListScreen(String hotelId) async {
+    return await _pushMaterialPageRoute(ReviewsListScreen(
+      hotelId: hotelId,
+    ));
   }
 
   Future<dynamic> gotoAddHotel() async {
     return await _pushMaterialPageRoute(AddHotelScreen());
   }
+
   Future<dynamic> gotoAddRoom(String hotelId) async {
-    return await _pushMaterialPageRoute(AddRoomScreen(hotelId: hotelId,));
+    return await _pushMaterialPageRoute(AddRoomScreen(
+      hotelId: hotelId,
+    ));
   }
 
   Future<dynamic> gotoEditHotel(Hotel hotel) async {
-    return await _pushMaterialPageRoute(EditHotelScreen(hotel: hotel,));
+    return await _pushMaterialPageRoute(EditHotelScreen(
+      hotel: hotel,
+    ));
   }
 
   Future<dynamic> gotoEditProfile(MyUser myUser) async {

@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hotel_booking_ver2/constants/text_styles.dart';
 import 'package:flutter_hotel_booking_ver2/constants/themes.dart';
 import 'package:flutter_hotel_booking_ver2/language/app_localizations.dart';
-import 'package:flutter_hotel_booking_ver2/models/hotel_list_data.dart';
 import 'package:flutter_hotel_booking_ver2/widgets/common_card.dart';
 import 'package:flutter_hotel_booking_ver2/widgets/list_cell_animation_view.dart';
+import 'package:review_repository/review_repository.dart';
 
 class ReviewsView extends StatelessWidget {
   final VoidCallback callback;
-  final HotelListData reviewsList;
+  final Review reviewsList;
   final AnimationController animationController;
   final Animation<double> animation;
 
@@ -45,10 +45,10 @@ class ReviewsView extends StatelessWidget {
                             const BorderRadius.all(Radius.circular(8.0)),
                         child: AspectRatio(
                           aspectRatio: 1,
-                          child: Image.asset(
-                            reviewsList.imagePath,
-                            fit: BoxFit.cover,
-                          ),
+                          // child: Image.asset(
+                          //   reviewsList.picture,
+                          //   fit: BoxFit.cover,
+                          // ),
                         ),
                       ),
                     ),
@@ -59,7 +59,7 @@ class ReviewsView extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Text(
-                      reviewsList.titleTxt,
+                      reviewsList.fullname,
                       style: TextStyles(context).getBoldStyle().copyWith(
                             fontSize: 14,
                           ),
@@ -76,7 +76,7 @@ class ReviewsView extends StatelessWidget {
                               ),
                         ),
                         Text(
-                          reviewsList.dateTxt,
+                          reviewsList.reviewDate.toString().substring(0, 10),
                           style: TextStyles(context)
                               .getDescriptionStyle()
                               .copyWith(
@@ -103,7 +103,7 @@ class ReviewsView extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                reviewsList.subTxt,
+                reviewsList.comments,
                 style: TextStyles(context).getDescriptionStyle().copyWith(
                       fontWeight: FontWeight.w100,
                       color: Theme.of(context).disabledColor,

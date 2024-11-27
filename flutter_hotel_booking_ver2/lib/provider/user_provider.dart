@@ -14,13 +14,14 @@ final userProvider =
   return userService.fetchUser(userId);
 });
 // Provider for uploading a profile picture and updating user's picture URL
-final uploadPictureProvider = FutureProvider.family<String?, MyUser>((ref, params) async {
+final uploadPictureProvider =
+    FutureProvider.family<String?, MyUser>((ref, params) async {
   final userService = ref.watch(userServiceProvider);
   return userService.uploadPicture(params.picture, params.userId);
 });
 
-final uploadUserProvider = FutureProvider.family<void, MyUser>((ref, params) async {
+final uploadUserProvider =
+    FutureProvider.family<void, MyUser>((ref, params) async {
   final userService = ref.watch(userServiceProvider);
   userService.updateUser(params);
 });
-

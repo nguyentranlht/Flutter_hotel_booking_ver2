@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hotel_booking_ver2/modules/myTrips/hotel_list_view_data.dart';
 import 'package:flutter_hotel_booking_ver2/provider/booking_provider.dart';
 import 'package:flutter_hotel_booking_ver2/provider/hotel_provider.dart';
+import 'package:flutter_hotel_booking_ver2/provider/user_provider.dart';
 import 'package:flutter_hotel_booking_ver2/routes/route_names.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -18,9 +19,6 @@ class FinishTripView extends ConsumerWidget {
 
     final hotelListAsyncValue =
         ref.watch(hotelProvider); // HotelProvider là một AsyncValue
-
-    DateTime startDate = DateTime.now();
-    DateTime endDate = DateTime.now().add(const Duration(days: 1));
 
     return hotelListAsyncValue.when(
       data: (hotelList) {
@@ -53,8 +51,17 @@ class FinishTripView extends ConsumerWidget {
 
             return HotelListViewData(
               callback: () {
-                NavigationServices(context).gotoHotelDetailes(
+                final userAsync = ref.read(userProvider(hotelData.userId));
+                final fullname = userAsync.maybeWhen(
+                  data: (user) => user?.fullname ?? 'Người dùng',
+                  orElse: () => 'Người dùng',
+                );
+
+                NavigationServices(context).gotoReviewsScreen(
                   hotelData,
+                  hotelData.hotelId,
+                  hotelData.userId,
+                  fullname, // Truyền fullname vào
                 );
               },
               hotelData: hotelData,

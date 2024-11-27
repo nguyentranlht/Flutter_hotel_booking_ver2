@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_hotel_booking_ver2/provider/hotel_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hotel_repository/hotel_repository.dart';
+import 'package:review_repository/review_repository.dart';
 
 final hotelServiceProvider = Provider((ref) => HotelService());
 
@@ -31,6 +33,7 @@ class HotelListNotifier extends StateNotifier<List<Hotel>> {
       return withinPriceRange;
     }).toList();
   }
+
   Future<void> deleteHotel(String hotelId) async {
     try {
       await hotelService.deleteHotel(hotelId);
@@ -39,6 +42,7 @@ class HotelListNotifier extends StateNotifier<List<Hotel>> {
       throw Exception('Failed to delete hotel: $e');
     }
   }
+
   //Function find hotel and price, address
   Future<void> searchHotels({
     required String searchQuery, // find keyword(name hotel, address)
@@ -80,4 +84,25 @@ final addHotelProvider =
     StateNotifierProvider<AddHotelNotifier, AsyncValue<void>>((ref) {
   final hotelService = ref.watch(hotelServiceProvider);
   return AddHotelNotifier(hotelService);
+});
+
+final reviewsProvider =
+    StreamProvider.family<List<Review>, String>((ref, hotelId) {
+  return FirebaseFirestore.instance
+      .collection('reviews')
+      .where('hotelId', isEqualTo: hotelId)
+      .orderBy('reviewDate', descending: true)
+      .snapshots()
+      .map((snapshot) => snapshot.docs
+          .map((doc) => Review(
+                reviewId: doc['reviewId'],
+                userId: doc['userId'],
+                hotelId: doc['hotelId'],
+                rating: doc['rating'],
+                comments: doc['comments'],
+                reviewDate: (doc['reviewDate'] as Timestamp).toDate(),
+                picture: doc['picture'],
+                fullname: doc['fullname'],
+              ))
+          .toList());
 });

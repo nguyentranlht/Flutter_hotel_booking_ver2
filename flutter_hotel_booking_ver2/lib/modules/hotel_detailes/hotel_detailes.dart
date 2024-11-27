@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hotel_booking_ver2/provider/hotel_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_hotel_booking_ver2/constants/helper.dart';
@@ -14,7 +15,6 @@ import 'package:flutter_hotel_booking_ver2/widgets/common_card.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hotel_repository/hotel_repository.dart';
 import 'package:intl/intl.dart';
-import '../../models/hotel_list_data.dart';
 import '../../provider/favorite_provider.dart';
 import 'hotel_roome_list.dart';
 import 'rating_view.dart';
@@ -46,7 +46,7 @@ class _HotelDetailesState extends ConsumerState<HotelDetailes>
   @override
   void initState() {
     animationController = AnimationController(
-        duration: const Duration(milliseconds: 2000), vsync: this);
+        duration: const Duration(milliseconds: 1000), vsync: this);
     _animationController = AnimationController(
         duration: const Duration(milliseconds: 0), vsync: this);
     animationController.forward();
@@ -167,16 +167,61 @@ class _HotelDetailesState extends ConsumerState<HotelDetailes>
                 const HotelRoomeList(),
                 _getPhotoReviewUi(Loc.alized.reviews, Loc.alized.view_all,
                     Icons.arrow_forward, () {
-                  NavigationServices(context).gotoReviewsListScreen();
+                  NavigationServices(context)
+                      .gotoReviewsListScreen(widget.hotelData.hotelId);
+
+                  print('Hotel ID: ${widget.hotelData.hotelId}');
                 }),
 
                 // feedback&Review data view
-                for (var i = 0; i < 2; i++)
-                  ReviewsView(
-                    reviewsList: HotelListData.reviewsList[i],
-                    animation: animationController,
-                    animationController: animationController,
-                    callback: () {},
+                for (var i = 0; i < 1; i++)
+                  Consumer(
+                    builder: (context, ref, child) {
+                      final reviewsAsync =
+                          ref.watch(reviewsProvider(widget.hotelData.hotelId));
+
+                      return reviewsAsync.when(
+                        data: (reviewsList) {
+                          if (reviewsList.isEmpty) {
+                            return Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Text(
+                                "Hiện chưa có đánh giá nào.",
+                                style: TextStyles(context).getBoldStyle(),
+                              ),
+                            );
+                          }
+
+                          // Duyệt qua tất cả phần tử trong reviewsList (hoặc tối đa 2 phần tử nếu cần)
+                          return Column(
+                            children: List.generate(
+                              reviewsList.length, // Chỉ lấy tối đa 2 phần tử
+                              (index) => ReviewsView(
+                                reviewsList: reviewsList[index],
+                                animation: animationController,
+                                animationController: animationController,
+                                callback: () {},
+                              ),
+                            ),
+                          );
+                        },
+                        loading: () =>
+                            const Center(child: CircularProgressIndicator()),
+                        error: (error, stackTrace) {
+                          // In lỗi ra terminal
+                          print("Lỗi xảy ra trong reviewsProvider: $error");
+                          print("Chi tiết stackTrace: $stackTrace");
+
+                          return Center(
+                            child: Text(
+                              "Có lỗi xảy ra khi tải đánh giá:\n$error",
+                              style: TextStyle(color: Colors.red),
+                              textAlign: TextAlign.center,
+                            ),
+                          );
+                        },
+                      );
+                    },
                   ),
 
                 const SizedBox(
