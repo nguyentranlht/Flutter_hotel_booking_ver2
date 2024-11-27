@@ -15,98 +15,85 @@ class FinishTripView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final finishedBookings =
-        ref.watch(finishedBookingsProvider); // Trực tiếp là List<Booking>
+    // Lấy userId hiện tại từ Firebase Auth
+    final currentUserId = FirebaseAuth.instance.currentUser?.uid;
+    if (currentUserId == null) {
+      return const Center(
+        child: Text("Người dùng chưa đăng nhập.",
+            style: TextStyle(color: Colors.red)),
+      );
+    }
 
-    final hotelListAsyncValue =
-        ref.watch(hotelProvider); // HotelProvider là một AsyncValue
+    // Preload user data
+    final userAsync = ref.watch(userProvider(currentUserId));
+    if (userAsync is AsyncLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (userAsync is AsyncError) {
+      return const Center(
+        child: Text("Không thể tải thông tin người dùng.",
+            style: TextStyle(color: Colors.red)),
+      );
+    }
+
+    final fullname = userAsync.whenOrNull(
+      data: (user) => user?.fullname ?? 'Người dùng',
+    );
+
+    if (fullname == null || fullname.isEmpty) {
+      return const Center(
+        child: Text("Tên người dùng không hợp lệ.",
+            style: TextStyle(color: Colors.red)),
+      );
+    }
+
+    // Fetch bookings and hotels
+    final finishedBookings = ref.watch(finishedBookingsProvider);
+    final hotelListAsyncValue = ref.watch(hotelProvider);
 
     return hotelListAsyncValue.when(
       data: (hotelList) {
-        // Lấy danh sách hotelIds từ các bookings đã hoàn thành
         final finishedHotelIds =
             finishedBookings.map((booking) => booking.hotelId).toSet();
-
-        // Lọc các hotel có trong danh sách finishedHotelIds
         final finishedHotels = hotelList
             .where((hotel) => finishedHotelIds.contains(hotel.hotelId))
             .toList();
 
+        if (finishedHotels.isEmpty) {
+          return const Center(
+            child: Text(
+              "Không có chuyến đi nào đã hoàn thành.",
+              style: TextStyle(color: Colors.grey, fontSize: 16),
+            ),
+          );
+        }
+
         return ListView.builder(
           itemCount: finishedHotels.length,
           padding: const EdgeInsets.only(top: 8, bottom: 16),
-          scrollDirection: Axis.vertical,
           itemBuilder: (context, index) {
-            var count = finishedHotels.length > 10 ? 10 : finishedHotels.length;
-            var animation = Tween(begin: 0.0, end: 1.0).animate(
+            final hotelData = finishedHotels[index];
+
+            final animation = Tween(begin: 0.0, end: 1.0).animate(
               CurvedAnimation(
                 parent: animationController,
-                curve: Interval((1 / count) * index, 1.0,
-                    curve: Curves.fastOutSlowIn),
+                curve: Interval(
+                  (1 / finishedHotels.length) * index,
+                  1.0,
+                  curve: Curves.fastOutSlowIn,
+                ),
               ),
             );
-            animationController.forward();
 
-            // Get individual finished hotel information
-            final hotelData = finishedHotels[index];
+            animationController.forward();
 
             return HotelListViewData(
               callback: () {
-                // Lấy userId của người dùng hiện tại từ Firebase Auth
-                final currentUserId = FirebaseAuth.instance.currentUser?.uid;
-
-                if (currentUserId == null) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text("Người dùng chưa đăng nhập."),
-                      backgroundColor: Colors.red,
-                    ),
-                  );
-                  return;
-                }
-
-                final userAsync = ref.watch(userProvider(currentUserId));
-
-                // Xử lý trạng thái của userAsync
-                if (userAsync is AsyncLoading) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text("Đang tải thông tin người dùng..."),
-                      backgroundColor: Colors.orange,
-                    ),
-                  );
-                  return;
-                }
-
-                if (userAsync is AsyncError) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text("Không thể tải thông tin người dùng."),
-                      backgroundColor: Colors.red,
-                    ),
-                  );
-                  return;
-                }
-
-                // Lấy fullname nếu dữ liệu đã tải thành công
-                final fullname = userAsync.whenOrNull(
-                  data: (user) => user?.fullname ?? 'Người dùng',
-                );
-
-                if (fullname == null || fullname.isEmpty) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text("Tên người dùng không hợp lệ."),
-                      backgroundColor: Colors.red,
-                    ),
-                  );
-                  return;
-                }
-
                 NavigationServices(context).gotoReviewsScreen(
                   hotelData,
                   hotelData.hotelId,
-                  currentUserId, // Sử dụng currentUserId
+                  currentUserId,
                   fullname,
                 );
               },
@@ -119,7 +106,10 @@ class FinishTripView extends ConsumerWidget {
         );
       },
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (error, stackTrace) => Center(child: Text('Error loading hotels')),
+      error: (error, stackTrace) => Center(
+        child: Text("Có lỗi xảy ra: $error",
+            style: const TextStyle(color: Colors.red)),
+      ),
     );
   }
 }
