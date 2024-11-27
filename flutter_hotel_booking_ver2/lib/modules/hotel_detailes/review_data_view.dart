@@ -89,7 +89,7 @@ class ReviewsView extends StatelessWidget {
                     Row(
                       children: <Widget>[
                         Text(
-                          "(${reviewsList.rating})",
+                          "(${reviewsList.rating.toString()})",
                           style: TextStyles(context).getRegularStyle().copyWith(
                                 fontWeight: FontWeight.w100,
                               ),

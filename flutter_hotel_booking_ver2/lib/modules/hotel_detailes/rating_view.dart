@@ -6,6 +6,7 @@ import 'package:flutter_hotel_booking_ver2/provider/hotel_provider.dart';
 import 'package:flutter_hotel_booking_ver2/widgets/common_card.dart';
 import 'package:hotel_repository/hotel_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:review_repository/review_repository.dart';
 
 class RatingView extends ConsumerWidget {
   final Hotel hotelData;
@@ -14,73 +15,26 @@ class RatingView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Lấy danh sách reviews từ Firestore qua provider
     final reviewsAsync = ref.watch(reviewsProvider(hotelData.hotelId));
 
     return reviewsAsync.when(
       data: (reviewsList) {
-        // Tính trung bình rating từ reviews
-        double averageRating = 0.0;
-        if (reviewsList.isNotEmpty) {
-          averageRating = reviewsList
-                  .map((review) => review.rating)
-                  .reduce((a, b) => a + b) /
-              reviewsList.length;
+        if (reviewsList.isEmpty) {
+          return _buildNoReviews(context);
         }
+
+        final averageScores = _calculateAverageScores(reviewsList);
 
         return CommonCard(
           color: AppTheme.backgroundColor,
           radius: 16,
           child: Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(20.0),
             child: Column(
-              children: <Widget>[
-                Row(
-                  children: <Widget>[
-                    SizedBox(
-                      width: 60,
-                      child: Text(
-                        averageRating.toStringAsFixed(1), // Hiển thị trung bình
-                        textAlign: TextAlign.left,
-                        style: TextStyles(context).getBoldStyle().copyWith(
-                              fontSize: 38,
-                              color: Theme.of(context).primaryColor,
-                            ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 8, right: 8),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Text(
-                              Loc.alized.overall_rating,
-                              textAlign: TextAlign.left,
-                              style: TextStyles(context)
-                                  .getRegularStyle()
-                                  .copyWith(
-                                    fontSize: 14,
-                                    color: Theme.of(context)
-                                        .disabledColor
-                                        .withOpacity(0.8),
-                                  ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-                const SizedBox(height: 4),
-                getBarUI('room', 95.0, context),
-                const SizedBox(height: 4),
-                getBarUI('service', 80.0, context),
-                const SizedBox(height: 4),
-                getBarUI('location', 65.0, context),
-                const SizedBox(height: 4),
-                getBarUI('price', 85, context),
+              children: [
+                _buildAverageRating(context, averageScores['average']!),
+                const Divider(thickness: 1, height: 24),
+                _buildCategoryRatings(context, averageScores),
               ],
             ),
           ),
@@ -89,57 +43,181 @@ class RatingView extends ConsumerWidget {
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (error, stackTrace) {
         debugPrint("Error loading reviews: $error");
-        return Center(
-          child: Text(
-            "Có lỗi xảy ra khi tải đánh giá.",
-            style: TextStyle(color: Colors.red, fontSize: 14),
-          ),
-        );
+        return _buildError(context, error);
       },
     );
   }
 
-  Widget getBarUI(String text, double percent, BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[
-        SizedBox(
-          width: 60,
+  Widget _buildNoReviews(BuildContext context) {
+    return CommonCard(
+      color: AppTheme.backgroundColor,
+      radius: 16,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Center(
           child: Text(
-            text,
-            textAlign: TextAlign.left,
-            style: TextStyles(context).getRegularStyle().copyWith(
-                  fontSize: 14,
-                  color: Theme.of(context).disabledColor.withOpacity(0.8),
+            "Hiện chưa có đánh giá nào.",
+            style: TextStyles(context)
+                .getRegularStyle()
+                .copyWith(fontSize: 16, color: Colors.grey),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildError(BuildContext context, Object error) {
+    return CommonCard(
+      color: AppTheme.backgroundColor,
+      radius: 16,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Center(
+          child: Text(
+            "Có lỗi xảy ra: $error",
+            style: TextStyles(context)
+                .getRegularStyle()
+                .copyWith(color: Colors.red, fontSize: 14),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAverageRating(BuildContext context, double averageRating) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        CircleAvatar(
+          radius: 30,
+          backgroundColor: Theme.of(context).primaryColor.withOpacity(0.1),
+          child: Text(
+            averageRating.toStringAsFixed(1),
+            style: TextStyles(context).getBoldStyle().copyWith(
+                  fontSize: 24,
+                  color: Theme.of(context).primaryColor,
                 ),
           ),
         ),
-        const SizedBox(width: 8),
+        const SizedBox(width: 16),
         Expanded(
-          child: Row(
-            children: <Widget>[
-              Expanded(
-                flex: percent.toInt(),
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 2),
-                  child: SizedBox(
-                    height: 4,
-                    child: CommonCard(
-                      color: AppTheme.primaryColor,
-                      radius: 8,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                Loc.alized.overall_rating,
+                style: TextStyles(context).getRegularStyle().copyWith(
+                      fontSize: 14,
+                      color: Theme.of(context).disabledColor.withOpacity(0.8),
                     ),
+              ),
+              const SizedBox(height: 4),
+              Row(
+                children: List.generate(
+                  5,
+                  (index) => Icon(
+                    Icons.star,
+                    size: 20,
+                    color: index < (averageRating / 2).floor()
+                        ? Theme.of(context).primaryColor
+                        : Theme.of(context).disabledColor.withOpacity(0.5),
                   ),
                 ),
-              ),
-              Expanded(
-                flex: 100 - percent.toInt(),
-                child: const SizedBox(),
               ),
             ],
           ),
         ),
       ],
     );
+  }
+
+  Widget _buildCategoryRatings(
+      BuildContext context, Map<String, double> averageScores) {
+    return Column(
+      children: [
+        _buildCategoryBar(context, 'Phòng', averageScores['room']!),
+        const SizedBox(height: 12),
+        _buildCategoryBar(context, 'Dịch vụ', averageScores['service']!),
+        const SizedBox(height: 12),
+        _buildCategoryBar(context, 'Vị trí', averageScores['location']!),
+        const SizedBox(height: 12),
+        _buildCategoryBar(context, 'Giá cả', averageScores['price']!),
+      ],
+    );
+  }
+
+  Widget _buildCategoryBar(
+      BuildContext context, String category, double score) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          category,
+          style: TextStyles(context).getRegularStyle().copyWith(
+                fontSize: 14,
+                color: Theme.of(context).disabledColor.withOpacity(0.8),
+              ),
+        ),
+        const SizedBox(height: 6),
+        Row(
+          children: [
+            Expanded(
+              flex: (score * 10).toInt(),
+              child: Container(
+                height: 6,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).primaryColor,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              ),
+            ),
+            Expanded(
+              flex: 100 - (score * 10).toInt(),
+              child: Container(
+                height: 6,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).disabledColor.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
+            Text(
+              score.toStringAsFixed(1),
+              style: TextStyles(context).getRegularStyle().copyWith(
+                    fontSize: 12,
+                    color: Theme.of(context).primaryColor,
+                  ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Map<String, double> _calculateAverageScores(List<Review> reviews) {
+    final totalReviews = reviews.length;
+    final totalScores = {
+      'room': 0.0,
+      'service': 0.0,
+      'location': 0.0,
+      'price': 0.0,
+      'average': 0.0,
+    };
+
+    for (final review in reviews) {
+      totalScores['room'] =
+          (totalScores['room']! + (review.categoryScores['room'] ?? 0));
+      totalScores['service'] =
+          (totalScores['service']! + (review.categoryScores['service'] ?? 0));
+      totalScores['location'] =
+          (totalScores['location']! + (review.categoryScores['location'] ?? 0));
+      totalScores['price'] =
+          (totalScores['price']! + (review.categoryScores['price'] ?? 0));
+      totalScores['average'] = totalScores['average']! + review.rating;
+    }
+
+    totalScores.updateAll((key, value) => value / totalReviews);
+    return totalScores;
   }
 }

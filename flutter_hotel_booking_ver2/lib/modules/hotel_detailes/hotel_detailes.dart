@@ -173,56 +173,54 @@ class _HotelDetailesState extends ConsumerState<HotelDetailes>
                   print('Hotel ID: ${widget.hotelData.hotelId}');
                 }),
 
-                // feedback&Review data view
-                for (var i = 0; i < 1; i++)
-                  Consumer(
-                    builder: (context, ref, child) {
-                      final reviewsAsync =
-                          ref.watch(reviewsProvider(widget.hotelData.hotelId));
+                // Feedback & Review data view
+                Consumer(
+                  builder: (context, ref, child) {
+                    final reviewsAsync =
+                        ref.watch(reviewsProvider(widget.hotelData.hotelId));
 
-                      return reviewsAsync.when(
-                        data: (reviewsList) {
-                          if (reviewsList.isEmpty) {
-                            return Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: Text(
-                                "Hiện chưa có đánh giá nào.",
-                                style: TextStyles(context).getBoldStyle(),
-                              ),
-                            );
-                          }
-
-                          // Duyệt qua tất cả phần tử trong reviewsList (hoặc tối đa 2 phần tử nếu cần)
-                          return Column(
-                            children: List.generate(
-                              reviewsList.length, // Chỉ lấy tối đa 2 phần tử
-                              (index) => ReviewsView(
-                                reviewsList: reviewsList[index],
-                                animation: animationController,
-                                animationController: animationController,
-                                callback: () {},
-                              ),
-                            ),
-                          );
-                        },
-                        loading: () =>
-                            const Center(child: CircularProgressIndicator()),
-                        error: (error, stackTrace) {
-                          // In lỗi ra terminal
-                          print("Lỗi xảy ra trong reviewsProvider: $error");
-                          print("Chi tiết stackTrace: $stackTrace");
-
-                          return Center(
+                    return reviewsAsync.when(
+                      data: (reviewsList) {
+                        if (reviewsList.isEmpty) {
+                          return Padding(
+                            padding: const EdgeInsets.all(16.0),
                             child: Text(
-                              "Có lỗi xảy ra khi tải đánh giá:\n$error",
-                              style: TextStyle(color: Colors.red),
-                              textAlign: TextAlign.center,
+                              "Hiện chưa có đánh giá nào.",
+                              style: TextStyles(context).getBoldStyle(),
                             ),
                           );
-                        },
-                      );
-                    },
-                  ),
+                        }
+
+                        // Chỉ hiển thị tối đa 2 review
+                        final limitedReviews = reviewsList.take(2).toList();
+
+                        return Column(
+                          children: limitedReviews.map((review) {
+                            return ReviewsView(
+                              reviewsList: review,
+                              animation: animationController,
+                              animationController: animationController,
+                              callback: () {},
+                            );
+                          }).toList(),
+                        );
+                      },
+                      loading: () =>
+                          const Center(child: CircularProgressIndicator()),
+                      error: (error, stackTrace) {
+                        debugPrint("Error fetching reviews: $error");
+                        debugPrint("Stack trace: $stackTrace");
+                        return Center(
+                          child: Text(
+                            "Có lỗi xảy ra khi tải đánh giá:\n$error",
+                            style: const TextStyle(color: Colors.red),
+                            textAlign: TextAlign.center,
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
 
                 const SizedBox(
                   height: 16,

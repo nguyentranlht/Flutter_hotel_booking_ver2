@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hotel_booking_ver2/modules/myTrips/hotel_list_view_data.dart';
 import 'package:flutter_hotel_booking_ver2/provider/booking_provider.dart';
@@ -51,17 +52,62 @@ class FinishTripView extends ConsumerWidget {
 
             return HotelListViewData(
               callback: () {
-                final userAsync = ref.read(userProvider(hotelData.userId));
-                final fullname = userAsync.maybeWhen(
+                // Lấy userId của người dùng hiện tại từ Firebase Auth
+                final currentUserId = FirebaseAuth.instance.currentUser?.uid;
+
+                if (currentUserId == null) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("Người dùng chưa đăng nhập."),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                  return;
+                }
+
+                final userAsync = ref.watch(userProvider(currentUserId));
+
+                // Xử lý trạng thái của userAsync
+                if (userAsync is AsyncLoading) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("Đang tải thông tin người dùng..."),
+                      backgroundColor: Colors.orange,
+                    ),
+                  );
+                  return;
+                }
+
+                if (userAsync is AsyncError) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("Không thể tải thông tin người dùng."),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                  return;
+                }
+
+                // Lấy fullname nếu dữ liệu đã tải thành công
+                final fullname = userAsync.whenOrNull(
                   data: (user) => user?.fullname ?? 'Người dùng',
-                  orElse: () => 'Người dùng',
                 );
+
+                if (fullname == null || fullname.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("Tên người dùng không hợp lệ."),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                  return;
+                }
 
                 NavigationServices(context).gotoReviewsScreen(
                   hotelData,
                   hotelData.hotelId,
-                  hotelData.userId,
-                  fullname, // Truyền fullname vào
+                  currentUserId, // Sử dụng currentUserId
+                  fullname,
                 );
               },
               hotelData: hotelData,

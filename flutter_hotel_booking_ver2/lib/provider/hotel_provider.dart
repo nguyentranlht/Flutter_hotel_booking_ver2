@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_hotel_booking_ver2/provider/hotel_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hotel_repository/hotel_repository.dart';
@@ -93,16 +94,23 @@ final reviewsProvider =
       .where('hotelId', isEqualTo: hotelId)
       .orderBy('reviewDate', descending: true)
       .snapshots()
-      .map((snapshot) => snapshot.docs
-          .map((doc) => Review(
-                reviewId: doc['reviewId'],
-                userId: doc['userId'],
-                hotelId: doc['hotelId'],
-                rating: doc['rating'],
-                comments: doc['comments'],
-                reviewDate: (doc['reviewDate'] as Timestamp).toDate(),
-                picture: doc['picture'],
-                fullname: doc['fullname'],
-              ))
-          .toList());
+      .map((snapshot) {
+    final reviews = snapshot.docs.map((doc) {
+      final review = Review(
+        reviewId: doc['reviewId'],
+        userId: doc['userId'],
+        hotelId: doc['hotelId'],
+        rating: doc['rating'],
+        comments: doc['comments'],
+        reviewDate: (doc['reviewDate'] as Timestamp).toDate(),
+        picture: doc['picture'],
+        fullname: doc['fullname'],
+        categoryScores: Map<String, int>.from(doc['categoryScores'] ?? {}),
+      );
+      debugPrint(
+          "Loaded review: ${review.reviewId} with scores: ${review.categoryScores}");
+      return review;
+    }).toList();
+    return reviews;
+  });
 });
