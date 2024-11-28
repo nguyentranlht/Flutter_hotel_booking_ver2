@@ -103,6 +103,7 @@ class _EditProfileState extends ConsumerState<EditProfile> {
         widget.myUser.birthday =
             DateFormat('dd/MM/yyyy').parse(_birthdayController.text);
       });
+      Navigator.pop(context);
       // Hiển thị thông báo thành công
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

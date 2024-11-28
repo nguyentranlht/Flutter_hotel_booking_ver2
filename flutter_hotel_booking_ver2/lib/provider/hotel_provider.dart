@@ -114,3 +114,12 @@ final reviewsProvider =
     return reviews;
   });
 });
+final reviewsCountProvider =
+    FutureProvider.family<int, String>((ref, hotelId) async {
+  final querySnapshot = await FirebaseFirestore.instance
+      .collection('reviews')
+      .where('hotelId', isEqualTo: hotelId)
+      .get();
+
+  return querySnapshot.size;
+});

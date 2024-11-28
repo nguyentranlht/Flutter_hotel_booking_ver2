@@ -34,8 +34,10 @@ class _ReviewsListScreenState extends ConsumerState<ReviewsListScreen>
 
   @override
   Widget build(BuildContext context) {
-    // Sử dụng provider để lấy danh sách reviews
+    // Fetch reviews using the provider
     final reviewsAsyncValue = ref.watch(reviewsProvider(widget.hotelId));
+    // Fetch the total reviews count
+    final reviewsCountAsync = ref.watch(reviewsCountProvider(widget.hotelId));
 
     return Scaffold(
       appBar: AppBar(
@@ -63,32 +65,66 @@ class _ReviewsListScreenState extends ConsumerState<ReviewsListScreen>
             );
           }
 
-          // Log danh sách reviews để debug
-          for (var review in reviewsList) {
-            debugPrint("Review loaded: ${review.reviewId}");
-          }
-
-          // Render danh sách reviews
-          return ListView.builder(
-            physics: const BouncingScrollPhysics(),
-            padding: EdgeInsets.only(
-              top: 8,
-              bottom: MediaQuery.of(context).padding.bottom + 8,
-            ),
-            itemCount: reviewsList.length,
-            itemBuilder: (context, index) {
-              return ReviewsView(
-                callback: () {},
-                reviewsList: reviewsList[index],
-                animation: AlwaysStoppedAnimation<double>(1.0),
-                animationController: animationController,
-              );
-            },
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Display total reviews count
+              reviewsCountAsync.when(
+                data: (count) => Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(
+                    "Tổng số lần đánh giá: $count",
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.teal,
+                    ),
+                  ),
+                ),
+                loading: () => const Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Text(
+                    "Đang tải số lần đánh giá...",
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ),
+                error: (error, _) => const Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Text(
+                    "Không thể tải tổng số đánh giá.",
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.red,
+                    ),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: ListView.builder(
+                  physics: const BouncingScrollPhysics(),
+                  padding: EdgeInsets.only(
+                    top: 8,
+                    bottom: MediaQuery.of(context).padding.bottom + 8,
+                  ),
+                  itemCount: reviewsList.length,
+                  itemBuilder: (context, index) {
+                    return ReviewsView(
+                      callback: () {},
+                      reviewsList: reviewsList[index],
+                      animation: AlwaysStoppedAnimation<double>(1.0),
+                      animationController: animationController,
+                    );
+                  },
+                ),
+              ),
+            ],
           );
         },
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stackTrace) {
-          // In chi tiết lỗi để debug
           debugPrint("Error fetching reviews: $error");
           debugPrint("Stack trace: $stackTrace");
 

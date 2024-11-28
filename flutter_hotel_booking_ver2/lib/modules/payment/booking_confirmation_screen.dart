@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hotel_booking_ver2/constants/themes.dart';
+import 'package:flutter_hotel_booking_ver2/modules/profile/edit_profile.dart';
 import 'package:flutter_hotel_booking_ver2/routes/route_names.dart';
 import 'package:flutter_hotel_booking_ver2/widgets/app_constant.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -12,8 +13,9 @@ import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:intl/intl.dart';
 import 'package:room_repository/room_repository.dart';
 import 'package:http/http.dart' as http;
+import 'package:user_repository/user_repository.dart';
 
-class BookingConfirmationScreen extends ConsumerWidget {
+class BookingConfirmationScreen extends ConsumerStatefulWidget {
   final Room roomData;
   final String hotelName;
   final String hotelId;
@@ -22,7 +24,7 @@ class BookingConfirmationScreen extends ConsumerWidget {
   final String startDate;
   final String endDate;
 
-  BookingConfirmationScreen({
+  const BookingConfirmationScreen({
     Key? key,
     required this.roomData,
     required this.hotelName,
@@ -34,12 +36,46 @@ class BookingConfirmationScreen extends ConsumerWidget {
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  _BookingConfirmationScreenState createState() =>
+      _BookingConfirmationScreenState();
+}
+
+class _BookingConfirmationScreenState
+    extends ConsumerState<BookingConfirmationScreen> {
+  int editCount = 0; // Track the number of edits
+
+  void _editUserInfo(BuildContext context, MyUser user, WidgetRef ref) {
+    if (editCount >= 2) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Bạn chỉ có thể chỉnh sửa thông tin 2 lần."),
+          backgroundColor: Colors.orange,
+        ),
+      );
+      return;
+    }
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => EditProfile(myUser: user),
+      ),
+    ).then((_) {
+      // Increment edit count when returning from EditProfile
+      setState(() {
+        editCount++;
+      });
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final FirebaseAuth auth = FirebaseAuth.instance;
     final String userId = auth.currentUser?.uid ?? '';
     final oCcy = NumberFormat("#,##0", "vi_VN");
+
     // Fetch room data using the hotelId
-    final roomsAsync = ref.watch(roomsProvider(hotelId));
+    final roomsAsync = ref.watch(roomsProvider(widget.hotelId));
     // Fetch user data using the userId
     final userAsync = ref.watch(userProvider(userId));
 
@@ -66,8 +102,9 @@ class BookingConfirmationScreen extends ConsumerWidget {
             roomsAsync.when(
               data: (rooms) {
                 final selectedRoom = rooms.firstWhere(
-                    (room) => room.roomId == roomData.roomId,
-                    orElse: () => roomData);
+                  (room) => room.roomId == widget.roomData.roomId,
+                  orElse: () => widget.roomData,
+                );
 
                 return Container(
                   padding: const EdgeInsets.all(16.0),
@@ -78,8 +115,7 @@ class BookingConfirmationScreen extends ConsumerWidget {
                   child: Row(
                     children: [
                       Image.network(
-                        selectedRoom.imagePath ??
-                            'default_image_url', // Real room image
+                        selectedRoom.imagePath ?? 'default_image_url',
                         width: 80,
                         height: 80,
                         fit: BoxFit.cover,
@@ -90,20 +126,20 @@ class BookingConfirmationScreen extends ConsumerWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              hotelName, // Hotel name
+                              widget.hotelName,
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 16,
                               ),
                             ),
                             Text(
-                              hotelAddress,
+                              widget.hotelAddress,
                               style: const TextStyle(
                                 fontWeight: FontWeight.normal,
                                 fontSize: 16,
                               ),
                             ),
-                            Text(selectedRoom.roomType), // Room type
+                            Text(selectedRoom.roomType),
                           ],
                         ),
                       ),
@@ -124,31 +160,66 @@ class BookingConfirmationScreen extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text("Nhận phòng"),
-                    Text("14:00 · $startDate"),
+                    Text("14:00 · ${widget.startDate}"),
                   ],
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     const Text("Trả phòng"),
-                    Text("12:00 · $endDate"),
+                    Text("12:00 · ${widget.endDate}"),
                   ],
                 ),
               ],
             ),
             const SizedBox(height: 16),
 
-            // User Information Section with real data
-            const Text("Người đặt phòng",
-                style: TextStyle(fontWeight: FontWeight.bold)),
+            // User Information Section with Edit Button
+            const Text(
+              "Người đặt phòng",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 8),
             userAsync.when(
               data: (user) => user != null
-                  ? Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("${user.fullname}"),
-                        Text(user.phonenumber),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text("${user.fullname}"),
+                                Text(user.phonenumber),
+                              ],
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.edit, color: Colors.blue),
+                              onPressed: () {
+                                _editUserInfo(context, user, ref);
+                              },
+                            ),
+                          ],
+                        ),
+                        // Display edit count message
+                        if (editCount < 2)
+                          Text(
+                            "Bạn có thể chỉnh sửa thông tin ${2 - editCount} lần nữa.",
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: Colors.orange,
+                            ),
+                          )
+                        else
+                          const Text(
+                            "Bạn đã hết số lần chỉnh sửa.",
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.red,
+                            ),
+                          ),
                       ],
                     )
                   : const Text("Không tìm thấy thông tin người dùng"),
@@ -183,37 +254,15 @@ class BookingConfirmationScreen extends ConsumerWidget {
               children: [
                 const Text("Tiền phòng"),
                 Text(
-                  "${(oCcy.format(num.parse(perNight)))}₫",
+                  "${(oCcy.format(num.parse(widget.perNight)))}₫",
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ],
             ),
             const SizedBox(height: 16),
 
-            // Terms and Conditions
-            Container(
-              padding: const EdgeInsets.all(8.0),
-              decoration: BoxDecoration(
-                border:
-                    Border.all(color: Theme.of(context).primaryColor, width: 1),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Row(
-                children: [
-                  const Icon(Icons.warning, color: Colors.blueGrey, size: 18),
-                  const SizedBox(width: 8),
-                  const Expanded(
-                    child: Text(
-                      "Có thể huỷ miễn phí trong vòng 5 phút kể từ thời điểm đặt phòng thành công.",
-                      style: TextStyle(fontSize: 12),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const Spacer(),
-
             // Confirm Button
+            const Spacer(),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
@@ -222,7 +271,7 @@ class BookingConfirmationScreen extends ConsumerWidget {
                     : () async {
                         final userAsync = ref.read(userProvider(userId));
                         final user = userAsync.maybeWhen(
-                          data: (user) => user?.fullname ?? '', // Lấy fullname
+                          data: (user) => user?.fullname ?? '',
                           orElse: () => '',
                         );
 
@@ -238,16 +287,16 @@ class BookingConfirmationScreen extends ConsumerWidget {
                         await makePayment(
                           context,
                           ref,
-                          perNight,
+                          widget.perNight,
                           bookingId,
                           paymentId,
                           userId,
-                          hotelId,
-                          roomData.roomId,
-                          startDate,
-                          endDate,
-                          roomData.capacity,
-                          user, // Truyền fullname
+                          widget.hotelId,
+                          widget.roomData.roomId,
+                          widget.startDate,
+                          widget.endDate,
+                          widget.roomData.capacity,
+                          user,
                         );
                       },
                 style: ElevatedButton.styleFrom(
