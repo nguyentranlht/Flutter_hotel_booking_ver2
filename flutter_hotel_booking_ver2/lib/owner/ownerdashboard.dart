@@ -76,7 +76,7 @@ class OwnerDashboard extends ConsumerWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (_) => BookingScheduleScreen()),
+                            builder: (_) => AllLinkedBookingsScreen()),
                       );
                     },
                   ),

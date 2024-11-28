@@ -47,6 +47,37 @@ class Booking extends Equatable {
         paymentIntentId,
         fullname,
       ];
+  Booking copyWith({
+    String? bookingId,
+    String? userId,
+    String? hotelId,
+    String? roomId,
+    DateTime? bookingDate,
+    DateTime? checkInDate,
+    DateTime? checkOutDate,
+    String? bookingStatus,
+    String? paymentStatus,
+    String? totalPrice,
+    int? numberOfGuests,
+    String? paymentIntentId,
+    String? fullname,
+  }) {
+    return Booking(
+      bookingId: bookingId ?? this.bookingId,
+      userId: userId ?? this.userId,
+      hotelId: hotelId ?? this.hotelId,
+      roomId: roomId ?? this.roomId,
+      bookingDate: bookingDate ?? this.bookingDate,
+      checkInDate: checkInDate ?? this.checkInDate,
+      checkOutDate: checkOutDate ?? this.checkOutDate,
+      bookingStatus: bookingStatus ?? this.bookingStatus,
+      paymentStatus: paymentStatus ?? this.paymentStatus,
+      totalPrice: totalPrice ?? this.totalPrice,
+      numberOfGuests: numberOfGuests ?? this.numberOfGuests,
+      paymentIntentId: paymentIntentId ?? this.paymentIntentId,
+      fullname: fullname ?? this.fullname,
+    );
+  }
 
   factory Booking.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
