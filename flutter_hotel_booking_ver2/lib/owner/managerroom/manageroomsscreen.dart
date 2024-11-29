@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hotel_booking_ver2/owner/managerroom/editroom.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../constants/themes.dart';
@@ -9,6 +10,19 @@ class RoomListScreen extends StatelessWidget {
   final String hotelId;
 
   const RoomListScreen({Key? key, required this.hotelId}) : super(key: key);
+
+  void _deleteRoom(BuildContext context, WidgetRef ref, String roomId) async {
+    try {
+      await ref.read(roomServiceProvider).deleteRoom(roomId);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Room deleted successfully!')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to delete room: $e')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,14 +52,35 @@ class RoomListScreen extends StatelessWidget {
                 itemCount: roomList.length,
                 itemBuilder: (context, index) {
                   final room = roomList[index];
-                  return ListTile(
-                    title: Text(room.roomName),
-                    subtitle: Text('Price: ${room.pricePerNight}₫'),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.edit),
-                      onPressed: () {
-                        // Navigate to edit room
-                      },
+                  return Card(
+                    margin: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
+                    child: ListTile(
+                      title: Text(room.roomName),
+                      subtitle: Text('Price: ${room.pricePerNight}₫'),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.edit, color: Colors.blue),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      EditRoomScreen(room: room),
+                                ),
+                              );
+                            },
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.delete, color: Colors.red),
+                            onPressed: () => _deleteRoom(context, ref, room.roomId),
+                          ),
+                        ],
+                      ),
                     ),
                   );
                 },

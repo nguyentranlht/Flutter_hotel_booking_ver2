@@ -188,9 +188,12 @@ class _HotelListScreenState extends State<HotelListScreen>
                             horizontal: 16.0, vertical: 8.0),
                         child: ElevatedButton.icon(
                           icon: const Icon(Icons.meeting_room),
-                          label: const Text('Manage Rooms'),
+                          label: const Text(
+                            'Manage Rooms',
+                            style: TextStyle(color: Colors.white),
+                          ),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: AppTheme.backColor,
+                            backgroundColor: AppTheme.primaryColor,
                           ),
                           onPressed: () {
                             // Navigate to RoomListScreen with hotelId

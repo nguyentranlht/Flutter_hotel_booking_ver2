@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hotel_repository/hotel_repository.dart';
 import 'package:room_repository/room_repository.dart';
 import '../../constants/themes.dart';
 import '../../provider/room_provider.dart';
@@ -73,8 +72,8 @@ class _AddRoomScreenState extends ConsumerState<AddRoomScreen> {
             );
           },
           loading: () => ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Adding room...')),
-              ),
+            const SnackBar(content: Text('Adding room...')),
+          ),
           error: (error, _) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text('Error: $error')),
@@ -156,7 +155,10 @@ class _AddRoomScreenState extends ConsumerState<AddRoomScreen> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppTheme.primaryColor,
                 ),
-                child: const Text('Add Room'),
+                child: const Text(
+                  'Add Room',
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ],
           ),
