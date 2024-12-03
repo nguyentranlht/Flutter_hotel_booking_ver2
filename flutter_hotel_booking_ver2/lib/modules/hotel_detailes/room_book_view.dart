@@ -87,17 +87,25 @@ class RoomeBookView extends ConsumerWidget {
                   child: Column(
                     children: <Widget>[
                       Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
-                          Text(
-                            roomData.roomName,
-                            maxLines: 2,
-                            textAlign: TextAlign.left,
-                            style: TextStyle(
-                                fontSize: 24, fontWeight: FontWeight.bold),
-                            overflow: TextOverflow.ellipsis,
+                          // Tên phòng được giới hạn
+                          Expanded(
+                            child: Text(
+                              roomData.roomName,
+                              maxLines: 1,
+                              textAlign: TextAlign.left,
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              overflow: TextOverflow
+                                  .ellipsis, // Thêm dấu "..." nếu quá dài
+                            ),
                           ),
-                          const Expanded(child: SizedBox()),
+                          const SizedBox(
+                              width: 8), // Khoảng cách giữa Text và nút
+                          // Nút
                           SizedBox(
                             height: 38,
                             child: ElevatedButton(
@@ -129,7 +137,7 @@ class RoomeBookView extends ConsumerWidget {
                                 child: Text(
                                   Loc.alized.book_now,
                                   textAlign: TextAlign.center,
-                                  style: TextStyle(fontSize: 16),
+                                  style: const TextStyle(fontSize: 16),
                                 ),
                               ),
                             ),
@@ -160,7 +168,9 @@ class RoomeBookView extends ConsumerWidget {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
                           Text(
-                            Loc.alized.capacity+": ${roomData.capacity} "+Loc.alized.people_data,
+                            Loc.alized.capacity +
+                                ": ${roomData.capacity} " +
+                                Loc.alized.people_data,
                             textAlign: TextAlign.left,
                             style: TextStyle(fontSize: 14),
                           ),

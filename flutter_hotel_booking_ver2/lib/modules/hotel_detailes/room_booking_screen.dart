@@ -74,11 +74,17 @@ class _RoomBookingScreenState extends ConsumerState<RoomBookingScreen>
                 final roomsAsync = ref.watch(roomsProvider(widget.hotelId));
                 return roomsAsync.when(
                   data: (rooms) {
+                    // Lọc chỉ các room có isSelected = true
+                    final selectedRooms =
+                        rooms.where((room) => room.roomStatus).toList();
+
                     return ListView.builder(
                       padding: const EdgeInsets.all(0.0),
-                      itemCount: rooms.length,
+                      itemCount: selectedRooms.length,
                       itemBuilder: (context, index) {
-                        var count = rooms.length > 10 ? 10 : rooms.length;
+                        var count = selectedRooms.length > 10
+                            ? 10
+                            : selectedRooms.length;
                         var animation = Tween(begin: 0.0, end: 1.0).animate(
                           CurvedAnimation(
                             parent: animationController,
@@ -92,11 +98,10 @@ class _RoomBookingScreenState extends ConsumerState<RoomBookingScreen>
                           hotelName: widget.hotelName,
                           hotelId: widget.hotelId,
                           hotelAddress: widget.hotelAddress,
-                          startDate: startDateRoom
-                              .toIso8601String(), // Cập nhật với startDateRoom
-                          endDate: endDateRoom
-                              .toIso8601String(), // Cập nhật với endDateRoom
-                          roomData: rooms[index],
+                          startDate: startDateRoom.toIso8601String(),
+                          endDate: endDateRoom.toIso8601String(),
+                          roomData:
+                              selectedRooms[index], // Sử dụng danh sách đã lọc
                           animation: animation,
                           animationController: animationController,
                         );

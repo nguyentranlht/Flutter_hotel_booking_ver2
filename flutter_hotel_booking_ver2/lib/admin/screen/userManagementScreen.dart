@@ -8,8 +8,6 @@ class UserManagementScreen extends StatelessWidget {
       appBar: AppBar(title: const Text('Quản lý người dùng')),
       body: Column(
         children: [
-          // Phần thông báo
-          //_buildNotificationSection(),
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
               stream:
@@ -37,11 +35,11 @@ class UserManagementScreen extends StatelessWidget {
                               ? 2
                               : 3;
 
-                      final childAspectRatio = isMobile
-                          ? 2 / 1
+                      final mainAxisExtent = isMobile
+                          ? 250 // Chiều cao cố định cho Mobile
                           : isTablet
-                              ? 4 / 3
-                              : 5 / 3;
+                              ? 300 // Chiều cao cố định cho Tablet
+                              : 350; // Chiều cao cố định cho Desktop
 
                       return GridView.builder(
                         shrinkWrap: true,
@@ -49,17 +47,15 @@ class UserManagementScreen extends StatelessWidget {
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: crossAxisCount,
                           crossAxisSpacing: 16,
-                          mainAxisSpacing: 16,
-                          childAspectRatio: childAspectRatio,
+                          mainAxisSpacing: 26,
+                          mainAxisExtent: 250,
                         ),
                         itemCount: users.length,
                         itemBuilder: (context, index) {
                           final user = users[index];
                           final userData = user.data() as Map<String, dynamic>;
 
-                          final status = userData.containsKey('status')
-                              ? userData['status']
-                              : 'unknown';
+                          final status = userData['status'] ?? 'unknown';
                           final role = userData['role'] ?? 'unknown';
 
                           return Card(
@@ -96,6 +92,7 @@ class UserManagementScreen extends StatelessWidget {
                                               color: Colors.grey.shade600),
                                     ),
                                   ),
+                                  const SizedBox(height: 10),
                                   Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
@@ -119,9 +116,9 @@ class UserManagementScreen extends StatelessWidget {
                                           );
                                         },
                                         icon: const Icon(Icons.block, size: 16),
-                                        label: const Text('Tạm ngưng'),
+                                        label: const Text('Tạm ngưng',style: TextStyle(color: Colors.white)),
                                         style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.redAccent,
+                                          backgroundColor: Colors.redAccent, iconColor: Colors.white
                                         ),
                                       ),
                                       Switch(
@@ -137,19 +134,18 @@ class UserManagementScreen extends StatelessWidget {
                                         },
                                         activeColor: Colors.green,
                                         inactiveThumbColor: Colors.red,
-                                        inactiveTrackColor: Colors.red.shade100,
+                                        inactiveTrackColor: const Color.fromARGB(255, 255, 255, 255),
                                       ),
                                     ],
                                   ),
-                                  SizedBox(height: 5),
+                                  const SizedBox(height: 10),
                                   if (role == 'user')
                                     ElevatedButton.icon(
                                       onPressed: () {
                                         FirebaseFirestore.instance
                                             .collection('notifications')
                                             .add({
-                                          'type':
-                                              'confirm_owner_role', // Cập nhật type thành confirm_owner_role
+                                          'type': 'confirm_owner_role',
                                           'message':
                                               '${userData['fullname']} đã được xác nhận làm Owner.',
                                           'timestamp':
@@ -157,13 +153,10 @@ class UserManagementScreen extends StatelessWidget {
                                           'userId': user.id,
                                         });
 
-                                        // Cập nhật vai trò của người dùng lên 'owner'
                                         FirebaseFirestore.instance
                                             .collection('users')
                                             .doc(user.id)
-                                            .update({
-                                          'role': 'owner',
-                                        });
+                                            .update({'role': 'owner'});
 
                                         ScaffoldMessenger.of(context)
                                             .showSnackBar(
@@ -179,9 +172,9 @@ class UserManagementScreen extends StatelessWidget {
                                       },
                                       icon: const Icon(Icons.check_circle,
                                           size: 16),
-                                      label: const Text('Xác nhận làm Owner'),
+                                      label: const Text('Xác nhận làm Owner',style: TextStyle(color: Colors.white)),
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.green,
+                                        backgroundColor: Colors.green, iconColor: Colors.white
                                       ),
                                     ),
                                 ],
@@ -198,72 +191,6 @@ class UserManagementScreen extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildNotificationSection() {
-    return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance
-          .collection('notifications')
-          .orderBy('timestamp', descending: true)
-          .snapshots(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-          return const SizedBox(); // Không có thông báo
-        }
-
-        final notifications = snapshot.data!.docs;
-
-        return Container(
-          width: double.infinity,
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-          color: Colors.grey.shade100,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Thông báo:',
-                style: Theme.of(context)
-                    .textTheme
-                    .titleMedium
-                    ?.copyWith(fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8.0),
-              ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: notifications.length,
-                itemBuilder: (context, index) {
-                  final data =
-                      notifications[index].data() as Map<String, dynamic>;
-                  return ListTile(
-                    leading: const Icon(Icons.notification_important,
-                        color: Colors.blue),
-                    title: Text(data['message'] ?? ''),
-                    subtitle: Text(
-                      data['timestamp'] != null
-                          ? (data['timestamp'] as Timestamp).toDate().toString()
-                          : 'Thời gian không xác định',
-                    ),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.delete, color: Colors.red),
-                      onPressed: () {
-                        FirebaseFirestore.instance
-                            .collection('notifications')
-                            .doc(notifications[index].id)
-                            .delete();
-                      },
-                    ),
-                  );
-                },
-              ),
-            ],
-          ),
-        );
-      },
     );
   }
 }
