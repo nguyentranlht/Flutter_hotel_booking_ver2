@@ -20,8 +20,10 @@ import 'package:flutter_hotel_booking_ver2/modules/profile/how_do_screen.dart';
 import 'package:flutter_hotel_booking_ver2/modules/profile/invite_screen.dart';
 import 'package:flutter_hotel_booking_ver2/modules/profile/settings_screen.dart';
 import 'package:flutter_hotel_booking_ver2/owner/managehotel/addhotel.dart';
+import 'package:flutter_hotel_booking_ver2/routes/api_chat.dart';
 import 'package:flutter_hotel_booking_ver2/routes/routes.dart';
 import 'package:hotel_repository/hotel_repository.dart';
+import 'package:kommunicate_flutter/kommunicate_flutter.dart';
 import 'package:room_repository/room_repository.dart';
 import 'package:user_repository/user_repository.dart';
 
@@ -170,7 +172,20 @@ class NavigationServices {
   }
 
   Future<dynamic> gotoHeplCenterScreen() async {
-    return await _pushMaterialPageRoute(const HeplCenterScreen());
+    try {
+              var conversationObject = {
+                'appId': ApiChat.appKey,
+              };
+
+              dynamic result = await KommunicateFlutterPlugin.buildConversation(
+                conversationObject,
+              );
+
+              print("Chatbot mở thành công: $result");
+            } catch (e) {
+              print("Lỗi khi mở chatbot: $e");
+            }
+    // return await _pushMaterialPageRoute(const HeplCenterScreen());
   }
 
   Future<dynamic> gotoChangepasswordScreen() async {

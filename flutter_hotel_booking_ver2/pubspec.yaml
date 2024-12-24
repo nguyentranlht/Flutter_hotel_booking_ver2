@@ -56,7 +56,7 @@ dependencies:
   cloud_firestore: ^5.4.4
   flutter_riverpod: ^2.6.1
   image_picker: ^0.8.5+3
-  flutter_slidable: ^3.1.1
+  flutter_slidable: ^3.1.2
 
   hotel_repository:
     path: packages/hotel_repository
@@ -69,6 +69,7 @@ dependencies:
   responsive_framework: ^1.5.1
   flutter_staggered_grid_view: ^0.7.0
   shared_preferences: ^2.3.3
+  kommunicate_flutter: ^1.9.8
 dev_dependencies:
   flutter_test:
     sdk: flutter
