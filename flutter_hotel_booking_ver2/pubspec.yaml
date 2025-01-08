@@ -47,7 +47,7 @@ dependencies:
   bloc: ^8.1.4
   flutter_bloc: ^8.1.6
   flutter_stripe: ^11.2.0
-  google_fonts: ^6.2.1
+  google_fonts: ^4.0.4
   google_sign_in: ^6.2.1
   google_maps_flutter: ^2.2.2
   firebase_core: ^3.6.0
@@ -57,6 +57,8 @@ dependencies:
   flutter_riverpod: ^2.6.1
   image_picker: ^0.8.5+3
   flutter_slidable: ^3.1.2
+
+
 
   hotel_repository:
     path: packages/hotel_repository
@@ -69,7 +71,8 @@ dependencies:
   responsive_framework: ^1.5.1
   flutter_staggered_grid_view: ^0.7.0
   shared_preferences: ^2.3.3
-  kommunicate_flutter: ^1.9.8
+  hexcolor: ^3.0.1
+  dialog_flowtter: ^0.3.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -100,6 +103,7 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
+      - assets/dialog_flow_auth.json
       - assets/images/
       - assets/json/
       - packages/flutter_hotel_booking_ver2/language/lang/language_text.json

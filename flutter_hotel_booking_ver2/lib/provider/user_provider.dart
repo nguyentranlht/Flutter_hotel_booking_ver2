@@ -9,9 +9,9 @@ final userServiceProvider = Provider<UserService>((ref) {
 
 // Provider for fetching MyUser data
 final userProvider =
-    FutureProvider.family<MyUser?, String>((ref, userId) async {
+    StreamProvider.family<MyUser?, String>((ref, userId) async* {
   final userService = ref.watch(userServiceProvider);
-  return userService.fetchUser(userId);
+  yield* userService.fetchUser(userId);
 });
 // Provider for uploading a profile picture and updating user's picture URL
 final uploadPictureProvider =
