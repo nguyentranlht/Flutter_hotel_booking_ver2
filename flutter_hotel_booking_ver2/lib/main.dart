@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_hotel_booking_ver2/provider/bot_service.dart';
 import 'package:flutter_hotel_booking_ver2/widgets/app_constant.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
@@ -15,6 +16,8 @@ import 'package:get/get.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  final bot = TelegramBot();
+  await bot.start();
   if (!kIsWeb) {
     Stripe.publishableKey = publishableKey;
   }
