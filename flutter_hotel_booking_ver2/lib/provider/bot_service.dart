@@ -34,7 +34,7 @@ class TelegramBot {
       teledart!.start();
       print("Bot Telegram đang chạy...");
     } else {
-      print("⚠️ Lỗi: Bot chưa được khởi tạo.");
+      print("Lỗi: Bot chưa được khởi tạo.");
     }
   }
 
@@ -74,7 +74,7 @@ class TelegramBot {
               parseMode: "Markdown");
         }
       } else {
-        message.reply("⚠️ Hãy nhập khu vực bạn muốn tìm khách sạn.");
+        message.reply("Hãy nhập khu vực bạn muốn tìm khách sạn.");
       }
     });
 
@@ -106,19 +106,21 @@ class TelegramBot {
                   InlineKeyboardMarkup(inlineKeyboard: inlineKeyboard));
         } else {
           query.answer(
-              text: "⚠️ Không có phòng nào sẵn sàng trong khách sạn này.");
+              text: "Không có phòng nào sẵn sàng trong khách sạn này.");
         }
       } else if (query.data!.startsWith("select_room_")) {
         List<String> parts = query.data!.split("_");
         String roomId = parts[2]; // Lấy roomId từ callbackData
         int roomPrice = parts.length > 3 ? int.parse(parts[3]) : 0;
         // Lưu dữ liệu đặt phòng và yêu cầu nhập số lượng khách
-        bookingData[userId] = {
-          ...bookingData[userId] ?? {}, // Giữ lại dữ liệu cũ
-          "roomPrice": roomPrice,
-          "roomId": roomId,
-          "step": "waiting_for_guest_count"
-        };
+        if (!bookingData.containsKey(userId) || bookingData[userId] == null) {
+          print("Lỗi: Dữ liệu khách sạn bị mất khi chọn phòng.");
+          return;
+        }
+
+        bookingData[userId]!["roomPrice"] = roomPrice;
+        bookingData[userId]!["roomId"] = roomId;
+        bookingData[userId]!["step"] = "waiting_for_guest_count";
 
         teledart!.sendMessage(userId, "Vui lòng nhập số lượng khách:");
       }
@@ -179,67 +181,56 @@ class TelegramBot {
         break;
 
       case "waiting_for_contact_mail":
-        print("📩 Nhận email từ user: $input"); // Xác nhận bot có nhận email
-
-        if (input.isEmpty || !input.contains("@") || !input.contains(".")) {
-          print("⚠️ Email không hợp lệ!");
-          teledart!.sendMessage(userId, "⚠️ Vui lòng nhập email hợp lệ:");
-          return;
-        }
+        print("Nhận email từ user: $input"); // Xác nhận bot có nhận email
 
         userBooking["mail"] = input;
-        userBooking["step"] = "waiting_for_contact_phone";
 
-        print("✅ Email hợp lệ được lưu: ${userBooking["mail"]}");
-
-        teledart!
-            .sendMessage(userId, "Nhập số điện thoại liên hệ:")
-            .catchError((e) => print("❌ Lỗi gửi tin nhắn: $e"));
-        break;
-
-      case "waiting_for_contact_phone":
-        userBooking["contactPhone"] = input;
-        String bookingId =
-            FirebaseFirestore.instance.collection('booking').doc().id;
+        print("Email hợp lệ được lưu: ${userBooking["mail"]}");
         QuerySnapshot<Map<String, dynamic>> userSnapshot =
             await FirebaseFirestore.instance
                 .collection('users')
-                .where("email", isEqualTo: userBooking["mail"])
+                .where("email", isEqualTo: "${userBooking["mail"]}@gmail.com")
                 .limit(1)
                 .get();
-        String userId = userSnapshot.docs.isNotEmpty
+        String UserId = userSnapshot.docs.isNotEmpty
             ? userSnapshot.docs.first.id
             : "unknown_user";
+        DateTime start = DateTime.parse(userBooking['checkInDate']);
+        DateTime end = DateTime.parse(userBooking['checkOutDate']);
+
+        int differenceInDays = end.difference(start).inDays;
+
+        var perNight = userBooking['roomPrice'] * differenceInDays;
+        print(perNight);
         // // Lưu vào Firestore
         Map<String, dynamic> newBooking = {
-          'bookingId': bookingId,
           'paymentIntentId': "paymentIntentId",
-          'userId': userId,
+          'userId': UserId,
           'hotelId': userBooking['hotelId'],
           'roomId': userBooking['roomId'],
           'bookingDate': Timestamp.fromDate(DateTime.now()),
           'checkInDate':
               Timestamp.fromDate(DateTime.parse(userBooking['checkInDate'])),
           'checkOutDate':
-              Timestamp.fromDate(DateTime.parse(userBooking['checkInDate'])),
+              Timestamp.fromDate(DateTime.parse(userBooking['checkOutDate'])),
           'numberOfGuests': userBooking['guestCount'],
           'bookingStatus': 'success',
-          'totalPrice': userBooking['roomPrice'],
+          'totalPrice': perNight.toString(),
           'paymentStatus': 'success',
           'fullname': userBooking['contactName']
         };
-        FirebaseFirestore.instance.collection('booking').add(newBooking);
-        // await _saveBookingToFirestore(userBooking);
-        print("Đặt phòng: $userBooking");
+        // FirebaseFirestore.instance.collection('booking').add(newBooking);
+        await _saveBookingToFirestore(newBooking);
+        print("Đặt phòng: $newBooking");
         // // Gửi xác nhận
         teledart!.sendMessage(
             userId,
-            "✅ Đặt phòng thành công!\n"
-            "📍 Phòng ID: ${userBooking['roomId']}\n"
-            "👥 Số khách: ${userBooking['guestCount']}\n"
-            "📅 Nhận phòng: ${userBooking['checkInDate']}\n"
-            "📅 Trả phòng: ${userBooking['checkOutDate']}\n"
-            "📞 Liên hệ: ${userBooking['contactName']} - ${userBooking['contactPhone']}");
+            "Xác nhận thông tin trước khi thanh toán!\n"
+            "Số khách: ${userBooking['guestCount']}\n"
+            "Nhận phòng: ${userBooking['checkInDate']}\n"
+            "Trả phòng: ${userBooking['checkOutDate']}\n"
+            "Liên hệ: ${userBooking['contactName']} - ${userBooking['mail']}@gmail.com\n"
+            "Tổng cộng: $perNight VND");
 
         // Xóa dữ liệu tạm
         bookingData.remove(userId);
@@ -266,12 +257,17 @@ class TelegramBot {
 
   Future<void> _saveBookingToFirestore(Map<String, dynamic> booking) async {
     try {
-      FirebaseFirestore.instance
+      String bookingId =
+          FirebaseFirestore.instance.collection('bookings').doc().id; // Tạo ID
+
+      booking['bookingId'] = bookingId; // Gán ID vào booking trước khi lưu
+
+      await FirebaseFirestore.instance
           .collection('bookings')
-          .doc(booking['bookingId'])
+          .doc(bookingId) // Sử dụng ID do Firebase tạo
           .set(booking);
-      // await FirebaseFirestore.instance.collection('booking').add(booking);
-      print("✅ Đã lưu đặt phòng vào Firestore: $booking");
+
+      print("✅ Đã lưu đặt phòng vào Firestore với ID: $bookingId");
     } catch (e) {
       print("❌ Lỗi khi lưu vào Firestore: $e");
     }
