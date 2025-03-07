@@ -143,6 +143,67 @@ class TelegramBot {
     }
   }
 
+  Future<String?> createStripePrice(int amount, String currency) async {
+    final url = Uri.parse('https://api.stripe.com/v1/prices');
+
+    final response = await http.post(
+      url,
+      headers: {
+        'Authorization': 'Bearer $secretKey',
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: {
+        'unit_amount': amount.toString(), // Giá tiền
+        'currency': currency,
+        'product_data[name]':
+            'Thanh toán sản phẩm tùy chỉnh', // Tạo sản phẩm mới
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final jsonResponse = jsonDecode(response.body);
+      print("✅ Price ID được tạo: ${jsonResponse['id']}");
+      return jsonResponse['id'];
+    } else {
+      print("❌ Lỗi tạo Price ID: ${response.statusCode} - ${response.body}");
+      return null;
+    }
+  }
+
+  Future<String?> createStripePaymentLink(int amount, String currency) async {
+    String? priceId =
+        await createStripePrice(amount, currency); // 🔹 Tạo Price ID trước
+
+    if (priceId == null) {
+      print("❌ Lỗi: Không thể tạo Price ID!");
+      return null;
+    }
+
+    final url = Uri.parse('https://api.stripe.com/v1/payment_links');
+
+    final response = await http.post(
+      url,
+      headers: {
+        'Authorization': 'Bearer $secretKey',
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: {
+        'line_items[0][price]': priceId, // ✅ Dùng Price ID mới tạo
+        'line_items[0][quantity]': '1',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final jsonResponse = jsonDecode(response.body);
+      print("✅ Payment Link tạo thành công: ${jsonResponse['url']}");
+      return jsonResponse['url'];
+    } else {
+      print(
+          "❌ Lỗi tạo Payment Link: ${response.statusCode} - ${response.body}");
+      return null;
+    }
+  }
+
   void _handleBookingProcess(
       int userId, String input, TeleDartMessage message) async {
     if (!bookingData.containsKey(userId)) return;
@@ -223,19 +284,57 @@ class TelegramBot {
         await _saveBookingToFirestore(newBooking);
         print("Đặt phòng: $newBooking");
         // // Gửi xác nhận
-        teledart!.sendMessage(
+        // teledart!.sendMessage(
+        //     userId,
+        //     "Xác nhận thông tin trước khi thanh toán!\n"
+        //     "Số khách: ${userBooking['guestCount']}\n"
+        //     "Nhận phòng: ${userBooking['checkInDate']}\n"
+        //     "Trả phòng: ${userBooking['checkOutDate']}\n"
+        //     "Liên hệ: ${userBooking['contactName']} - ${userBooking['mail']}@gmail.com\n"
+        //     "Tổng cộng: $perNight VND");
+
+        // Xóa dữ liệu tạm
+
+        userBooking["step"] = "waiting_for_contact_payment";
+        int amount = perNight; // Giá trị thanh toán (100,000 VND)
+
+        String? paymentLink = await createStripePaymentLink(amount, 'VND');
+
+        if (paymentLink != null) {
+          var paymentKeyboard = InlineKeyboardMarkup(
+            inlineKeyboard: [
+              [
+                InlineKeyboardButton(
+                  text: "Thanh toán ngay",
+                  url: paymentLink,
+                ),
+              ],
+            ],
+          );
+
+          teledart!.sendMessage(
             userId,
             "Xác nhận thông tin trước khi thanh toán!\n"
             "Số khách: ${userBooking['guestCount']}\n"
             "Nhận phòng: ${userBooking['checkInDate']}\n"
             "Trả phòng: ${userBooking['checkOutDate']}\n"
             "Liên hệ: ${userBooking['contactName']} - ${userBooking['mail']}@gmail.com\n"
-            "Tổng cộng: $perNight VND");
-
-        // Xóa dữ liệu tạm
+            "Tổng cộng: $perNight VND",
+            replyMarkup: paymentKeyboard,
+          );
+        } else {
+          teledart!.sendMessage(
+            message.chat.id,
+            "❌ Lỗi khi tạo thanh toán, vui lòng thử lại sau!",
+          );
+        }
         bookingData.remove(userId);
-
         break;
+      // case "waiting_for_contact_name":
+      //   userBooking["contactName"] = input;
+      //   userBooking["step"] = "waiting_for_contact_mail";
+      //   teledart!.sendMessage(userId, "Nhập số email liên hệ:");
+      //   break;
     }
   }
 
